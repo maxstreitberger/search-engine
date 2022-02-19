@@ -1,9 +1,13 @@
 #include <iostream>
-#include "adder.hpp"
+#include "parser.hpp"
 
 int main() {
-    std::cout << "This is a simple project setup" << std::endl;
-    std::cout << adder(1, 2) << std::endl;
+    Parser parser = Parser("./src/parser/documents/special.txt");
+    std::vector<std::string> return_val = parser.parse("documents/demo.txt");
+
+    for (std::string& str: return_val) {
+        std::cout << str << std::endl;
+    }
 
     return 0;
 }
