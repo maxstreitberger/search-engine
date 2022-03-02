@@ -5,7 +5,7 @@
 
 Parser::Parser(std::string_view special_chars_path) {
     specialchars = readFile(special_chars_path);
-    stopwords = loadStopWords("./src/parser/documents/stopwords.txt");
+    stopwords = loadStopWords("./modules/indexing/documents/stopwords.txt");
 }
 
 std::vector<char> Parser::readFile(const std::string_view path) {
@@ -71,13 +71,17 @@ void Parser::parse(std::set<DocumentMeta>::iterator doc_it) {
     std::istringstream tokenStream(doc->content);
 
     while (std::getline(tokenStream, token, ' ')) {
-        for (const char& specialchar: specialchars) {
-            while (token.find(specialchar)!=std::string::npos) {
-                token.pop_back();
+        bool whiteSpacesOnly = std::all_of(token.begin(), token.end(), isspace);
+        if(!whiteSpacesOnly) {        
+            for (const char& specialchar: specialchars) {
+                while (token.find(specialchar)!=std::string::npos) {
+                    token.pop_back();
+                }
             }
+            token.erase(std::remove_if(token.begin(), token.end(), ::isspace), token.end());
+            std::transform(token.begin(), token.end(), token.begin(), [](unsigned char c){ return std::tolower(c); });
+            tokens.push_back(token);
         }
-        std::transform(token.begin(), token.end(), token.begin(), [](unsigned char c){ return std::tolower(c); });
-        tokens.push_back(token);
     }
 
     std::vector<std::string>::iterator it = tokens.begin();
@@ -114,8 +118,6 @@ void Parser::parse(std::set<DocumentMeta>::iterator doc_it) {
         }
         counter++;
     }
-
-
 
     std::ofstream file("test.txt");
     file << index;

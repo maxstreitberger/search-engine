@@ -1,4 +1,4 @@
-project (parser)
+project (indexing)
 
 add_library(${PROJECT_NAME} src/parser.cpp)
 target_include_directories( ${PROJECT_NAME}
@@ -6,3 +6,5 @@ target_include_directories( ${PROJECT_NAME}
 )
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/documents
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+add_subdirectory(testing)

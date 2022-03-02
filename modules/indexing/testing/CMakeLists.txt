@@ -1,0 +1,5 @@
+add_library(indexing_testing INTERFACE)
+target_include_directories(indexing_testing INTERFACE include)
+
+add_executable(indexing_tests src/testing.cpp)
+target_link_libraries(indexing_tests testing indexing)
