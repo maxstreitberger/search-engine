@@ -12,15 +12,13 @@ int main() {
 
     // NEXT: Connect Crawler with Indexer
 
-    // Parser parser = Parser(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/special.txt");
-    // parser.registerDocument("dummy-text/demo.txt");
-    // parser.registerDocument("dummy-text/demo2.txt");
+    Parser parser = Parser(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/special.txt");
+    parser.loadCrawlerDocuments();
+    std::set<docmeta::DocumentMeta>::iterator it;
 
-    // std::set<DocumentMeta>::iterator it;
-
-    // for(it = parser.documents.begin(); it != parser.documents.end(); it++) {
-    //     parser.parse(it);
-    // }
+    for(it = parser.documents.begin(); it != parser.documents.end(); it++) {
+        parser.parse(it);
+    }
 
     return 0;
 }
