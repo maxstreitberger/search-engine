@@ -1,3 +1,6 @@
+#ifndef PARSER_HPP
+#define PARSER_HPP
+
 #include <vector>
 #include <string>
 #include <sstream>
@@ -5,9 +8,6 @@
 #include <iostream>
 #include <map>
 #include <set>
-
-#ifndef PARSER_HPP
-#define PARSER_HPP
 
 struct DocumentMeta {
     DocumentMeta(int document_id, std::string text) : id{document_id}, content{text} {};
@@ -51,7 +51,6 @@ struct TokenMeta {
 struct Parser {
     Parser(std::string_view special_chars_path);
 
-    void registerDocument(const std::string_view path);
     void parse(std::set<DocumentMeta>::iterator doc_it);
     std::set<std::string> loadStopWords(const std::string_view path);
     bool checkStopword(std::string_view element);
@@ -64,7 +63,6 @@ struct Parser {
     std::map<std::string, std::set<TokenMeta>> index;
 
     std::vector<char> readFile(const std::string_view path);
-    std::string loadText(const std::string_view path);
 };
 
 #endif

@@ -1,0 +1,5 @@
+add_library(crawling_testing INTERFACE)
+target_include_directories(crawling_testing INTERFACE include)
+
+add_executable(crawling_tests src/testing.cpp)
+target_link_libraries(crawling_tests testing indexing)

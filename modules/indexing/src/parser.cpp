@@ -1,11 +1,11 @@
-#include "parser.hpp"
-
 #ifndef PARSER_CPP
 #define PARSER_CPP
 
+#include "parser.hpp"
+
 Parser::Parser(std::string_view special_chars_path) {
     specialchars = readFile(special_chars_path);
-    stopwords = loadStopWords("./modules/indexing/documents/stopwords.txt");
+    stopwords = loadStopWords(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
 }
 
 std::vector<char> Parser::readFile(const std::string_view path) {
@@ -22,19 +22,6 @@ std::vector<char> Parser::readFile(const std::string_view path) {
     } 
 
     return chars;
-}
-
-void Parser::registerDocument(const std::string_view path) {
-    int new_id = documents.size() + 1;
-    std::string text = loadText(path);
-    DocumentMeta document = DocumentMeta(new_id, text);
-    documents.insert(document);
-}
-
-std::string Parser::loadText(const std::string_view path) {
-    std::ifstream ifs(path);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    return content;
 }
 
 std::set<std::string> Parser::loadStopWords(const std::string_view path) {
