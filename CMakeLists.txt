@@ -12,9 +12,11 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 add_subdirectory(testing) 
 add_subdirectory(modules/crawling)
 add_subdirectory(modules/indexing)
+add_subdirectory(modules/ranking)
 
 target_link_directories(${PROJECT_NAME} PRIVATE modules/crawling modules/indexing)
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE crawling 
     PRIVATE indexing
+    PRIVATE ranking
 )

@@ -1,0 +1,5 @@
+add_library(ranking_testing INTERFACE)
+target_include_directories(ranking_testing INTERFACE include)
+
+add_executable(ranking_tests src/testing.cpp)
+target_link_libraries(ranking_tests testing ranking)
