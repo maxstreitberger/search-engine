@@ -7,7 +7,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
     file << "Hello, World!";
     file.close();
 
-    SECTION("Crawler can retrieve all documents paths in a given folder.") {
+    SECTION("retrieve all documents paths in a given folder.") {
         std::vector<std::string> expectedDocuments = { 
             CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt", 
             CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo2.txt", 
@@ -21,7 +21,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         REQUIRE( expectedDocuments == visitedDocuments );
     }
 
-    SECTION("Crawler can retrieve the contents of a given document") {
+    SECTION("retrieve the contents of a given document") {
         std::string expectedContents = "Hello, World!";
 
         Crawler crawler = Crawler();
@@ -31,7 +31,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         REQUIRE( expectedContents == visitedContents );
     }
 
-    SECTION("Crawler can register a new document") {
+    SECTION("register a new document") {
         std::set<docmeta::CrawlerDocMeta> expectedMeta = { docmeta::CrawlerDocMeta(1, "Hello, World!", CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
         Crawler crawler = Crawler();
@@ -40,7 +40,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         REQUIRE( expectedMeta == crawler.documents );
     }
 
-    SECTION("Crawler can identify and update an already registered document") {
+    SECTION("identify and update an already registered document") {
         std::set<docmeta::CrawlerDocMeta> expectedMeta = { docmeta::CrawlerDocMeta(1, "Hello, World!", CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
         Crawler crawler = Crawler();
@@ -57,7 +57,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         REQUIRE (crawler.documents.begin()->content == "What's up?" );
     }
 
-    SECTION("Crawler can push found documents to the store") {
+    SECTION("push found documents to the store") {
         std::set<docmeta::CrawlerDocMeta> documentsToPush = { docmeta::CrawlerDocMeta(1, "Hello, World!", CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
         nlohmann::json expectedOutput = documentsToPush;
