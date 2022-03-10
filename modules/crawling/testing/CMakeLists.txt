@@ -1,5 +1,8 @@
-add_library(crawling_testing INTERFACE)
-target_include_directories(crawling_testing INTERFACE include)
+find_package(Catch2 3 REQUIRED)
 
-add_executable(crawling_tests src/testing.cpp)
-target_link_libraries(crawling_tests testing indexing)
+add_executable(crawling_tests src/crawler-test-cases.cpp)
+target_link_libraries(crawling_tests 
+    PRIVATE testing
+    PRIVATE crawling
+    PRIVATE Catch2::Catch2WithMain
+)

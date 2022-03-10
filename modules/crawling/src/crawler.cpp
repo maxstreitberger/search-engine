@@ -18,42 +18,45 @@ namespace docmeta {
 
 void Crawler::start() {
     std::cout << "Crawling through " << origin_path << std::endl;
-    std::set<docmeta::CrawlerDocMeta> crawled_documents = crawlDocuments();
-    pushDocumentsToStore(crawled_documents);
+    std::vector<std::string> foundDocuments = getDocumentPaths();
+    for (auto& document_path: foundDocuments) {
+        registerDocument(document_path);
+    }
+
+    pushDocumentsToStore(documents);
     
     DocStore store = DocStore("store.txt");
     store.checkForNewFiles();
 }
 
-std::set<docmeta::CrawlerDocMeta> Crawler::crawlDocuments() {
-    std::set<docmeta::CrawlerDocMeta> documents;
+std::vector<std::string> Crawler::getDocumentPaths() {
+    std::vector<std::string> foundDocuments;
     std::queue<std::string> directories;
     directories.push(origin_path);
 
     while (!directories.empty()) {
-        // std::cout << "Current directory: " << directories.front() << std::endl;
         for (const auto & entry : std::filesystem::directory_iterator(directories.front())) {
             if (std::filesystem::is_directory(entry)) {
-                // std::cout << "Found directory: " << entry.path().string() << std::endl;
                 directories.push(entry.path().string());
             } else {
-                registerDocument(entry.path(), documents);
+                foundDocuments.push_back(entry.path().string());
             }
         }
         directories.pop();
     }
-    return documents;
+
+    return foundDocuments;
 }
 
-std::string Crawler::loadText(const std::string path) {
+std::string Crawler::getDocumentContents(const std::string path) {
     std::ifstream ifs(path);
     std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     return content;
 }
 
-void Crawler::registerDocument(const std::filesystem::path path, std::set<docmeta::CrawlerDocMeta>& documents) {
+void Crawler::registerDocument(const std::filesystem::path path) {
     int new_id = documents.size() + 1;
-    std::string text = loadText(path);
+    std::string text = getDocumentContents(path);
     docmeta::CrawlerDocMeta document = docmeta::CrawlerDocMeta(new_id, text, path.string());
 
     // Is maybe not needed, would only happen if the crawler accidentally crawls the document multiple times.
@@ -74,7 +77,7 @@ void Crawler::pushDocumentsToStore(const std::set<docmeta::CrawlerDocMeta> docum
 
     nlohmann::json doc_json = documents;
 
-    file << std::setw(4) << doc_json;
+    file << doc_json;
 
     file.close();
 }

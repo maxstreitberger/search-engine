@@ -19,8 +19,12 @@ namespace docmeta {
         }
 
         friend std::ostream& operator << (std::ostream& os, const CrawlerDocMeta &doc) {
-            os << "{ document_id: " << doc.id << ", content: '" << doc.content << "' }" << std::endl;
+            os << "{ document_id: " << doc.id << ", content: '" << doc.content << ", path: " << doc.path << "' }" << std::endl;
             return os;
+        }
+
+        const bool operator == (const CrawlerDocMeta &r) const {
+            return id == r.id && content == r.content && path == r.path;
         }
 
         int id;
@@ -33,15 +37,19 @@ namespace docmeta {
 }
 
 struct Crawler {
+    Crawler() {};
     Crawler(std::string path) : origin_path{path} {};
     
     void start();
-    std::set<docmeta::CrawlerDocMeta> crawlDocuments();
-    void registerDocument(const std::filesystem::path path, std::set<docmeta::CrawlerDocMeta>& documents);
+    std::vector<std::string> getDocumentPaths();
+    std::string getDocumentContents(const std::string path);
+    void registerDocument(const std::filesystem::path path);
+    
     void pushDocumentsToStore(const std::set<docmeta::CrawlerDocMeta> documents);
     std::string loadText(const std::string path);
 
     std::string origin_path;
+    std::set<docmeta::CrawlerDocMeta> documents;
 };
 
 

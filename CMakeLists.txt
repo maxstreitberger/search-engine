@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_definitions(-DSEARCHENGINE_ROOT_DIR=\"${CMAKE_SOURCE_DIR}\")
+add_definitions(-DCRAWLER_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling\")
+add_definitions(-DCRAWLER_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/testing\")
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
