@@ -25,8 +25,8 @@ void Crawler::start() {
 
     pushDocumentsToStore(documents);
     
-    DocStore store = DocStore("store.txt");
-    store.checkForNewFiles();
+    DocStore store = DocStore("store.json", "crawler-found-docs.json", "repository.json");
+    store.processDocuments();
 }
 
 std::vector<std::string> Crawler::getDocumentPaths() {
@@ -77,7 +77,7 @@ void Crawler::pushDocumentsToStore(const std::set<docmeta::CrawlerDocMeta> docum
 
     nlohmann::json doc_json = documents;
 
-    file << doc_json;
+    file << std::setw(4) << doc_json;
 
     file.close();
 }

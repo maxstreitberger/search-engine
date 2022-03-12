@@ -3,6 +3,7 @@
 #include "crawler.hpp"
 
 TEST_CASE("Crawler can", "[crawler][store]") {
+    
     std::ofstream file(CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
     file << "Hello, World!";
     file.close();
@@ -70,6 +71,6 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         file.close();
 
 
-        REQUIRE( expectedOutput.dump() == resultOutput );
+        REQUIRE( expectedOutput.dump(4) == resultOutput );
     }
 }
