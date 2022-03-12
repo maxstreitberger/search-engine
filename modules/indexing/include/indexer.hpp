@@ -1,5 +1,5 @@
-#ifndef PARSER_HPP
-#define PARSER_HPP
+#ifndef INDEXER_HPP
+#define INDEXER_HPP
 
 #include <vector>
 #include <string>
@@ -64,8 +64,8 @@ namespace tokenmeta {
     extern void to_json(nlohmann::json& j, const TokenMeta& doc);
 }
 
-struct Parser {
-    Parser(std::string_view special_chars_path);
+struct Indexer {
+    Indexer(std::string_view special_chars_path);
 
     void parse(std::set<docmeta::DocumentMeta>::iterator doc_it);
     std::set<std::string> loadStopWords(const std::string_view path);

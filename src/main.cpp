@@ -2,7 +2,7 @@
 #define MAIN_CPP
 
 #include <iostream>
-#include "parser.hpp"
+#include "indexer.hpp"
 #include "crawler.hpp"
 #include "doc_store.hpp"
 #include "ranking.hpp"
@@ -11,12 +11,12 @@ int main() {
     Crawler crawler = Crawler(SEARCHENGINE_ROOT_DIR "/dummy-text");
     crawler.start();
 
-    Parser parser = Parser(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/special.txt");
-    parser.loadCrawlerDocuments();
+    Indexer indexer = Indexer(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/special.txt");
+    indexer.loadCrawlerDocuments();
     std::set<docmeta::DocumentMeta>::iterator it;
 
-    for(it = parser.documents.begin(); it != parser.documents.end(); it++) {
-        parser.parse(it);
+    for(it = indexer.documents.begin(); it != indexer.documents.end(); it++) {
+        indexer.parse(it);
     }
 
     Ranking ranking = Ranking();

@@ -1,7 +1,7 @@
-#ifndef PARSER_CPP
-#define PARSER_CPP
+#ifndef INDEXER_CPP
+#define INDEXER_CPP
 
-#include "parser.hpp"
+#include "indexer.hpp"
 
 namespace docmeta {
     void to_json(nlohmann::json& j, const DocumentMeta& doc) {
@@ -29,12 +29,12 @@ namespace tokenmeta {
     }
 }
 
-Parser::Parser(std::string_view special_chars_path) {
+Indexer::Indexer(std::string_view special_chars_path) {
     specialchars = readFile(special_chars_path);
     stopwords = loadStopWords(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
 }
 
-std::vector<char> Parser::readFile(const std::string_view path) {
+std::vector<char> Indexer::readFile(const std::string_view path) {
     std::vector<char> chars;
     std::string line;
     std::ifstream specialfile(path);
@@ -50,7 +50,7 @@ std::vector<char> Parser::readFile(const std::string_view path) {
     return chars;
 }
 
-std::set<std::string> Parser::loadStopWords(const std::string_view path) {
+std::set<std::string> Indexer::loadStopWords(const std::string_view path) {
     std::string line;
     std::set<std::string> stopwords;
     std::ifstream stopwordsFile(path);
@@ -76,7 +76,7 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
     return os;
 }
 
-void Parser::loadCrawlerDocuments() {
+void Indexer::loadCrawlerDocuments() {
     std::ifstream ifs("repository.json");
     std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     nlohmann::json crawler_docs;
@@ -92,7 +92,7 @@ void Parser::loadCrawlerDocuments() {
     }
 }
 
-void Parser::parse(std::set<docmeta::DocumentMeta>::iterator doc_it) {
+void Indexer::parse(std::set<docmeta::DocumentMeta>::iterator doc_it) {
     docmeta::DocumentMeta* doc = (docmeta::DocumentMeta*)&(*doc_it);
 
     nlohmann::json indexJson;

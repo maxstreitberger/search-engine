@@ -4,7 +4,7 @@ set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_library(${PROJECT_NAME} src/parser.cpp)
+add_library(${PROJECT_NAME} src/indexer.cpp)
 target_include_directories( ${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
