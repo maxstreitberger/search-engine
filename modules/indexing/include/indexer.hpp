@@ -18,6 +18,15 @@ namespace docmeta {
         const bool operator < ( const DocumentMeta &r ) const {
             return id < r.id;
         }
+
+        friend std::ostream& operator << (std::ostream& os, const DocumentMeta &doc) {
+            os << "{ document_id: " << doc.id << ", content: '" << doc.content << ", path: " << doc.path << "' }" << std::endl;
+            return os;
+        }
+
+        const bool operator == (const DocumentMeta &r) const {
+            return id == r.id && content == r.content && path == r.path;
+        }
         
         int id;
         std::string content;
@@ -33,8 +42,8 @@ namespace tokenmeta {
     struct TokenMeta {
         TokenMeta() : document_id{0}, num_appearances{0}, doc_ptr{nullptr} {};
         TokenMeta(int doc_id) : document_id{doc_id}, doc_ptr{nullptr} {};
-        TokenMeta(int doc_id, int num_appearances, std::vector<int> positions, docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions}, doc_ptr{ptr}{};
         TokenMeta(int doc_id , int position, docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{1}, positions{position}, doc_ptr{ptr} {};
+        TokenMeta(int doc_id, int num_appearances, std::vector<int> positions, docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions}, doc_ptr{ptr}{};
 
         friend std::ostream& operator<<(std::ostream& os, const TokenMeta& meta) {
             os << " { document_id: " << meta.document_id << ',' << " num_appearances: " << meta.num_appearances << ',' << " positions: [ "; 
@@ -51,7 +60,7 @@ namespace tokenmeta {
         }
 
         bool operator==(const TokenMeta& rhs) const {
-            return document_id == rhs.document_id;
+            return document_id == rhs.document_id && doc_ptr == rhs.doc_ptr && positions == rhs.positions && num_appearances == rhs.num_appearances;
         }
 
         int document_id;
@@ -65,21 +74,24 @@ namespace tokenmeta {
 }
 
 struct Indexer {
-    Indexer(std::string_view special_chars_path);
+    Indexer() {}
+    Indexer(std::string specialCharsPath, std::string stopwordPath, std::string repoPath, std::string indexPath) : special_chars_path{specialCharsPath}, stopword_path{stopwordPath}, repo_path{repoPath}, index_path{indexPath} {}
 
-    void parse(std::set<docmeta::DocumentMeta>::iterator doc_it);
-    std::set<std::string> loadStopWords(const std::string_view path);
-    bool checkStopword(std::string_view element);
-    void loadCrawlerDocuments();
+    void generateIndex();
+    std::vector<docmeta::DocumentMeta> loadRepository(std::string path);
+    std::set<std::string> loadList(std::string path);
+    std::vector<std::string> splitTextIntoList(std::string text);
+    std::vector<std::string> removeSpecialChars(std::vector<std::string> tokens, std::set<std::string> specialChars);
+    std::vector<std::string> removeStopwords(std::vector<std::string> tokens, std::set<std::string> stopwords);
+    std::vector<std::string> createTokens(std::string text, std::set<std::string> specialChars, std::set<std::string> stopwords);
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> createIndexForDocument(docmeta::DocumentMeta* doc, std::vector<std::string> tokens);
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> joinIndexes(std::map<std::string, std::set<tokenmeta::TokenMeta>> targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex);
+    void writeIndexToFile(std::map<std::string, std::set<tokenmeta::TokenMeta>> index, std::string path);
 
-    std::set<docmeta::DocumentMeta> documents;
-    std::set<std::string> stopwords;
-
-    private:
-    std::vector<char> specialchars;
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
-
-    std::vector<char> readFile(const std::string_view path);
+    std::string special_chars_path;
+    std::string stopword_path;
+    std::string repo_path;
+    std::string index_path;
 };
 
 #endif

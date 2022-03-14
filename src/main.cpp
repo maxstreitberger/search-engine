@@ -11,14 +11,12 @@ int main() {
     Crawler crawler = Crawler(SEARCHENGINE_ROOT_DIR "/dummy-text");
     crawler.start();
 
-    Indexer indexer = Indexer(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/special.txt");
-    indexer.loadCrawlerDocuments();
-    std::set<docmeta::DocumentMeta>::iterator it;
+    std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
+    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-    for(it = indexer.documents.begin(); it != indexer.documents.end(); it++) {
-        indexer.parse(it);
-    }
-
+    Indexer indexer = Indexer(specialCharsPath, stopwordsPath, "repository.json", "index.json");
+    indexer.generateIndex();
+    
     Ranking ranking = Ranking();
     std::vector<docmeta::RankingDocumentMeta> foundDocuments = ranking.searchFor("Lorem");
 

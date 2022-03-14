@@ -15,6 +15,16 @@ namespace docmeta {
     }
 }
 
+std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::set<tokenmeta::TokenMeta>> &m) {
+    for (const auto &p : m) {
+        os << p.first << ": ";
+        for (auto x : p.second) os << x << ' ';
+        os << std::endl;
+    }
+
+    return os;
+}
+
 namespace tokenmeta {
     void to_json(nlohmann::json& j, const TokenMeta& token) {
         // j = nlohmann::json{ {"doc_id", token.document_id}, {"doc_ptr", token.doc_ptr}, {"num_appearances", token.num_appearances}, {"positions", token.positions} };
@@ -29,98 +39,119 @@ namespace tokenmeta {
     }
 }
 
-Indexer::Indexer(std::string_view special_chars_path) {
-    specialchars = readFile(special_chars_path);
-    stopwords = loadStopWords(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
+void Indexer::generateIndex() {
+    std::set<std::string> specialchars = loadList(special_chars_path);
+    std::set<std::string> stopwords = loadList(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
+
+    std::vector<docmeta::DocumentMeta> documents = loadRepository(repo_path);
+
+    for (auto& document: documents) {
+        std::vector<std::string> tokens = splitTextIntoList(document.content);
+        std::vector<std::string> withoutSpecialChars = removeSpecialChars(tokens, specialchars);
+        std::vector<std::string> finalTokens = removeStopwords(withoutSpecialChars, stopwords);
+
+        std::map<std::string, std::set<tokenmeta::TokenMeta>> doc_index = createIndexForDocument(&document, finalTokens);
+        
+        index = joinIndexes(index, doc_index);  
+    }
+
+    writeIndexToFile(index, index_path);
 }
 
-std::vector<char> Indexer::readFile(const std::string_view path) {
-    std::vector<char> chars;
+std::map<std::string, std::set<tokenmeta::TokenMeta>> Indexer::joinIndexes(std::map<std::string, std::set<tokenmeta::TokenMeta>> targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
+    for (auto const& [key, val] : sourceIndex) {
+        targetIndex[key].insert(val.begin(), val.end());
+    }
+    return targetIndex;
+}
+
+std::set<std::string> Indexer::loadList(std::string path) {
+    std::set<std::string> list;
+
     std::string line;
-    std::ifstream specialfile(path);
-    if (specialfile.is_open()) {
-        while (std::getline(specialfile,line)) {
-            chars.push_back(line[0]);
+    std::ifstream file(path);
+    if (file.is_open()) {
+        while (std::getline(file,line)) {
+            line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+            list.insert(line);
         }
-        specialfile.close();
+        file.close();
     } else {
-        std::cout << "Unable to open special file" << std::endl;
+        std::cout << "Unable to open file at path: " << path << std::endl;
     } 
 
-    return chars;
+    return list;
 }
 
-std::set<std::string> Indexer::loadStopWords(const std::string_view path) {
-    std::string line;
-    std::set<std::string> stopwords;
-    std::ifstream stopwordsFile(path);
-    if (stopwordsFile.is_open()) {
-        while (getline(stopwordsFile,line)) {
-            line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
-            stopwords.insert(line);
-        }
-        stopwordsFile.close();
-    } else {
-        std::cout << "Unable to open file" << std::endl;
-    }
-    return stopwords;
-}
-
-std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::set<tokenmeta::TokenMeta>> &m) {
-    for (const auto &p : m) {
-        os << p.first << ": ";
-        for (auto x : p.second) os << x << ' ';
-        os << std::endl;
-    }
-
-    return os;
-}
-
-void Indexer::loadCrawlerDocuments() {
-    std::ifstream ifs("repository.json");
+std::vector<docmeta::DocumentMeta> Indexer::loadRepository(std::string path) {
+    std::ifstream ifs(path);
     std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     nlohmann::json crawler_docs;
+    std::vector<docmeta::DocumentMeta> docmentsToIndex;
 
     try {
         crawler_docs = nlohmann::json::parse(content);
-        documents = crawler_docs.get<std::set<docmeta::DocumentMeta>>();
-        // std::cout << std::setw(4) << crawler_docs << std::endl;
-
+        docmentsToIndex = crawler_docs.get<std::vector<docmeta::DocumentMeta>>();
     }
     catch (nlohmann::json::parse_error& ex) {
         std::cerr << "parse error at byte " << ex.byte << std::endl;
     }
+
+    return docmentsToIndex;
 }
 
-void Indexer::parse(std::set<docmeta::DocumentMeta>::iterator doc_it) {
-    docmeta::DocumentMeta* doc = (docmeta::DocumentMeta*)&(*doc_it);
-
-    nlohmann::json indexJson;
-    std::vector<std::string> tokens;
+std::vector<std::string> Indexer::splitTextIntoList(std::string text) {
+    std::istringstream tokenStream(text);
     std::string token;
-    std::istringstream tokenStream(doc->content);
+    std::vector<std::string> tokens;
 
     while (std::getline(tokenStream, token, ' ')) {
         bool whiteSpacesOnly = std::all_of(token.begin(), token.end(), isspace);
-        if(!whiteSpacesOnly) {        
-            for (const char& specialchar: specialchars) {
-                while (token.find(specialchar)!=std::string::npos) {
-                    token.pop_back();
-                }
-            }
+        if(!whiteSpacesOnly) {
             token.erase(std::remove_if(token.begin(), token.end(), ::isspace), token.end());
             std::transform(token.begin(), token.end(), token.begin(), [](unsigned char c){ return std::tolower(c); });
             tokens.push_back(token);
         }
     }
 
-    std::vector<std::string>::iterator it = tokens.begin();
-    while (it != tokens.end()) {
-        if (stopwords.find(*it) != stopwords.end()) {
-            it = tokens.erase(it);
+    return tokens;
+}
+
+std::vector<std::string> Indexer::removeSpecialChars(std::vector<std::string> tokens, std::set<std::string> specialChars) {
+    std::vector<std::string> newTokens;
+    for (auto& token: tokens) {
+        for (const std::string& specialchar: specialChars) {
+            char char_array[1];
+            strcpy(char_array, specialchar.c_str());
+            while (token.find(char_array[0]) != std::string::npos) {
+                token.erase(remove(token.begin(), token.end(), char_array[0]), token.end());
+            }
         }
-        else ++it;
+        std::cout << token << std::endl;
+        newTokens.push_back(token);
     }
+    return newTokens;
+}
+
+std::vector<std::string> Indexer::removeStopwords(std::vector<std::string> tokens, std::set<std::string> stopwords) {
+    std::vector<std::string> newTokens;
+    for (auto& token: tokens) {
+        if (stopwords.find(token) == stopwords.end()) {
+            newTokens.push_back(token);
+        }
+    }
+    return newTokens;
+}
+
+std::vector<std::string> Indexer::createTokens(std::string text, std::set<std::string> specialChars, std::set<std::string> stopwords) {
+    std::vector<std::string> splittedWords = splitTextIntoList(text);
+    std::vector<std::string> withoutSpecialChars = removeSpecialChars(splittedWords, specialChars);
+    return removeStopwords(withoutSpecialChars, stopwords);
+}
+
+std::map<std::string, std::set<tokenmeta::TokenMeta>> Indexer::createIndexForDocument(docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     int counter = 1;
     for (auto token: tokens) {
@@ -149,9 +180,14 @@ void Indexer::parse(std::set<docmeta::DocumentMeta>::iterator doc_it) {
         counter++;
     }
 
-    std::ofstream file("index.json");
+    return index;
+}
+
+void Indexer::writeIndexToFile(std::map<std::string, std::set<tokenmeta::TokenMeta>> index, std::string path) {
+    nlohmann::json indexJson;
+    std::ofstream file(path);
     indexJson = index;
-    file << std::setw(4) << indexJson;
+    file << indexJson.dump(4);
     file.close();
 }
 

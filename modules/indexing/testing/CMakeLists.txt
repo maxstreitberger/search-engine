@@ -1,5 +1,7 @@
-add_library(indexing_testing INTERFACE)
-target_include_directories(indexing_testing INTERFACE include)
+find_package(Catch2 3 REQUIRED)
 
-add_executable(indexing_tests src/testing.cpp)
-target_link_libraries(indexing_tests testing indexing)
+add_executable(indexing_tests src/indexer-test-cases.cpp)
+target_link_libraries(indexing_tests 
+    PRIVATE indexing
+    PRIVATE Catch2::Catch2WithMain
+)
