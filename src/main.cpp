@@ -5,7 +5,7 @@
 #include "indexer.hpp"
 #include "crawler.hpp"
 #include "doc_store.hpp"
-#include "ranking.hpp"
+#include "ranker.hpp"
 
 int main() {
     Crawler crawler = Crawler(SEARCHENGINE_ROOT_DIR "/dummy-text");
@@ -17,8 +17,8 @@ int main() {
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, "repository.json", "index.json");
     indexer.generateIndex();
     
-    Ranking ranking = Ranking();
-    std::vector<docmeta::RankingDocumentMeta> foundDocuments = ranking.searchFor("Lorem");
+    Ranker ranking = Ranker("index.json", "store.json");
+    std::vector<docmeta::RankerDocumentMeta> foundDocuments = ranking.searchFor("Lorem");
 
     for (auto& doc: foundDocuments) {
         std::cout << doc << std::endl;

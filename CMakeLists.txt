@@ -13,6 +13,9 @@ add_definitions(-DCRAWLER_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawlin
 add_definitions(-DINDEXING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/indexing\")
 add_definitions(-DINDEXING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/indexing/testing\")
 
+add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
+add_definitions(-DRANKING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking/testing\")
+
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 add_subdirectory(testing) 

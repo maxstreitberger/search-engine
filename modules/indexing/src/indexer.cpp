@@ -27,13 +27,11 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
 
 namespace tokenmeta {
     void to_json(nlohmann::json& j, const TokenMeta& token) {
-        // j = nlohmann::json{ {"doc_id", token.document_id}, {"doc_ptr", token.doc_ptr}, {"num_appearances", token.num_appearances}, {"positions", token.positions} };
         j = nlohmann::json{ {"doc_id", token.document_id}, {"num_appearances", token.num_appearances}, {"positions", token.positions} };
     }
 
     void from_json(const nlohmann::json& j, TokenMeta& token) {
         j.at("doc_id").get_to(token.document_id);
-        // j.at("doc_ptr").get_to(token.doc_ptr);
         j.at("num_appearances").get_to(token.num_appearances);
         j.at("positions").get_to(token.positions);
     }
@@ -128,7 +126,6 @@ std::vector<std::string> Indexer::removeSpecialChars(std::vector<std::string> to
                 token.erase(remove(token.begin(), token.end(), char_array[0]), token.end());
             }
         }
-        std::cout << token << std::endl;
         newTokens.push_back(token);
     }
     return newTokens;
