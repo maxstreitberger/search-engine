@@ -20,7 +20,13 @@ namespace stringhelper {
     static inline void trim(std::string &s) {
         ltrim(s);
         rtrim(s);
-    }  
+    }
+
+    static inline void toLower(std::string &s) {
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ 
+            return std::tolower(c); 
+        });
+    }
 } 
 
 #endif

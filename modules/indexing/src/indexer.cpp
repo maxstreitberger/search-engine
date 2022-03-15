@@ -47,7 +47,7 @@ std::set<std::string> Indexer::loadList(std::string path) {
     std::ifstream file(path);
     if (file.is_open()) {
         while (std::getline(file,line)) {
-            line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+            stringhelper::trim(line);
             list.insert(line);
         }
         file.close();
@@ -83,8 +83,8 @@ std::vector<std::string> Indexer::splitTextIntoList(std::string text) {
     while (std::getline(tokenStream, token, ' ')) {
         bool whiteSpacesOnly = std::all_of(token.begin(), token.end(), isspace);
         if(!whiteSpacesOnly) {
-            token.erase(std::remove_if(token.begin(), token.end(), ::isspace), token.end());
-            std::transform(token.begin(), token.end(), token.begin(), [](unsigned char c){ return std::tolower(c); });
+            stringhelper::trim(token);
+            stringhelper::toLower(token);
             tokens.push_back(token);
         }
     }

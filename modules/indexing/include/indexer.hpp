@@ -12,6 +12,7 @@
 
 #include "../../../include/doc_meta.hpp"
 #include "../../../include/token_meta.hpp"
+#include "../../../include/helper/string_helper.hpp"
 
 struct Indexer {
     Indexer() {}
