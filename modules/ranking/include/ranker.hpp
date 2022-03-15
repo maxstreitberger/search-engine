@@ -7,6 +7,9 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
+#include "../../../include/doc_meta.hpp"
+#include "../../../include/token_meta.hpp"
+
 namespace stringhelper {
     static inline void ltrim(std::string &s) {
         s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
@@ -26,79 +29,17 @@ namespace stringhelper {
     }  
 } 
 
-namespace docmeta {
-    struct RankerDocumentMeta {
-        RankerDocumentMeta() {};
-        RankerDocumentMeta(int document_id) : id{document_id} {};
-        RankerDocumentMeta(int document_id, std::string text, std::filesystem::path path) : id{document_id}, content{text}, path{path} {};
-    
-        const bool operator < ( const RankerDocumentMeta &r ) const {
-            return id < r.id;
-        }
-
-        friend std::ostream& operator << (std::ostream& os, const RankerDocumentMeta &doc) {
-            os << "{ document_id: " << doc.id << ", content: '" << doc.content << "' }" << std::endl;
-            return os;
-        }
-
-        bool operator==(const RankerDocumentMeta& rhs) const {
-            return id == rhs.id;
-        }
-        
-        int id;
-        std::string content;
-        std::filesystem::path path;
-
-    };
-
-    extern void from_json(const nlohmann::json& j, RankerDocumentMeta& doc);
-    extern void to_json(nlohmann::json& j, const RankerDocumentMeta& doc);
-}
-
-namespace tokenmeta {
-    struct RankerTokenMeta {
-        RankerTokenMeta() : document_id{0}, num_appearances{0} {};
-        RankerTokenMeta(int doc_id) : document_id{doc_id} {};
-        RankerTokenMeta(int doc_id , int position) : document_id{doc_id}, num_appearances{1}, positions{position} {};
-        RankerTokenMeta(int doc_id, int num_appearances, std::vector<int> positions) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions} {};
-
-        friend std::ostream& operator<<(std::ostream& os, const RankerTokenMeta& meta) {
-            os << " { document_id: " << meta.document_id << ',' << " num_appearances: " << meta.num_appearances << ',' << " positions: [ "; 
-            for (int position: meta.positions) {
-                os << position << ", ";
-            }
-            os << " ] }";
-            return os << std::endl;
-        }
-
-        bool operator< ( const RankerTokenMeta &r ) const {
-            return document_id < r.document_id;
-        }
-
-        bool operator==(const RankerTokenMeta& rhs) const {
-            return document_id == rhs.document_id && positions == rhs.positions && num_appearances == rhs.num_appearances;
-        }
-
-        int document_id;
-        std::vector<int> positions;
-        int num_appearances;
-    };
-
-    extern void from_json(const nlohmann::json& j, RankerTokenMeta& doc);
-    extern void to_json(nlohmann::json& j, const RankerTokenMeta& doc);
-}
-
 struct Ranker {
     Ranker() {};
     Ranker(std::string indexPath, std::string storePath): index_path{indexPath}, store_path{storePath} {};
     
-    std::vector<docmeta::RankerDocumentMeta> searchFor(std::string query);
+    std::vector<docmeta::DocumentMeta> searchFor(std::string query);
     std::string transformQuery(std::string query);
-    std::map<std::string, std::set<tokenmeta::RankerTokenMeta>> loadIndex(std::string indexPath);
-    std::set<docmeta::RankerDocumentMeta> loadStore(std::string storePath);
-    std::vector<tokenmeta::RankerTokenMeta> retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::RankerTokenMeta>>* index, std::string query);
-    std::unordered_set<int> filterDocIds(std::vector<tokenmeta::RankerTokenMeta> tokensMetaInfo);
-    std::vector<docmeta::RankerDocumentMeta> collectDocuments(std::set<docmeta::RankerDocumentMeta>* docs, std::unordered_set<int> doc_ids);
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> loadIndex(std::string indexPath);
+    std::set<docmeta::DocumentMeta> loadStore(std::string storePath);
+    std::vector<tokenmeta::TokenMeta> retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, std::string query);
+    std::unordered_set<int> filterDocIds(std::vector<tokenmeta::TokenMeta> tokensMetaInfo);
+    std::vector<docmeta::DocumentMeta> collectDocuments(std::set<docmeta::DocumentMeta>* docs, std::unordered_set<int> doc_ids);
 
 
     std::string index_path;

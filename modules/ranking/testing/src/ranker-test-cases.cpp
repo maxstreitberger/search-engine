@@ -6,14 +6,14 @@ TEST_CASE("Ranker can", "[ranker]") {
     std::string indexPath = RANKING_TESTING_ROOT_DIR "/index.json";
     std::string storePath = RANKING_TESTING_ROOT_DIR "/store.json";
 
-    std::map<std::string, std::set<tokenmeta::RankerTokenMeta>> index;
-    index["hello"] = { tokenmeta::RankerTokenMeta(1, 1, { 1 }) };
-    index["world"] =  { tokenmeta::RankerTokenMeta(1, 2, { 2, 4 }), tokenmeta::RankerTokenMeta(2, 1, { 2 }) };
-    index["you"] = { tokenmeta::RankerTokenMeta(1, 1, { 3 }) };
-    index["around"] =  { tokenmeta::RankerTokenMeta(2, 1, { 1 }) };
-    index["eighty"] = { tokenmeta::RankerTokenMeta(2, 2, { 3, 5 }) };
-    index["days"] = { tokenmeta::RankerTokenMeta(2, 1, { 4 }) };
-    index["miles"] = { tokenmeta::RankerTokenMeta(2, 1, { 6 }) };
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
+    index["hello"] = { tokenmeta::TokenMeta(1, 1, { 1 }) };
+    index["world"] =  { tokenmeta::TokenMeta(1, 2, { 2, 4 }), tokenmeta::TokenMeta(2, 1, { 2 }) };
+    index["you"] = { tokenmeta::TokenMeta(1, 1, { 3 }) };
+    index["around"] =  { tokenmeta::TokenMeta(2, 1, { 1 }) };
+    index["eighty"] = { tokenmeta::TokenMeta(2, 2, { 3, 5 }) };
+    index["days"] = { tokenmeta::TokenMeta(2, 1, { 4 }) };
+    index["miles"] = { tokenmeta::TokenMeta(2, 1, { 6 }) };
 
     nlohmann::json indexJson = index;
 
@@ -21,9 +21,9 @@ TEST_CASE("Ranker can", "[ranker]") {
     file << indexJson.dump(4);
     file.close();
 
-    std::set<docmeta::RankerDocumentMeta> store = { 
-        docmeta::RankerDocumentMeta(1, "Hello, World! How are you world?", RANKING_TESTING_ROOT_DIR "/testing-documents/demo.txt"),
-        docmeta::RankerDocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt")
+    std::set<docmeta::DocumentMeta> store = { 
+        docmeta::DocumentMeta(1, "Hello, World! How are you world?", RANKING_TESTING_ROOT_DIR "/testing-documents/demo.txt"),
+        docmeta::DocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt")
     };
 
     nlohmann::json j = store;
@@ -44,15 +44,15 @@ TEST_CASE("Ranker can", "[ranker]") {
 
     SECTION("can load index.") {
         Ranker ranker = Ranker();
-        std::map<std::string, std::set<tokenmeta::RankerTokenMeta>> returnedIndex = ranker.loadIndex(indexPath);
+        std::map<std::string, std::set<tokenmeta::TokenMeta>> returnedIndex = ranker.loadIndex(indexPath);
 
-        std::set<tokenmeta::RankerTokenMeta> hello = { tokenmeta::RankerTokenMeta(1, 1, { 1 }) };
-        std::set<tokenmeta::RankerTokenMeta> world = { tokenmeta::RankerTokenMeta(1, 2, { 2, 4 }), tokenmeta::RankerTokenMeta(2, 1, { 2 }) };
-        std::set<tokenmeta::RankerTokenMeta> you = { tokenmeta::RankerTokenMeta(1, 1, { 3 }) };
-        std::set<tokenmeta::RankerTokenMeta> around = { tokenmeta::RankerTokenMeta(2, 1, { 1 }) };
-        std::set<tokenmeta::RankerTokenMeta> eighty = { tokenmeta::RankerTokenMeta(2, 2, { 3, 5 }) };
-        std::set<tokenmeta::RankerTokenMeta> days = { tokenmeta::RankerTokenMeta(2, 1, { 4 }) }; 
-        std::set<tokenmeta::RankerTokenMeta> miles = { tokenmeta::RankerTokenMeta(2, 1, { 6 }) }; 
+        std::set<tokenmeta::TokenMeta> hello = { tokenmeta::TokenMeta(1, 1, { 1 }) };
+        std::set<tokenmeta::TokenMeta> world = { tokenmeta::TokenMeta(1, 2, { 2, 4 }), tokenmeta::TokenMeta(2, 1, { 2 }) };
+        std::set<tokenmeta::TokenMeta> you = { tokenmeta::TokenMeta(1, 1, { 3 }) };
+        std::set<tokenmeta::TokenMeta> around = { tokenmeta::TokenMeta(2, 1, { 1 }) };
+        std::set<tokenmeta::TokenMeta> eighty = { tokenmeta::TokenMeta(2, 2, { 3, 5 }) };
+        std::set<tokenmeta::TokenMeta> days = { tokenmeta::TokenMeta(2, 1, { 4 }) }; 
+        std::set<tokenmeta::TokenMeta> miles = { tokenmeta::TokenMeta(2, 1, { 6 }) }; 
 
         CHECK( returnedIndex.size() == 7 );
         CHECK( returnedIndex["hello"] ==  hello );
@@ -66,29 +66,29 @@ TEST_CASE("Ranker can", "[ranker]") {
 
     SECTION("can load store.") {
         Ranker ranker = Ranker();
-        std::set<docmeta::RankerDocumentMeta> returnedStore = ranker.loadStore(storePath);
+        std::set<docmeta::DocumentMeta> returnedStore = ranker.loadStore(storePath);
 
         REQUIRE( returnedStore == store );
     }
 
     SECTION("can retrieve token meta information.") {
-        std::vector<tokenmeta::RankerTokenMeta> expectedInfo = {
-            tokenmeta::RankerTokenMeta(1, 2, { 2, 4 }), 
-            tokenmeta::RankerTokenMeta(2, 1, { 2 })
+        std::vector<tokenmeta::TokenMeta> expectedInfo = {
+            tokenmeta::TokenMeta(1, 2, { 2, 4 }), 
+            tokenmeta::TokenMeta(2, 1, { 2 })
         };
         
         std::string query = "world";
 
         Ranker ranker = Ranker();
-        std::vector<tokenmeta::RankerTokenMeta> returnedInfo = ranker.retrieveMetaInformations(&index, query);
+        std::vector<tokenmeta::TokenMeta> returnedInfo = ranker.retrieveMetaInformations(&index, query);
 
         REQUIRE( returnedInfo == expectedInfo );
     }
 
     SECTION("can collect document ids.") {
-        std::vector<tokenmeta::RankerTokenMeta> tokenMeta = { 
-            tokenmeta::RankerTokenMeta(1, 1, { 1 } ), 
-            tokenmeta::RankerTokenMeta(2, 1, { 1 } ) 
+        std::vector<tokenmeta::TokenMeta> tokenMeta = { 
+            tokenmeta::TokenMeta(1, 1, { 1 } ), 
+            tokenmeta::TokenMeta(2, 1, { 1 } ) 
         }; 
         std::unordered_set<int> expectedResult = { 1, 2 };
 
@@ -99,12 +99,12 @@ TEST_CASE("Ranker can", "[ranker]") {
     }
 
     SECTION("can return documents.") {
-        std::vector<docmeta::RankerDocumentMeta> expectedDocuments = {
-            docmeta::RankerDocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt"),
+        std::vector<docmeta::DocumentMeta> expectedDocuments = {
+            docmeta::DocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt"),
         };
 
         Ranker ranker = Ranker();
-        std::vector<docmeta::RankerDocumentMeta> returnedDocuments = ranker.collectDocuments(&store, { 2 });
+        std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(&store, { 2 });
 
         REQUIRE( returnedDocuments == expectedDocuments );
     }

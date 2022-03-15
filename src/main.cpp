@@ -18,7 +18,7 @@ int main() {
     indexer.generateIndex();
     
     Ranker ranking = Ranker("index.json", "store.json");
-    std::vector<docmeta::RankerDocumentMeta> foundDocuments = ranking.searchFor("Lorem");
+    std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor("Lorem");
 
     for (auto& doc: foundDocuments) {
         std::cout << doc << std::endl;

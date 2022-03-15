@@ -3,18 +3,6 @@
 
 #include "indexer.hpp"
 
-namespace docmeta {
-    void to_json(nlohmann::json& j, const DocumentMeta& doc) {
-        j = nlohmann::json{ {"id", doc.id}, {"content", doc.content}, {"path", doc.path} };
-    }
-
-    void from_json(const nlohmann::json& j, DocumentMeta& doc) {
-        j.at("id").get_to(doc.id);
-        j.at("content").get_to(doc.content);
-        j.at("path").get_to(doc.path);
-    }
-}
-
 std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::set<tokenmeta::TokenMeta>> &m) {
     for (const auto &p : m) {
         os << p.first << ": ";
@@ -23,18 +11,6 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
     }
 
     return os;
-}
-
-namespace tokenmeta {
-    void to_json(nlohmann::json& j, const TokenMeta& token) {
-        j = nlohmann::json{ {"doc_id", token.document_id}, {"num_appearances", token.num_appearances}, {"positions", token.positions} };
-    }
-
-    void from_json(const nlohmann::json& j, TokenMeta& token) {
-        j.at("doc_id").get_to(token.document_id);
-        j.at("num_appearances").get_to(token.num_appearances);
-        j.at("positions").get_to(token.positions);
-    }
 }
 
 void Indexer::generateIndex() {

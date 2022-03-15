@@ -10,14 +10,14 @@
 */
 
 void DocStore::processDocuments() {
-    std::set<docmeta::CrawlerDocMeta> currentStore = loadDocuments(store_path);
-    std::set<docmeta::CrawlerDocMeta> documentsFoundByCrawler = loadDocuments(crawled_docs_path);
-    std::pair<std::vector<docmeta::CrawlerDocMeta>, std::vector<docmeta::CrawlerDocMeta>> changesAndAddition = checkForChanges(&currentStore, documentsFoundByCrawler);
+    std::set<docmeta::DocumentMeta> currentStore = loadDocuments(store_path);
+    std::set<docmeta::DocumentMeta> documentsFoundByCrawler = loadDocuments(crawled_docs_path);
+    std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> changesAndAddition = checkForChanges(&currentStore, documentsFoundByCrawler);
     addNewDocumentsToStore(&currentStore, changesAndAddition.first);
     updateDocumentsInStore(&currentStore, changesAndAddition.second);
     writeStoreToFile(currentStore);
 
-    std::vector<docmeta::CrawlerDocMeta> allMotifications;
+    std::vector<docmeta::DocumentMeta> allMotifications;
     allMotifications.reserve( changesAndAddition.first.size() + changesAndAddition.second.size() );
     allMotifications.insert( allMotifications.end(), changesAndAddition.first.begin(), changesAndAddition.first.end() );
     allMotifications.insert( allMotifications.end(), changesAndAddition.second.begin(), changesAndAddition.second.end() );
@@ -26,15 +26,15 @@ void DocStore::processDocuments() {
     
 }
 
-std::set<docmeta::CrawlerDocMeta> DocStore::loadDocuments(std::string path) {
+std::set<docmeta::DocumentMeta> DocStore::loadDocuments(std::string path) {
     std::ifstream ifs(path);
     std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     nlohmann::json crawler_docs;
-    std::set<docmeta::CrawlerDocMeta> documentsInStore;
+    std::set<docmeta::DocumentMeta> documentsInStore;
 
     try {
         crawler_docs = nlohmann::json::parse(content);
-        documentsInStore = crawler_docs.get<std::set<docmeta::CrawlerDocMeta>>();
+        documentsInStore = crawler_docs.get<std::set<docmeta::DocumentMeta>>();
     }
     catch (nlohmann::json::parse_error& ex) {
         std::cerr << "parse error at byte " << ex.byte << std::endl;
@@ -43,9 +43,9 @@ std::set<docmeta::CrawlerDocMeta> DocStore::loadDocuments(std::string path) {
     return documentsInStore;
 }
 
-std::pair<std::vector<docmeta::CrawlerDocMeta>, std::vector<docmeta::CrawlerDocMeta>> DocStore::checkForChanges(std::set<docmeta::CrawlerDocMeta>* currentStore, std::set<docmeta::CrawlerDocMeta> docs) {
-    std::vector<docmeta::CrawlerDocMeta> newDocs;
-    std::vector<docmeta::CrawlerDocMeta> updatedDocs;
+std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> DocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> docs) {
+    std::vector<docmeta::DocumentMeta> newDocs;
+    std::vector<docmeta::DocumentMeta> updatedDocs;
 
     for (auto& crawler_doc: docs) {
         auto it = currentStore->find(crawler_doc);
@@ -63,13 +63,13 @@ std::pair<std::vector<docmeta::CrawlerDocMeta>, std::vector<docmeta::CrawlerDocM
     return std::make_pair(newDocs, updatedDocs);
 }
 
-void DocStore::addNewDocumentsToStore(std::set<docmeta::CrawlerDocMeta>* currentStore, std::vector<docmeta::CrawlerDocMeta> docs) {
+void DocStore::addNewDocumentsToStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> docs) {
     for (auto& newDoc: docs) {
         currentStore->insert(newDoc);
     }
 }
 
-void DocStore::updateDocumentsInStore(std::set<docmeta::CrawlerDocMeta>* currentStore, std::vector<docmeta::CrawlerDocMeta> docs) {
+void DocStore::updateDocumentsInStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> docs) {
     for (auto& updatedDoc: docs) {
         auto it = currentStore->find(updatedDoc);
         currentStore->erase(it);
@@ -77,14 +77,14 @@ void DocStore::updateDocumentsInStore(std::set<docmeta::CrawlerDocMeta>* current
     }
 }
 
-void DocStore::writeStoreToFile(std::set<docmeta::CrawlerDocMeta> docs) {
+void DocStore::writeStoreToFile(std::set<docmeta::DocumentMeta> docs) {
     std::ofstream file(store_path);
     nlohmann::json doc_json = docs;
     file << std::setw(4) << doc_json;
     file.close();
 }
 
-void DocStore::writeChangesToRepository(const std::vector<docmeta::CrawlerDocMeta> docs, std::string repoPath) {
+void DocStore::writeChangesToRepository(const std::vector<docmeta::DocumentMeta> docs, std::string repoPath) {
     if (!docs.empty()) {
         std::ofstream file(repoPath);
         nlohmann::json doc_json = docs;
