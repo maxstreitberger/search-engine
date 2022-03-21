@@ -5,53 +5,15 @@
 
 std::vector<docmeta::DocumentMeta> Ranker::searchFor(std::string query) {
     std::string searchQuery = transformQuery(query);
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> index = loadIndex(index_path);
-    std::set<docmeta::DocumentMeta> store = loadStore(store_path);
-    std::vector<tokenmeta::TokenMeta> metaInfo = retrieveMetaInformations(&index, searchQuery);
-    std::unordered_set<int> documents = filterDocIds(metaInfo);
-    return collectDocuments(&store, documents);
+    std::vector<tokenmeta::TokenMeta> metaInfo = retrieveMetaInformations(index, searchQuery);
+    std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs = filterDocPtrs(metaInfo);
+    return collectDocuments(doc_ptrs);
 }
 
 std::string Ranker::transformQuery(std::string query) {
     stringhelper::trim(query);
     stringhelper::toLower(query);
     return query;
-}
-
-std::map<std::string, std::set<tokenmeta::TokenMeta>> Ranker::loadIndex(std::string path) {
-    std::ifstream ifs(path);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    nlohmann::json index_json;
-
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
-
-    try {
-        index_json = nlohmann::json::parse(content);
-        index = index_json.get<std::map<std::string, std::set<tokenmeta::TokenMeta>>>();
-    }
-    catch (nlohmann::json::parse_error& ex) {
-        std::cerr << "parse error at byte " << ex.byte << std::endl;
-    }
-
-    return index;
-}
-
-std::set<docmeta::DocumentMeta> Ranker::loadStore(std::string storePath) {
-    std::ifstream ifs(storePath);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    nlohmann::json store_json;
-
-    std::set<docmeta::DocumentMeta> store;
-
-    try {
-        store_json = nlohmann::json::parse(content);
-        store = store_json.get<std::set<docmeta::DocumentMeta>>();
-    }
-    catch (nlohmann::json::parse_error& ex) {
-        std::cerr << "parse error at byte " << ex.byte << std::endl;
-    }
-
-    return store;
 }
 
 std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, std::string query) {
@@ -70,25 +32,22 @@ std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std:
     return metaInformation;
 }
 
-std::unordered_set<int> Ranker::filterDocIds(std::vector<tokenmeta::TokenMeta> tokensMetaInfo) {
-    std::unordered_set<int> doc_ids;
+std::unordered_set<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo) {
+    std::unordered_set<const docmeta::DocumentMeta*> ptrs;
 
     for (auto& tokenMeta: tokensMetaInfo) {
-        doc_ids.insert(tokenMeta.document_id);
+        ptrs.insert(tokenMeta.doc_ptr);
     }
 
-    return doc_ids;
+    return ptrs;
 }
 
-std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::set<docmeta::DocumentMeta>* docs, std::unordered_set<int> doc_ids) {
+std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs) {
     std::vector<docmeta::DocumentMeta> documents;
-    
-    for (const int& doc_id: doc_ids) {
-        auto it = docs->find(doc_id);
-        if (it != docs->end()) {
-            docmeta::DocumentMeta doc = *it;
-            documents.push_back(doc);
-        }
+
+    for (const docmeta::DocumentMeta* ptr: doc_ptrs) {
+        docmeta::DocumentMeta doc = *(ptr);
+        documents.push_back(doc);
     }
 
     return documents;

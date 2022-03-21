@@ -16,28 +16,21 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
 void Indexer::generateIndex() {
     std::set<std::string> specialchars = loadList(special_chars_path);
     std::set<std::string> stopwords = loadList(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
-    std::vector<docmeta::DocumentMeta> documents = loadRepository(repo_path);
-
-    for (auto& document: documents) {
+    for (auto& document: *repository) {
         std::vector<std::string> tokens = splitTextIntoList(document.content);
         std::vector<std::string> withoutSpecialChars = removeSpecialChars(tokens, specialchars);
         std::vector<std::string> finalTokens = removeStopwords(withoutSpecialChars, stopwords);
 
         std::map<std::string, std::set<tokenmeta::TokenMeta>> doc_index = createIndexForDocument(&document, finalTokens);
-        
-        index = joinIndexes(index, doc_index);  
+        updateIndex(index, doc_index);
     }
-
-    writeIndexToFile(index, index_path);
 }
 
-std::map<std::string, std::set<tokenmeta::TokenMeta>> Indexer::joinIndexes(std::map<std::string, std::set<tokenmeta::TokenMeta>> targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
+void Indexer::updateIndex(std::map<std::string, std::set<tokenmeta::TokenMeta>>* targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
     for (auto const& [key, val] : sourceIndex) {
-        targetIndex[key].insert(val.begin(), val.end());
+        (*targetIndex)[key].insert(val.begin(), val.end());
     }
-    return targetIndex;
 }
 
 std::set<std::string> Indexer::loadList(std::string path) {
@@ -56,23 +49,6 @@ std::set<std::string> Indexer::loadList(std::string path) {
     } 
 
     return list;
-}
-
-std::vector<docmeta::DocumentMeta> Indexer::loadRepository(std::string path) {
-    std::ifstream ifs(path);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    nlohmann::json crawler_docs;
-    std::vector<docmeta::DocumentMeta> docmentsToIndex;
-
-    try {
-        crawler_docs = nlohmann::json::parse(content);
-        docmentsToIndex = crawler_docs.get<std::vector<docmeta::DocumentMeta>>();
-    }
-    catch (nlohmann::json::parse_error& ex) {
-        std::cerr << "parse error at byte " << ex.byte << std::endl;
-    }
-
-    return docmentsToIndex;
 }
 
 std::vector<std::string> Indexer::splitTextIntoList(std::string text) {
@@ -154,14 +130,6 @@ std::map<std::string, std::set<tokenmeta::TokenMeta>> Indexer::createIndexForDoc
     }
 
     return index;
-}
-
-void Indexer::writeIndexToFile(std::map<std::string, std::set<tokenmeta::TokenMeta>> index, std::string path) {
-    nlohmann::json indexJson;
-    std::ofstream file(path);
-    indexJson = index;
-    file << indexJson.dump(4);
-    file.close();
 }
 
 #endif

@@ -1,7 +1,11 @@
+project(ranking_tests)
+
 find_package(Catch2 3 REQUIRED)
 
-add_executable(ranking_testing src/ranker-test-cases.cpp src/e2e.cpp)
-target_link_libraries(ranking_testing 
+add_executable(${PROJECT_NAME} src/ranker-test-cases.cpp src/e2e.cpp)
+target_link_libraries(${PROJECT_NAME}
     PRIVATE ranking
     PRIVATE Catch2::Catch2WithMain
 )
+
+create_test(${PROJECT_NAME})

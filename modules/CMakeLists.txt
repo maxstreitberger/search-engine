@@ -1,0 +1,3 @@
+add_subdirectory(crawling)
+add_subdirectory(indexing)
+add_subdirectory(ranking)

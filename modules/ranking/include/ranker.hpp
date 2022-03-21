@@ -13,19 +13,16 @@
 
 struct Ranker {
     Ranker() {};
-    Ranker(std::string indexPath, std::string storePath): index_path{indexPath}, store_path{storePath} {};
+    Ranker(std::set<docmeta::DocumentMeta>* document_store, std::map<std::string, std::set<tokenmeta::TokenMeta>>* index) : doc_store{document_store}, index{index} {};
     
     std::vector<docmeta::DocumentMeta> searchFor(std::string query);
     std::string transformQuery(std::string query);
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> loadIndex(std::string indexPath);
-    std::set<docmeta::DocumentMeta> loadStore(std::string storePath);
     std::vector<tokenmeta::TokenMeta> retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, std::string query);
-    std::unordered_set<int> filterDocIds(std::vector<tokenmeta::TokenMeta> tokensMetaInfo);
-    std::vector<docmeta::DocumentMeta> collectDocuments(std::set<docmeta::DocumentMeta>* docs, std::unordered_set<int> doc_ids);
+    std::unordered_set<const docmeta::DocumentMeta*> filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo);
+    std::vector<docmeta::DocumentMeta> collectDocuments(std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs);
 
-
-    std::string index_path;
-    std::string store_path;
+    std::set<docmeta::DocumentMeta>* doc_store;
+    std::map<std::string, std::set<tokenmeta::TokenMeta>>* index;
 };
 
 #endif

@@ -2,14 +2,23 @@ cmake_minimum_required(VERSION 3.21.3)
 
 project(search-engine)
 
+include(CTest)
+
+macro(create_test name)
+    add_test(NAME ${name} COMMAND $<TARGET_FILE:${name}>)
+endmacro()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
+# add_compile_options(--coverage)
 
+#---------------------------------------------------------------------------------------------------------
+# DEFINITIONS
 add_definitions(-DSEARCHENGINE_ROOT_DIR=\"${CMAKE_SOURCE_DIR}\")
 
-add_definitions(-DCRAWLER_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling\")
-add_definitions(-DCRAWLER_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/testing\")
+add_definitions(-DDOCUMENT_CRAWLER_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/document-crawler\")
+add_definitions(-DDOCUMENT_CRAWLER_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/document-crawler/testing\")
 
 add_definitions(-DINDEXING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/indexing\")
 add_definitions(-DINDEXING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/indexing/testing\")
@@ -17,26 +26,50 @@ add_definitions(-DINDEXING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/indexi
 add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
 add_definitions(-DRANKING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking/testing\")
 
+
+#---------------------------------------------------------------------------------------------------------
+# PACKAGES
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
 
-add_subdirectory(testing) 
-add_subdirectory(modules/crawling)
-add_subdirectory(modules/indexing)
-add_subdirectory(modules/ranking)
+#---------------------------------------------------------------------------------------------------------
+# SUB-DIRECTORIES
+add_subdirectory(testing)
+add_subdirectory(modules)
 
-target_include_directories( ${PROJECT_NAME}
+
+#---------------------------------------------------------------------------------------------------------
+# EXECUTABLES
+
+# ON-THE-FLY -- BASIC RANKING -- DOCUMENT CRAWLER
+add_executable(onTheFlyBasicDocument src/onTheFlyBasicDocument.cpp)
+
+target_include_directories(onTheFlyBasicDocument
     PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_directories(${PROJECT_NAME} 
-    PRIVATE modules/crawling modules/indexing
+target_link_directories(onTheFlyBasicDocument
+    PRIVATE modules/crawling/document-crawler modules/indexing
 )
 
-target_link_libraries(${PROJECT_NAME} 
-    PRIVATE crawling 
+target_link_libraries(onTheFlyBasicDocument
+    PRIVATE document-crawler 
     PRIVATE indexing
     PRIVATE ranking
     PUBLIC nlohmann_json::nlohmann_json
+)
+
+# ON-THE-FLY -- BASIC RANKING -- WEB CRAWLER
+add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
+
+target_include_directories(onTheFlyBasicWeb
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_directories(onTheFlyBasicWeb
+    PRIVATE modules/crawling/web-crawler
+)
+
+target_link_libraries(onTheFlyBasicWeb
+    PRIVATE web-crawler 
 )

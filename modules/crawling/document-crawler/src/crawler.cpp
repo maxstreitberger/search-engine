@@ -1,5 +1,5 @@
-#ifndef CRAWLER_CPP
-#define CRAWLER_CPP
+#ifndef DOCUMENT_CRAWLER_CPP
+#define DOCUMENT_CRAWLER_CPP
 
 #include "crawler.hpp"
 #include "doc_store.hpp"
@@ -11,9 +11,7 @@ void Crawler::start() {
         registerDocument(document_path);
     }
 
-    pushDocumentsToStore(documents);
-    
-    DocStore store = DocStore("store.json", "crawler-found-docs.json", "repository.json");
+    DocStore store = DocStore(documents, doc_store, repository);
     store.processDocuments();
 }
 
@@ -59,16 +57,6 @@ void Crawler::registerDocument(const std::filesystem::path path) {
     }
 
     documents.insert(document);
-}
-
-void Crawler::pushDocumentsToStore(const std::set<docmeta::DocumentMeta> documents) {
-    std::ofstream file("crawler-found-docs.json");
-
-    nlohmann::json doc_json = documents;
-
-    file << std::setw(4) << doc_json;
-
-    file.close();
 }
 
 #endif

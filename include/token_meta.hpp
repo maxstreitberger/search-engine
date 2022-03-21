@@ -11,8 +11,9 @@ namespace tokenmeta {
     struct TokenMeta {
         TokenMeta() : document_id{0}, num_appearances{0}, doc_ptr{nullptr} {};
         TokenMeta(int doc_id) : document_id{doc_id}, doc_ptr{nullptr} {};
+        TokenMeta(int doc_id, int num_appearances, std::vector<int> positions) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions} {};
         TokenMeta(int doc_id , int position, docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{1}, positions{position}, doc_ptr{ptr} {};
-        TokenMeta(int doc_id, int num_appearances, std::vector<int> positions, docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions}, doc_ptr{ptr}{};
+        TokenMeta(int doc_id, int num_appearances, std::vector<int> positions, const docmeta::DocumentMeta* ptr) : document_id{doc_id}, num_appearances{num_appearances}, positions{positions}, doc_ptr{ptr}{};
 
         friend std::ostream& operator<<(std::ostream& os, const TokenMeta& meta) {
             os << " { document_id: " << meta.document_id << ',' << " num_appearances: " << meta.num_appearances << ',' << " positions: [ "; 
@@ -33,7 +34,7 @@ namespace tokenmeta {
         }
 
         int document_id;
-        docmeta::DocumentMeta* doc_ptr;
+        const docmeta::DocumentMeta* doc_ptr;
         std::vector<int> positions;
         int num_appearances;
     };
