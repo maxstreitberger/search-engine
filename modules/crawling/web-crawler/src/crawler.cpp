@@ -2,24 +2,23 @@
 #define WEB_CRAWLER_CPP
 
 #include "crawler.hpp"
+#include "page_store.hpp"
 
 WebCrawler::WebCrawler(std::string path) {
     origin_path = path;
     extractBaseURL(&origin_path);
 }
 
-std::vector<std::string> WebCrawler::start() {
+void WebCrawler::start() {
     std::queue<std::string> urls;
     urls.push(origin_path);
-    std::vector<std::string> foundDocs;
 
     while (!urls.empty()) {
         std::string htmlDoc = getHTML(urls.front());
-        foundDocs.push_back(removeTags(htmlDoc));
         getURLs(htmlDoc, &urls);
+        registerPage(urls.front(), htmlDoc);
         urls.pop();
     }
-    return foundDocs;
 }
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
@@ -115,5 +114,24 @@ std::string WebCrawler::cleanText(GumboNode* node) {
     }
 }
 
+void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
+    int new_id = pages.size() + 1;
+    
+    std::string content = removeTags(htmlDoc);
+    pagemeta::PageMeta page = pagemeta::PageMeta(new_id, content, url);
+
+    std::set<pagemeta::PageMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const pagemeta::PageMeta pg) { 
+        return pg.path == page.path;
+    });
+
+    if (it != pages.end()) {
+        if ((it->content) != (page.content)) {
+            page.id = it->id;
+            pages.erase(it);
+        }
+    }
+
+    pages.insert(page);
+}
 
 #endif

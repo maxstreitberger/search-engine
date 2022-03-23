@@ -45,4 +45,17 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
 
         REQUIRE(retrunedText == " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.");
     }
+
+    SECTION("register a page.") {
+        std::string html_doc = "<header><h1>Test Page</h1><p>This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.</p></header>";
+        std::set<pagemeta::PageMeta> expectedPages = { 
+            pagemeta::PageMeta(1, " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
+        };
+
+        WebCrawler crawler = WebCrawler();
+        crawler.registerPage("https://zelebrate.xyz", html_doc);
+
+
+        REQUIRE(crawler.pages == expectedPages);
+    }
 }

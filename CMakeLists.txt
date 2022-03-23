@@ -72,7 +72,7 @@ target_link_libraries(onTheFlyBasicDocument
 add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
 
 target_include_directories(onTheFlyBasicWeb
-    PRIVATE ${PROJECT_SOURCE_DIR}/include
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
 
 target_link_directories(onTheFlyBasicWeb
@@ -81,4 +81,5 @@ target_link_directories(onTheFlyBasicWeb
 
 target_link_libraries(onTheFlyBasicWeb
     PRIVATE web-crawler 
+    PUBLIC nlohmann_json::nlohmann_json
 )

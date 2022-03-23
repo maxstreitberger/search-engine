@@ -6,12 +6,7 @@
 
 int main() {
     WebCrawler crawler = WebCrawler("https://zelebrate.xyz");
-    std::vector<std::string> docs = crawler.start();
-    
-    
-    for(auto& doc: docs) {
-        std::cout << doc << std::endl;
-    }
+    crawler.start();
 
     return 0;
 }
