@@ -5,8 +5,13 @@
 #include "crawler.hpp"
 
 int main() {
-    WebCrawler crawler = WebCrawler();
-    crawler.hello();
+    WebCrawler crawler = WebCrawler("https://zelebrate.xyz");
+    std::vector<std::string> docs = crawler.start();
+    
+    
+    for(auto& doc: docs) {
+        std::cout << doc << std::endl;
+    }
 
     return 0;
 }

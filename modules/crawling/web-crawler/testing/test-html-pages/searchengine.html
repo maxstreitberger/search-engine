@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test Page</title>
+    </head>
+    <body>
+        <div id="top" role="document">
+        <header>
+            <h1>Search Engine</h1>
+            <p>I'm building a fully modular search engine for my bachelor thesis.</p>
+        </header>
+        <nav>
+            <ul>
+            <li>
+                <a href="#architecture">Architecture</a>
+                <ul>
+                <li><a href="#crawler">Crawler</a></li>
+                <li><a href="#indexer">Indexer</a></li>
+                <li><a href="#ranker">Ranker</a></li>
+                </ul>
+            </li>
+            </ul>
+        </nav>
+        <main>
+            <section id="architecture">
+            <header><h1>Architecture</h1></header>
+            <article id="cralwer">
+                <header>
+                <h2>Crawler</h2>
+                </header>
+                <div>
+                    <p>Currently, the crawler only collects text documents from a specified directory. The crawler goes through every sub-directory and registers a found document. These documents get pushed to the document store, where they are checked if a document is added or modified. This means that the document store will ignore unchanged documents. Changes and additions are saved in the document store and additionally stored in the repository, where the indexer can pick these documents up.</p>
+                </div>
+            </article>
+            <article id="indexer">
+                <header><h2>Indexer</h2></header>
+                <div>
+                <p>The indexer splits every document into individual tokens. Next, every token is checked for special characters ("?", "!", "<", ">", "-", "_", etc.) and if the token is a stopword (also called function word). After unnecessary tokens and characters are removed, the indexer collects the position and the number of appearances of each token in the document. Finally,the indexer stores each token together with its meta-information in the index</p>
+                </div>
+            </article>
+            <article id="ranker">
+                <header><h2>Ranker</h2></header>
+                <div>
+                    <p>Currently, the ranker is very basic in the way that it searches for a direct match for the query in the index. Before the search, the ranker removes all possible whitespace around the query and transforms it to lower case. Next, it searches for a perfect match in the index. If a match is found, it collects all the documents in which the found token appears. Before returning the documents to the user, the ranker sorts the documents by the number of appearances of the token.</p>
+                </div>
+            </article>
+            </section>
+        </main>
+        <footer>
+            <p>Search Engine can be found on <a href="https://github.com/maxstreitberger/search-engine">GitHub</a>.</p>
+        </footer>
+        </div>
+    </body>
+</html>
