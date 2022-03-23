@@ -35,4 +35,14 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
         WebCrawler crawler = WebCrawler("http://www.example.com/something/somethingelse");
         REQUIRE(crawler.base_url == "http://www.example.com");
     }
+
+    SECTION("remove all HTML tags.") {
+        std::string html_doc = "<header><h1>Test Page</h1><p>This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.</p></header>";
+
+        WebCrawler crawler = WebCrawler();
+        std::string retrunedText = crawler.removeTags(html_doc);
+
+
+        REQUIRE(retrunedText == " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.");
+    }
 }

@@ -15,7 +15,7 @@ std::vector<std::string> WebCrawler::start() {
 
     while (!urls.empty()) {
         std::string htmlDoc = getHTML(urls.front());
-        foundDocs.push_back(htmlDoc);
+        foundDocs.push_back(removeTags(htmlDoc));
         getURLs(htmlDoc, &urls);
         urls.pop();
     }
@@ -88,5 +88,32 @@ void WebCrawler::getURLs(std::string htmlDoc, std::queue<std::string>* urls) {
     
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
+
+std::string WebCrawler::removeTags(std::string htmlDoc) {
+    GumboOutput* output = gumbo_parse(htmlDoc.c_str());
+    std::string text = cleanText(output->root);
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+    return text;
+}
+
+std::string WebCrawler::cleanText(GumboNode* node) {
+    if (node->type == GUMBO_NODE_TEXT) {
+        return std::string(node->v.text.text);
+    } else if (node->type == GUMBO_NODE_ELEMENT && node->v.element.tag != GUMBO_TAG_SCRIPT && node->v.element.tag != GUMBO_TAG_STYLE) {
+        std::string contents = "";
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            const std::string text = cleanText((GumboNode*) children->data[i]);
+            if (i != 0 && !text.empty()) {
+                contents.append(" ");
+            }
+            contents.append(text);
+        }
+        return contents;
+    } else {
+        return "";
+    }
+}
+
 
 #endif

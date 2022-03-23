@@ -17,6 +17,8 @@ struct WebCrawler {
     void extractBaseURL(std::string* url);
     void getURLs(std::string htmlDoc, std::queue<std::string>* urls);
     void search_for_links(GumboNode* node, std::queue<std::string>* urls);
+    std::string removeTags(std::string htmlDoc);
+    std::string cleanText(GumboNode* node);
 
     std::string origin_path;
     std::string base_url;
