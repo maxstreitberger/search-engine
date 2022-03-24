@@ -9,6 +9,19 @@ WebCrawler::WebCrawler(std::string path) {
     extractBaseURL(&origin_path);
 }
 
+WebCrawler::WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo) {
+   page_store = store;
+   repository = repo;
+};
+
+WebCrawler::WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo, std::string path) {
+   page_store = store;
+   repository = repo;
+   origin_path = path;
+   extractBaseURL(&origin_path);
+};
+
+
 void WebCrawler::start() {
     std::queue<std::string> urls;
     urls.push(origin_path);
@@ -19,6 +32,9 @@ void WebCrawler::start() {
         registerPage(urls.front(), htmlDoc);
         urls.pop();
     }
+
+    PageStore store = PageStore(pages, page_store, repository);
+    store.processPages();
 }
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
