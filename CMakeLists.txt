@@ -18,6 +18,7 @@ set(GCC_COVERAGE_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
 
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/logs)
 
 #---------------------------------------------------------------------------------------------------------
 # DEFINITIONS
@@ -39,6 +40,7 @@ add_definitions(-DRANKING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking
 #---------------------------------------------------------------------------------------------------------
 # PACKAGES
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(glog CONFIG REQUIRED)
 
 
 #---------------------------------------------------------------------------------------------------------
@@ -74,7 +76,7 @@ target_link_libraries(onTheFlyBasicDocument
 add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
 
 target_include_directories(onTheFlyBasicWeb
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
 target_link_directories(onTheFlyBasicWeb
@@ -87,5 +89,5 @@ target_link_libraries(onTheFlyBasicWeb
     PRIVATE web-crawler 
     PRIVATE indexing
     PRIVATE ranking
-    PUBLIC nlohmann_json::nlohmann_json
+    PRIVATE glog::glog
 )

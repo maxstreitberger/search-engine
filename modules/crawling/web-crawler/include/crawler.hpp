@@ -7,6 +7,7 @@
 #include <queue>
 #include <set>
 
+#include <glog/logging.h>
 #include <curl/curl.h>
 
 #include "gumbo/gumbo.h"

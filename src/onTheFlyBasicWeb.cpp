@@ -6,7 +6,14 @@
 #include "indexer.hpp"
 #include "ranker.hpp"
 
+#include <glog/logging.h>
+
 int main(int argc, char *argv[]) {
+    FLAGS_log_dir = "/tmp";
+    google::InitGoogleLogging(argv[0]);
+    LOG(ERROR) << "Start onTheFlyBasicWeb search engine";
+
+
     if (argc == 1) {
         std::cout << "Error: no flags" << std::endl;
         return 1;

@@ -10,19 +10,20 @@ WebCrawler::WebCrawler(std::string path) {
 }
 
 WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo) {
-   page_store = store;
-   repository = repo;
+    page_store = store;
+    repository = repo;
 };
 
 WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path) {
-   page_store = store;
-   repository = repo;
-   origin_path = path;
-   extractBaseURL(&origin_path);
+    page_store = store;
+    repository = repo;
+    origin_path = path;
+    extractBaseURL(&origin_path);
 };
 
-
 void WebCrawler::start() {
+    LOG(ERROR) << "Start Crawling";
+
     std::queue<std::string> urls;
     urls.push(origin_path);
 
