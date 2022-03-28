@@ -10,13 +10,13 @@
 #include <curl/curl.h>
 
 #include "gumbo/gumbo.h"
-#include "../../../../include/page_meta.hpp"
+#include "../../../../include/doc_meta.hpp"
 
 struct WebCrawler {
     WebCrawler() {};
     WebCrawler(std::string path);
-    WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo);
-    WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo, std::string path);
+    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo);
+    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path);
     
     void start();
     std::string getHTML(std::string url);
@@ -32,9 +32,9 @@ struct WebCrawler {
     std::string base_url;
     std::string protocol;
 
-    std::set<pagemeta::PageMeta> pages;
-    std::set<pagemeta::PageMeta>* page_store;
-    std::vector<pagemeta::PageMeta>* repository;
+    std::set<docmeta::DocumentMeta> pages;
+    std::set<docmeta::DocumentMeta>* page_store;
+    std::vector<docmeta::DocumentMeta>* repository;
 };
 
 #endif

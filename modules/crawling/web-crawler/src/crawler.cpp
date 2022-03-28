@@ -9,12 +9,12 @@ WebCrawler::WebCrawler(std::string path) {
     extractBaseURL(&origin_path);
 }
 
-WebCrawler::WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo) {
+WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo) {
    page_store = store;
    repository = repo;
 };
 
-WebCrawler::WebCrawler(std::set<pagemeta::PageMeta>* store, std::vector<pagemeta::PageMeta>* repo, std::string path) {
+WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path) {
    page_store = store;
    repository = repo;
    origin_path = path;
@@ -134,9 +134,9 @@ void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
     int new_id = pages.size() + 1;
     
     std::string content = removeTags(htmlDoc);
-    pagemeta::PageMeta page = pagemeta::PageMeta(new_id, content, url);
+    docmeta::DocumentMeta page = docmeta::DocumentMeta(new_id, content, url);
 
-    std::set<pagemeta::PageMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const pagemeta::PageMeta pg) { 
+    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const docmeta::DocumentMeta pg) { 
         return pg.path == page.path;
     });
 

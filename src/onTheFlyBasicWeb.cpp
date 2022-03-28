@@ -5,8 +5,8 @@
 #include "crawler.hpp"
 
 int main() {
-    std::set<pagemeta::PageMeta> page_store;
-    std::vector<pagemeta::PageMeta> repository;
+    std::set<docmeta::DocumentMeta> page_store;
+    std::vector<docmeta::DocumentMeta> repository;
 
     WebCrawler crawler = WebCrawler(&page_store, &repository, "https://zelebrate.xyz");
     crawler.start();

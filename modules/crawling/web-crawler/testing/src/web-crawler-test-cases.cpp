@@ -48,8 +48,8 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
 
     SECTION("register a page.") {
         std::string html_doc = "<header><h1>Test Page</h1><p>This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.</p></header>";
-        std::set<pagemeta::PageMeta> expectedPages = { 
-            pagemeta::PageMeta(1, " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
+        std::set<docmeta::DocumentMeta> expectedPages = { 
+            docmeta::DocumentMeta(1, " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
         };
 
         WebCrawler crawler = WebCrawler();

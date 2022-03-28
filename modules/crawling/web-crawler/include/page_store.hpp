@@ -5,16 +5,16 @@
 
 struct PageStore {
     PageStore() {};
-    PageStore(std::set<pagemeta::PageMeta> crawler_pages, std::set<pagemeta::PageMeta>* page_store, std::vector<pagemeta::PageMeta>* repository) : crawler_pages{crawler_pages}, page_store{page_store}, repository{repository} {};
+    PageStore(std::set<docmeta::DocumentMeta> crawler_pages, std::set<docmeta::DocumentMeta>* page_store, std::vector<docmeta::DocumentMeta>* repository) : crawler_pages{crawler_pages}, page_store{page_store}, repository{repository} {};
 
     void processPages();
-    void addNewPagesToStore(std::set<pagemeta::PageMeta>* currentStore, std::vector<pagemeta::PageMeta> pages);
-    void updatePagesInStore(std::set<pagemeta::PageMeta>* currentStore, std::vector<pagemeta::PageMeta> pages);
-    std::pair<std::vector<pagemeta::PageMeta>, std::vector<pagemeta::PageMeta>> checkForChanges(std::set<pagemeta::PageMeta>* currentStore, std::set<pagemeta::PageMeta> page);
+    void addNewPagesToStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages);
+    void updatePagesInStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages);
+    std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> page);
     
-    std::set<pagemeta::PageMeta> crawler_pages;
-    std::set<pagemeta::PageMeta>* page_store;
-    std::vector<pagemeta::PageMeta>* repository;
+    std::set<docmeta::DocumentMeta> crawler_pages;
+    std::set<docmeta::DocumentMeta>* page_store;
+    std::vector<docmeta::DocumentMeta>* repository;
 };
 
 #endif

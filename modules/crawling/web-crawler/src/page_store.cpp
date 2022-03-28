@@ -4,7 +4,7 @@
 #include "page_store.hpp"
 
 void PageStore::processPages() {
-    std::pair<std::vector<pagemeta::PageMeta>, std::vector<pagemeta::PageMeta>> changesAndAddition = checkForChanges(page_store, crawler_pages);
+    std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> changesAndAddition = checkForChanges(page_store, crawler_pages);
     addNewPagesToStore(page_store, changesAndAddition.first);
     updatePagesInStore(page_store, changesAndAddition.second);
 
@@ -12,9 +12,9 @@ void PageStore::processPages() {
     repository->insert( repository->end(), changesAndAddition.second.begin(), changesAndAddition.second.end() );
 }
 
-std::pair<std::vector<pagemeta::PageMeta>, std::vector<pagemeta::PageMeta>> PageStore::checkForChanges(std::set<pagemeta::PageMeta>* currentStore, std::set<pagemeta::PageMeta> pages) {
-    std::vector<pagemeta::PageMeta> newPages;
-    std::vector<pagemeta::PageMeta> updatedPages;
+std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> PageStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> pages) {
+    std::vector<docmeta::DocumentMeta> newPages;
+    std::vector<docmeta::DocumentMeta> updatedPages;
 
     for (auto& crawler_pages: pages) {
         auto it = currentStore->find(crawler_pages);
@@ -32,13 +32,13 @@ std::pair<std::vector<pagemeta::PageMeta>, std::vector<pagemeta::PageMeta>> Page
     return std::make_pair(newPages, updatedPages);
 }
 
-void PageStore::addNewPagesToStore(std::set<pagemeta::PageMeta>* currentStore, std::vector<pagemeta::PageMeta> pages) {
+void PageStore::addNewPagesToStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages) {
     for (auto& newPage: pages) {
         currentStore->insert(newPage);
     }
 }
 
-void PageStore::updatePagesInStore(std::set<pagemeta::PageMeta>* currentStore, std::vector<pagemeta::PageMeta> pages) {
+void PageStore::updatePagesInStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages) {
     for (auto& updatedPage: pages) {
         auto it = currentStore->find(updatedPage);
         currentStore->erase(it);

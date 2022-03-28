@@ -10,7 +10,7 @@ namespace docmeta {
     struct DocumentMeta {
         DocumentMeta() {};
         DocumentMeta(int document_id) : id{document_id} {};
-        DocumentMeta(int document_id, std::string text, std::filesystem::path path) : id{document_id}, content{text}, path{path} {};
+        DocumentMeta(int document_id, std::string text, std::string path) : id{document_id}, content{text}, path{path} {};
     
         const bool operator < ( const DocumentMeta &r ) const {
             return id < r.id;
@@ -27,7 +27,7 @@ namespace docmeta {
         
         int id;
         std::string content;
-        std::filesystem::path path;
+        std::string path;
 
     };
 
