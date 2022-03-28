@@ -7,6 +7,8 @@
 #include <fstream>
 #include <queue>
 #include <set>
+
+#include <glog/logging.h>
 #include <nlohmann/json.hpp>
 
 #include "../../../../include/doc_meta.hpp"

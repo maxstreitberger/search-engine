@@ -5,6 +5,8 @@
 #include <set>
 #include <unordered_set>
 #include <fstream>
+
+#include <glog/logging.h>
 #include <nlohmann/json.hpp>
 
 #include "../../../include/doc_meta.hpp"

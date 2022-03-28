@@ -4,6 +4,7 @@
 #include "ranker.hpp"
 
 std::vector<docmeta::DocumentMeta> Ranker::searchFor(std::string query) {
+    LOG(INFO) << "Search for: '" << query << "'";
     std::string searchQuery = transformQuery(query);
     std::vector<tokenmeta::TokenMeta> metaInfo = retrieveMetaInformations(index, searchQuery);
     std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs = filterDocPtrs(metaInfo);
@@ -13,10 +14,12 @@ std::vector<docmeta::DocumentMeta> Ranker::searchFor(std::string query) {
 std::string Ranker::transformQuery(std::string query) {
     stringhelper::trim(query);
     stringhelper::toLower(query);
+    LOG(INFO) << "Finished query transformation: '" << query << "'";
     return query;
 }
 
 std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, std::string query) {
+    LOG(INFO) << "Retrieve meta information";
     auto it = index->find(query);
     std::vector<tokenmeta::TokenMeta> metaInformation;
 
@@ -26,6 +29,7 @@ std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std:
     }
 
     std::sort(metaInformation.begin(), metaInformation.end(), [](tokenmeta::TokenMeta ld, tokenmeta::TokenMeta rd) { 
+        LOG(INFO) << "Sorting after num_appearances";
         return ld.num_appearances > rd.num_appearances; 
     });
 
@@ -33,6 +37,7 @@ std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std:
 }
 
 std::unordered_set<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo) {
+    LOG(INFO) << "Filter document ids";
     std::unordered_set<const docmeta::DocumentMeta*> ptrs;
 
     for (auto& tokenMeta: tokensMetaInfo) {
@@ -43,6 +48,7 @@ std::unordered_set<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vect
 }
 
 std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs) {
+    LOG(INFO) << "Collect documents";
     std::vector<docmeta::DocumentMeta> documents;
 
     for (const docmeta::DocumentMeta* ptr: doc_ptrs) {

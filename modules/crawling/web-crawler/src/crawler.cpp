@@ -22,12 +22,13 @@ WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docme
 };
 
 void WebCrawler::start() {
-    LOG(ERROR) << "Start Crawling";
+    LOG(INFO) << "Start web crawler";
 
     std::queue<std::string> urls;
     urls.push(origin_path);
 
     while (!urls.empty()) {
+        LOG(INFO) << "Crawl url: " << urls.front();
         std::string htmlDoc = getHTML(urls.front());
         getURLs(htmlDoc, &urls);
         registerPage(urls.front(), htmlDoc);
@@ -44,6 +45,7 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
 }
 
 std::string WebCrawler::getHTML(std::string url) {
+    LOG(INFO) << "Get HTML page";
     CURL * curl;
     CURLcode res;
     std::string buffer;
@@ -98,6 +100,7 @@ void WebCrawler::extractBaseURL(std::string* url) {
 }
 
 void WebCrawler::getURLs(std::string htmlDoc, std::queue<std::string>* urls) {
+    LOG(INFO) << "Get URLs";
     GumboOutput* output = gumbo_parse(htmlDoc.c_str());
     
     search_for_links(output->root, urls);
@@ -106,6 +109,7 @@ void WebCrawler::getURLs(std::string htmlDoc, std::queue<std::string>* urls) {
 }
 
 std::string WebCrawler::removeTags(std::string htmlDoc) {
+    LOG(INFO) << "Remove HTML tags";
     GumboOutput* output = gumbo_parse(htmlDoc.c_str());
     std::string text = cleanText(output->root);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
@@ -136,8 +140,10 @@ void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
     
     std::string content = removeTags(htmlDoc);
     docmeta::DocumentMeta page = docmeta::DocumentMeta(new_id, content, url);
+    LOG(INFO) << "Page to register: " << page;
 
-    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const docmeta::DocumentMeta pg) { 
+    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const docmeta::DocumentMeta pg) {
+        LOG(INFO) << "Page with path = " << page.path << " was already crawled"; 
         return pg.path == page.path;
     });
 
@@ -149,6 +155,7 @@ void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
     }
 
     pages.insert(page);
+    LOG(INFO) << "Successfully registered page: " << page;
 }
 
 #endif

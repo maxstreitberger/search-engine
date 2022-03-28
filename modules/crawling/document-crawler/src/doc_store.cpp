@@ -4,6 +4,7 @@
 #include "doc_store.hpp"
 
 void DocStore::processDocuments() {
+    LOG(INFO) << "Process crawled documents";
     std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> changesAndAddition = checkForChanges(doc_store, crawler_docs);
     addNewDocumentsToStore(doc_store, changesAndAddition.first);
     updateDocumentsInStore(doc_store, changesAndAddition.second);
@@ -13,6 +14,7 @@ void DocStore::processDocuments() {
 }
 
 std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> DocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> docs) {
+    LOG(INFO) << "Check for changes in documents";
     std::vector<docmeta::DocumentMeta> newDocs;
     std::vector<docmeta::DocumentMeta> updatedDocs;
 
@@ -34,12 +36,14 @@ std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>
 
 void DocStore::addNewDocumentsToStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> docs) {
     for (auto& newDoc: docs) {
+        LOG(INFO) << "Add new document (id= " << newDoc.id << ") to the store";
         currentStore->insert(newDoc);
     }
 }
 
 void DocStore::updateDocumentsInStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> docs) {
     for (auto& updatedDoc: docs) {
+        LOG(INFO) << "Update doc (id= " << updatedDoc.id << ")";
         auto it = currentStore->find(updatedDoc);
         currentStore->erase(it);
         currentStore->insert(updatedDoc);

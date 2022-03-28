@@ -9,7 +9,12 @@
 #include <nlohmann/json.hpp>
 
 int main(int argc, char *argv[]) {
+    FLAGS_log_dir = "/tmp";
+    google::InitGoogleLogging(argv[0]);
+    LOG(INFO) << "Start onTheFlyBasicDocument search engine";
+
     if (argc == 1) {
+        LOG(ERROR) << "No flags were added"; 
         std::cout << "Error: no flags" << std::endl;
         return 1;
     }
@@ -31,7 +36,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::cout << "#### SEARCH FOR: " << searchTerm << " ####" << std::endl;
     std::set<docmeta::DocumentMeta> document_store;
     std::vector<docmeta::DocumentMeta> repository;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
@@ -47,6 +51,8 @@ int main(int argc, char *argv[]) {
     
     Ranker ranking = Ranker(&document_store, &index);
     std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor(searchTerm);
+
+    LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
 
     for (auto& doc: foundDocuments) {
         std::cout << doc << std::endl;

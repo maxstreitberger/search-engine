@@ -14,10 +14,12 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
 }
 
 void Indexer::generateIndex() {
+    LOG(INFO) << "Start indexing";
     std::set<std::string> specialchars = loadList(special_chars_path);
     std::set<std::string> stopwords = loadList(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
 
     for (auto& document: *repository) {
+        LOG(INFO) << "Process document with id: " << document.id;
         std::vector<std::string> tokens = splitTextIntoList(document.content);
         std::vector<std::string> withoutSpecialChars = removeSpecialChars(tokens, specialchars);
         std::vector<std::string> finalTokens = removeStopwords(withoutSpecialChars, stopwords);
@@ -28,12 +30,14 @@ void Indexer::generateIndex() {
 }
 
 void Indexer::updateIndex(std::map<std::string, std::set<tokenmeta::TokenMeta>>* targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
+    LOG(INFO) << "Update index";
     for (auto const& [key, val] : sourceIndex) {
         (*targetIndex)[key].insert(val.begin(), val.end());
     }
 }
 
 std::set<std::string> Indexer::loadList(std::string path) {
+    LOG(INFO) << "Load file from path: " << path;
     std::set<std::string> list;
 
     std::string line;
@@ -52,6 +56,7 @@ std::set<std::string> Indexer::loadList(std::string path) {
 }
 
 std::vector<std::string> Indexer::splitTextIntoList(std::string text) {
+    LOG(INFO) << "Split text into list";
     std::istringstream tokenStream(text);
     std::string token;
     std::vector<std::string> tokens;
@@ -69,6 +74,7 @@ std::vector<std::string> Indexer::splitTextIntoList(std::string text) {
 }
 
 std::vector<std::string> Indexer::removeSpecialChars(std::vector<std::string> tokens, std::set<std::string> specialChars) {
+    LOG(INFO) << "Remove special characters";
     std::vector<std::string> newTokens;
     for (auto& token: tokens) {
         for (const std::string& specialchar: specialChars) {
@@ -84,6 +90,7 @@ std::vector<std::string> Indexer::removeSpecialChars(std::vector<std::string> to
 }
 
 std::vector<std::string> Indexer::removeStopwords(std::vector<std::string> tokens, std::set<std::string> stopwords) {
+    LOG(INFO) << "Remove stopwords";
     std::vector<std::string> newTokens;
     for (auto& token: tokens) {
         if (stopwords.find(token) == stopwords.end()) {
@@ -93,29 +100,20 @@ std::vector<std::string> Indexer::removeStopwords(std::vector<std::string> token
     return newTokens;
 }
 
-std::vector<std::string> Indexer::createTokens(std::string text, std::set<std::string> specialChars, std::set<std::string> stopwords) {
-    std::vector<std::string> splittedWords = splitTextIntoList(text);
-    std::vector<std::string> withoutSpecialChars = removeSpecialChars(splittedWords, specialChars);
-    return removeStopwords(withoutSpecialChars, stopwords);
-}
-
 std::map<std::string, std::set<tokenmeta::TokenMeta>> Indexer::createIndexForDocument(docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
+    LOG(INFO) << "Create index";
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     int counter = 1;
+    LOG(INFO) << "Process tokens";
     for (auto token: tokens) {
-        // std::cout << token << std::endl;
         if (index.find(token) == index.end()) {
-            // std::cout << "Not in index" << std::endl;
             index[token].insert(tokenmeta::TokenMeta(doc->id, counter, doc));
         } else {
-            // std::cout << "Found index entry" << std::endl;
             auto it = index[token].find(doc->id);
             if (it == index[token].end()) {
-                // std::cout << "No entry for doc_id: " << doc.id << std::endl;
                 index[token].insert(tokenmeta::TokenMeta(doc->id, counter, doc));
             } else {
-                // std::cout << "Update entry for doc_id: " << doc.id << std::endl;
                 std::vector<int> current_positions = it->positions;
                 current_positions.push_back(counter);
                 int current_num = it->num_appearances;

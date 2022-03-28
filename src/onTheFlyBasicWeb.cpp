@@ -11,8 +11,7 @@
 int main(int argc, char *argv[]) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
-    LOG(ERROR) << "Start onTheFlyBasicWeb search engine";
-
+    LOG(INFO) << "Start onTheFlyBasicWeb search engine";
 
     if (argc == 1) {
         std::cout << "Error: no flags" << std::endl;
@@ -36,8 +35,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::cout << "#### SEARCH FOR: " << searchTerm << " ####" << std::endl;
-
     std::set<docmeta::DocumentMeta> page_store;
     std::vector<docmeta::DocumentMeta> repository;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
@@ -53,6 +50,8 @@ int main(int argc, char *argv[]) {
 
     Ranker ranking = Ranker(&page_store, &index);
     std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor(searchTerm);
+
+    LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
 
     for (auto& doc: foundDocuments) {
         std::cout << doc << std::endl;

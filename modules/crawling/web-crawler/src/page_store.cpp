@@ -4,6 +4,7 @@
 #include "page_store.hpp"
 
 void PageStore::processPages() {
+    LOG(INFO) << "Process crawled pages";
     std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> changesAndAddition = checkForChanges(page_store, crawler_pages);
     addNewPagesToStore(page_store, changesAndAddition.first);
     updatePagesInStore(page_store, changesAndAddition.second);
@@ -13,6 +14,7 @@ void PageStore::processPages() {
 }
 
 std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> PageStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> pages) {
+    LOG(INFO) << "Check for changes in pages";
     std::vector<docmeta::DocumentMeta> newPages;
     std::vector<docmeta::DocumentMeta> updatedPages;
 
@@ -34,12 +36,14 @@ std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>
 
 void PageStore::addNewPagesToStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages) {
     for (auto& newPage: pages) {
+        LOG(INFO) << "Add new page (id= " << newPage.id << ") to the store";
         currentStore->insert(newPage);
     }
 }
 
 void PageStore::updatePagesInStore(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta> pages) {
     for (auto& updatedPage: pages) {
+        LOG(INFO) << "Update page (id= " << updatedPage.id << ")";
         auto it = currentStore->find(updatedPage);
         currentStore->erase(it);
         currentStore->insert(updatedPage);
