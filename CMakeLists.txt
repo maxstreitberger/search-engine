@@ -58,7 +58,9 @@ target_include_directories(onTheFlyBasicDocument
 )
 
 target_link_directories(onTheFlyBasicDocument
-    PRIVATE modules/crawling/document-crawler modules/indexing
+    PRIVATE modules/crawling/document-crawler
+    PRIVATE modules/indexing
+    PRIVATE modules/ranking
 )
 
 target_link_libraries(onTheFlyBasicDocument
@@ -77,9 +79,13 @@ target_include_directories(onTheFlyBasicWeb
 
 target_link_directories(onTheFlyBasicWeb
     PRIVATE modules/crawling/web-crawler
+    PRIVATE modules/indexing
+    PRIVATE modules/ranking
 )
 
 target_link_libraries(onTheFlyBasicWeb
     PRIVATE web-crawler 
+    PRIVATE indexing
+    PRIVATE ranking
     PUBLIC nlohmann_json::nlohmann_json
 )
