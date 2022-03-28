@@ -56,7 +56,7 @@ add_subdirectory(modules)
 add_executable(onTheFlyBasicDocument src/onTheFlyBasicDocument.cpp)
 
 target_include_directories(onTheFlyBasicDocument
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
 target_link_directories(onTheFlyBasicDocument
@@ -69,7 +69,7 @@ target_link_libraries(onTheFlyBasicDocument
     PRIVATE document-crawler 
     PRIVATE indexing
     PRIVATE ranking
-    PUBLIC nlohmann_json::nlohmann_json
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 # ON-THE-FLY -- BASIC RANKING -- WEB CRAWLER

@@ -1,10 +1,6 @@
 #ifndef TOKEN_META_HPP
 #define TOKEN_META_HPP
 
-#include <string>
-#include <filesystem>
-#include <iostream>
-#include <nlohmann/json.hpp>
 #include "doc_meta.hpp"
 
 namespace tokenmeta {
