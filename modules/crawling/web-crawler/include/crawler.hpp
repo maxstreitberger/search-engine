@@ -6,6 +6,7 @@
 #include <vector>
 #include <queue>
 #include <set>
+#include <regex>
 
 #include <glog/logging.h>
 #include <curl/curl.h>
@@ -26,8 +27,8 @@ struct WebCrawler {
     void search_for_links(GumboNode* node, std::queue<std::string>* urls);
     std::string removeTags(std::string htmlDoc);
     std::string cleanText(GumboNode* node);
-
     void registerPage(std::string url, std::string htmlDoc);
+    bool checkIfURL(const std::string* url);
 
     std::string origin_path;
     std::string base_url;

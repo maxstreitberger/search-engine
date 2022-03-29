@@ -58,4 +58,46 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
 
         REQUIRE(crawler.pages == expectedPages);
     }
+
+    SECTION("recognize 'https://zelebrate.xyz' as valid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = "https://zelebrate.xyz";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE(isValidURL);
+    }
+
+    SECTION("recognize 'abc' as invalid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = "abc";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE_FALSE(isValidURL);
+    }
+
+    SECTION("recognize ' ' as invalid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = " ";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE_FALSE(isValidURL);
+    }
+
+    SECTION("recognize 'abc://helloworld.abc' as invalid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = "abc://helloworld.abc";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE_FALSE(isValidURL);
+    }
+
+    SECTION("recognize 'https://zelebrate.xyz/helloworld' as valid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = "https://zelebrate.xyz/helloworld";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE(isValidURL);
+    }
+
+    SECTION("recognize 'https://www.zelebrate.xyz' as valid URL") {
+        WebCrawler crawler = WebCrawler();
+        std::string url = "https://www.zelebrate.xyz";
+        bool isValidURL = crawler.checkIfURL(&url);
+        REQUIRE(isValidURL);
+    }
 }

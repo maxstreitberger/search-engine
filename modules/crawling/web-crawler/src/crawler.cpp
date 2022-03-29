@@ -23,20 +23,34 @@ WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docme
 
 void WebCrawler::start() {
     LOG(INFO) << "Start web crawler";
+    bool isValidURL = checkIfURL(&origin_path);
 
-    std::queue<std::string> urls;
-    urls.push(origin_path);
+    if (isValidURL) {
+        std::queue<std::string> urls;
+        urls.push(origin_path);
 
-    while (!urls.empty()) {
-        LOG(INFO) << "Crawl url: " << urls.front();
-        std::string htmlDoc = getHTML(urls.front());
-        getURLs(htmlDoc, &urls);
-        registerPage(urls.front(), htmlDoc);
-        urls.pop();
+        while (!urls.empty()) {
+            LOG(INFO) << "Crawl url: " << urls.front();
+            std::string htmlDoc = getHTML(urls.front());
+            getURLs(htmlDoc, &urls);
+            registerPage(urls.front(), htmlDoc);
+            urls.pop();
+        }
+
+        PageStore store = PageStore(pages, page_store, repository);
+        store.processPages();
     }
+}
 
-    PageStore store = PageStore(pages, page_store, repository);
-    store.processPages();
+bool WebCrawler::checkIfURL(const std::string* url) {
+    std::regex url_regex("https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&//=]*)");
+    if (std::regex_match(*url, url_regex)) {
+        LOG(INFO) << "Valid URL entered";
+        return true;
+    } else {
+        LOG(ERROR) << "Not a valid URL entered";
+        return false;
+    }   
 }
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
