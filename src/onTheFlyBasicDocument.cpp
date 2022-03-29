@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     if (argc == 1) {
         LOG(ERROR) << "No flags were added"; 
-        std::cout << "Error: no flags" << std::endl;
+        std::cerr << "Error: no flags" << std::endl;
         return 1;
     }
 

@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     LOG(INFO) << "Start onTheFlyBasicWeb search engine";
 
     if (argc == 1) {
-        std::cout << "Error: no flags" << std::endl;
+        std::cerr << "Error: no flags" << std::endl;
         return 1;
     }
 
