@@ -30,8 +30,7 @@ int main(int argc, char *argv[]) {
     LOG(INFO) << "Start onTheFlyBasicDocument search engine";
 
     if (argc == 1) {
-        LOG(ERROR) << "No flags were added"; 
-        std::cerr << "Error: no flags" << std::endl;
+        LOG(ERROR) << "No flags were added";
         return 1;
     }
 

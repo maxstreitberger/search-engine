@@ -49,7 +49,7 @@ std::set<std::string> Indexer::loadList(std::string path) {
         }
         file.close();
     } else {
-        std::cout << "Unable to open file at path: " << path << std::endl;
+        LOG(ERROR) << "Unable to open file at path: " << path;
     } 
 
     return list;
