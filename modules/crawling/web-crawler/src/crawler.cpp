@@ -4,23 +4,6 @@
 #include "crawler.hpp"
 #include "doc_store.hpp"
 
-WebCrawler::WebCrawler(std::string path) {
-    origin_path = path;
-    extractBaseURL(&origin_path);
-}
-
-WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo) {
-    page_store = store;
-    repository = repo;
-};
-
-WebCrawler::WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path) {
-    page_store = store;
-    repository = repo;
-    origin_path = path;
-    extractBaseURL(&origin_path);
-};
-
 void WebCrawler::start() {
     LOG(INFO) << "Start web crawler";
     bool isValidURL = checkIfURL(&origin_path);
@@ -37,7 +20,7 @@ void WebCrawler::start() {
             urls.pop();
         }
 
-        DocStore store = DocStore(pages, page_store, repository);
+        DocStore store = DocStore(pages, doc_store, repository);
         store.processDocuments();
     }
 }

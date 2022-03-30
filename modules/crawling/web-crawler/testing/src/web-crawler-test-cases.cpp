@@ -59,6 +59,25 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
         REQUIRE(crawler.pages == expectedPages);
     }
 
+    SECTION("identify and update an already registered page.") {
+        std::string html_doc = "<header><h1>Test Page</h1><p>This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.</p></header>";
+        std::set<docmeta::DocumentMeta> expectedPages_BeforeUpdating = { 
+            docmeta::DocumentMeta(1, " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
+        };
+
+        std::string html_doc_updated = "<header><h1>Hello World Page</h1><p>This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.</p></header>";
+        std::set<docmeta::DocumentMeta> expectedPages_AfterUpdating = { 
+            docmeta::DocumentMeta(1, " Hello World Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
+        };
+
+        WebCrawler crawler = WebCrawler();
+        crawler.registerPage("https://zelebrate.xyz", html_doc);
+        CHECK(crawler.pages == expectedPages_BeforeUpdating);
+
+        crawler.registerPage("https://zelebrate.xyz", html_doc_updated);
+        CHECK(crawler.pages == expectedPages_AfterUpdating);
+    }
+
     SECTION("recognize 'https://zelebrate.xyz' as valid URL") {
         WebCrawler crawler = WebCrawler();
         std::string url = "https://zelebrate.xyz";

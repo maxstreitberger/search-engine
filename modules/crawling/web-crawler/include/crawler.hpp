@@ -16,9 +16,9 @@
 
 struct WebCrawler {
     WebCrawler() {};
-    WebCrawler(std::string path);
-    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo);
-    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path);
+    WebCrawler(std::string path) : origin_path{path} { extractBaseURL(&origin_path); };
+    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo) : doc_store{store}, repository{repo} {};
+    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path) : doc_store{store}, repository{repo}, origin_path{path} { extractBaseURL(&origin_path); };
     
     void start();
     std::string getHTML(std::string url);
@@ -35,7 +35,7 @@ struct WebCrawler {
     std::string protocol;
 
     std::set<docmeta::DocumentMeta> pages;
-    std::set<docmeta::DocumentMeta>* page_store;
+    std::set<docmeta::DocumentMeta>* doc_store;
     std::vector<docmeta::DocumentMeta>* repository;
 };
 
