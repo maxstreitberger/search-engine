@@ -20,7 +20,6 @@
 #include <iostream>
 #include "indexer.hpp"
 #include "crawler.hpp"
-#include "doc_store.hpp"
 #include "ranker.hpp"
 #include <nlohmann/json.hpp>
 

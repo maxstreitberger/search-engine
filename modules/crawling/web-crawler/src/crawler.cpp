@@ -2,7 +2,7 @@
 #define WEB_CRAWLER_CPP
 
 #include "crawler.hpp"
-#include "page_store.hpp"
+#include "doc_store.hpp"
 
 WebCrawler::WebCrawler(std::string path) {
     origin_path = path;
@@ -37,8 +37,8 @@ void WebCrawler::start() {
             urls.pop();
         }
 
-        PageStore store = PageStore(pages, page_store, repository);
-        store.processPages();
+        DocStore store = DocStore(pages, page_store, repository);
+        store.processDocuments();
     }
 }
 

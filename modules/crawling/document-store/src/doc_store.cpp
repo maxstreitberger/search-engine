@@ -1,5 +1,5 @@
-#ifndef DOCUMENT_CRAWLER_DOC_STORE_CPP
-#define DOCUMENT_CRAWLER_DOC_STORE_CPP
+#ifndef DOC_STORE_CPP
+#define DOC_STORE_CPP
 
 #include "doc_store.hpp"
 

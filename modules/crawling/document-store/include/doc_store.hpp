@@ -1,7 +1,12 @@
-#ifndef DOCUMENT_CRAWLER_DOC_STORE_HPP
-#define DOCUMENT_CRAWLER_DOC_STORE_HPP
+#ifndef DOC_STORE_HPP
+#define DOC_STORE_HPP
 
-#include "crawler.hpp"
+#include <iostream>
+#include <set>
+#include <glog/logging.h>
+#include <nlohmann/json.hpp>
+
+#include "../../../../include/doc_meta.hpp"
 
 struct DocStore {
     DocStore() {};
