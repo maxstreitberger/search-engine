@@ -3,7 +3,8 @@
 
 TEST_CASE("Document Store can", "[store]") {
     std::set<docmeta::DocumentMeta> crawler_docs = {
-        docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt")
+        docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt"),
+        docmeta::DocumentMeta(2, "Test!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo2.txt"),
     };
 
     std::set<docmeta::DocumentMeta>* document_store;
@@ -20,15 +21,15 @@ TEST_CASE("Document Store can", "[store]") {
     }
 
     SECTION("check for updated documents.") {
-        std::set<docmeta::DocumentMeta> resultingStore = crawler_docs;
         std::set<docmeta::DocumentMeta> toUpdateDocument = { docmeta::DocumentMeta(1, "Hello, World! How are you?", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
+        std::vector<docmeta::DocumentMeta> expectedResult = {
+            docmeta::DocumentMeta(1, "Hello, World! How are you?", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt")
+        };
 
         DocStore store = DocStore(crawler_docs, document_store, repository);
+        std::vector<docmeta::DocumentMeta> resultingUpdates = store.checkForChanges(&crawler_docs, toUpdateDocument).second;
 
-        std::vector expectedResult(toUpdateDocument.begin(), toUpdateDocument.end());
-        std::vector<docmeta::DocumentMeta> foundNewDocuments = store.checkForChanges(&resultingStore, toUpdateDocument).second;
-
-        REQUIRE( expectedResult == foundNewDocuments );
+        REQUIRE( expectedResult == resultingUpdates );
     }
 
     SECTION("add new documments to the store.") {
