@@ -33,7 +33,7 @@ std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>
                 continue;
             }
         } else {
-            LOG(INFO) << "Document is new (id=" << it->id << ")";
+            LOG(INFO) << "Document is new (id=" << crawler_doc.id << ")";
             newDocs.push_back(crawler_doc);
         }
     }
