@@ -53,4 +53,24 @@ TEST_CASE("Document Store end-to-end test.", "[store, e2e]") {
         REQUIRE( repository == expected_repository);
     }
     
+    SECTION("Nothing to change") {
+        std::set<docmeta::DocumentMeta> crawler_docs = {
+            docmeta::DocumentMeta(2, "Test!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt")
+        };
+
+        std::set<docmeta::DocumentMeta> expected_store = {
+            docmeta::DocumentMeta(2, "Test!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt")
+        };
+
+        std::set<docmeta::DocumentMeta> document_store = {
+            docmeta::DocumentMeta(2, "Test!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt")
+        };
+        std::vector<docmeta::DocumentMeta> repository;
+
+        DocStore store = DocStore(crawler_docs, &document_store, &repository);
+        store.processDocuments();
+
+        REQUIRE( document_store == expected_store);
+        REQUIRE( repository.empty() );
+    }
 }
