@@ -74,8 +74,4 @@ TEST_CASE("Indexer can", "[indexer]") {
         CHECK( returnedIndex["world"] == world );
         CHECK( returnedIndex["you"] == you );
     }
-
-    // SECTION("update index.") {
-    //     REQUIRE( 0 );
-    // } 
 }

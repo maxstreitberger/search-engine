@@ -27,6 +27,8 @@ void Indexer::generateIndex() {
         std::map<std::string, std::set<tokenmeta::TokenMeta>> doc_index = createIndexForDocument(&document, finalTokens);
         updateIndex(index, doc_index);
     }
+    
+    LOG(INFO) << *index;
 }
 
 void Indexer::updateIndex(std::map<std::string, std::set<tokenmeta::TokenMeta>>* targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
