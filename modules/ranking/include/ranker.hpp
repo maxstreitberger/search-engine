@@ -20,8 +20,8 @@ struct Ranker {
     std::vector<docmeta::DocumentMeta> searchFor(std::string query);
     std::string transformQuery(std::string query);
     std::vector<tokenmeta::TokenMeta> retrieveMetaInformations(std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, std::string query);
-    std::unordered_set<const docmeta::DocumentMeta*> filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo);
-    std::vector<docmeta::DocumentMeta> collectDocuments(std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs);
+    std::vector<const docmeta::DocumentMeta*> filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo);
+    std::vector<docmeta::DocumentMeta> collectDocuments(std::vector<const docmeta::DocumentMeta*> doc_ptrs);
 
     std::set<docmeta::DocumentMeta>* doc_store;
     std::map<std::string, std::set<tokenmeta::TokenMeta>>* index;

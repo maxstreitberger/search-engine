@@ -46,10 +46,10 @@ TEST_CASE("Ranker can", "[ranker]") {
             tokenmeta::TokenMeta(1, 1, { 1 }), 
             tokenmeta::TokenMeta(2, 1, { 1 }) 
         }; 
-        std::unordered_set<const docmeta::DocumentMeta*> expectedResult = { tokenMeta[0].doc_ptr, tokenMeta[1].doc_ptr };
+        std::vector<const docmeta::DocumentMeta*> expectedResult = { tokenMeta[0].doc_ptr, tokenMeta[1].doc_ptr };
 
         Ranker ranker = Ranker();
-        std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs = ranker.filterDocPtrs(tokenMeta);
+        std::vector<const docmeta::DocumentMeta*> doc_ptrs = ranker.filterDocPtrs(tokenMeta);
 
         REQUIRE( doc_ptrs == expectedResult );
     }
@@ -59,7 +59,7 @@ TEST_CASE("Ranker can", "[ranker]") {
             docmeta::DocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt"),
         };
 
-        std::unordered_set<const docmeta::DocumentMeta*> ptrs = { &store[1] };
+        std::vector<const docmeta::DocumentMeta*> ptrs = { &store[1] };
 
         Ranker ranker = Ranker();
         std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(ptrs);

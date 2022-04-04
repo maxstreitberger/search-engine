@@ -7,7 +7,7 @@ std::vector<docmeta::DocumentMeta> Ranker::searchFor(std::string query) {
     LOG(INFO) << "Search for: '" << query << "'";
     std::string searchQuery = transformQuery(query);
     std::vector<tokenmeta::TokenMeta> metaInfo = retrieveMetaInformations(index, searchQuery);
-    std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs = filterDocPtrs(metaInfo);
+    std::vector<const docmeta::DocumentMeta*> doc_ptrs = filterDocPtrs(metaInfo);
     return collectDocuments(doc_ptrs);
 }
 
@@ -36,18 +36,18 @@ std::vector<tokenmeta::TokenMeta> Ranker::retrieveMetaInformations(std::map<std:
     return metaInformation;
 }
 
-std::unordered_set<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo) {
+std::vector<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vector<tokenmeta::TokenMeta> tokensMetaInfo) {
     LOG(INFO) << "Filter document ids";
-    std::unordered_set<const docmeta::DocumentMeta*> ptrs;
+    std::vector<const docmeta::DocumentMeta*> ptrs;
 
     for (auto& tokenMeta: tokensMetaInfo) {
-        ptrs.insert(tokenMeta.doc_ptr);
+        ptrs.push_back(tokenMeta.doc_ptr);
     }
 
     return ptrs;
 }
 
-std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::unordered_set<const docmeta::DocumentMeta*> doc_ptrs) {
+std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::vector<const docmeta::DocumentMeta*> doc_ptrs) {
     LOG(INFO) << "Collect documents";
     std::vector<docmeta::DocumentMeta> documents;
 
