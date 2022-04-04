@@ -13,8 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 
 # FLAGS NECESSARY FOR GUMBO
-# set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
-set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include")
+set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
 set(GCC_COVERAGE_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
@@ -25,6 +24,7 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
 #---------------------------------------------------------------------------------------------------------
 # DEFINITIONS
 add_definitions(-DSEARCHENGINE_ROOT_DIR=\"${CMAKE_SOURCE_DIR}\")
+add_definitions(-DSEARCHENGINE_TESTING_DIR=\"${CMAKE_SOURCE_DIR}/testing\")
 
 add_definitions(-DDOCUMENT_CRAWLER_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/document-crawler\")
 add_definitions(-DDOCUMENT_CRAWLER_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/crawling/document-crawler/testing\")
