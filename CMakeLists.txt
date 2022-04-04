@@ -13,7 +13,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 
 # FLAGS NECESSARY FOR GUMBO
-set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
+# set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
+set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include")
 set(GCC_COVERAGE_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
@@ -42,6 +43,7 @@ add_definitions(-DRANKING_TESTING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking
 # PACKAGES
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glog CONFIG REQUIRED)
+find_package(lyra CONFIG REQUIRED)
 
 
 #---------------------------------------------------------------------------------------------------------
@@ -71,6 +73,7 @@ target_link_libraries(onTheFlyBasicDocument
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE nlohmann_json::nlohmann_json
+    PRIVATE bfg::lyra
 )
 
 # ON-THE-FLY -- BASIC RANKING -- WEB CRAWLER
@@ -91,4 +94,5 @@ target_link_libraries(onTheFlyBasicWeb
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE glog::glog
+    PRIVATE bfg::lyra
 )

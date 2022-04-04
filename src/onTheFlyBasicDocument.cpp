@@ -21,33 +21,31 @@
 #include "indexer.hpp"
 #include "crawler.hpp"
 #include "ranker.hpp"
-#include <nlohmann/json.hpp>
 
-int main(int argc, char *argv[]) {
+#include <nlohmann/json.hpp>
+#include <lyra/lyra.hpp>
+
+int main(int argc, const char** argv) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
     LOG(INFO) << "Start onTheFlyBasicDocument search engine";
 
-    if (argc == 1) {
-        LOG(ERROR) << "No flags were added";
+    std::string searchTerm;
+    bool show_help = false;
+
+    auto cli = lyra::help(show_help) | lyra::opt(searchTerm, "searchTerm")
+                                    ["-s"]["--search"]("Get documents that include the search term.");
+    
+    auto result = cli.parse({ argc, argv });
+    if (!result) {
+        LOG(ERROR) << "Error in command line: " << result.errorMessage();
+        std::cerr << cli << "\n";
         return 1;
     }
 
-    std::string searchTerm;
-
-    for (int i = 1; i <= argc - 1; i++) {
-        std::string value = argv[i];
-
-        auto it = value.find('=');
-        if (it != std::string::npos) {
-            if ((value.find("search") != std::string::npos) || (value.find("-s=") != std::string::npos)) {
-                searchTerm = value.substr(it + 1, std::string::npos);
-            }
-        } else {
-            if ((value.find("search") != std::string::npos) || (value == "-s")) {
-                searchTerm = argv[i+1];
-            }
-        }
+    if (show_help) {
+        std::cout << cli << "\n";
+        return 0;
     }
 
     std::set<docmeta::DocumentMeta> document_store;
@@ -66,10 +64,16 @@ int main(int argc, char *argv[]) {
     Ranker ranking = Ranker(&document_store, &index);
     std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor(searchTerm);
 
-    LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
+    if (foundDocuments.empty()) {
+        LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";
+        std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;
+    } else {
+        LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
+        std::cout << "Found " << foundDocuments.size() << " document(s):" << std::endl;
 
-    for (auto& doc: foundDocuments) {
-        std::cout << doc << std::endl;
+        for (auto& doc: foundDocuments) {
+            std::cout << doc << std::endl;
+        }
     }
 
     return 0;
