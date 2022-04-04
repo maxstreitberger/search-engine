@@ -1,8 +1,8 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
-#include "crawler.hpp"
+#include "doc_crawler.hpp"
 
-TEST_CASE("Crawler can", "[crawler][store]") {    
+TEST_CASE("DocumentCrawler can", "[crawler][store]") {    
     std::ofstream file(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
     file << "Hello, World!";
     file.close();
@@ -14,7 +14,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
             DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/test-folder/demo3.txt" 
         };
 
-        Crawler crawler = Crawler(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
+        DocumentCrawler crawler = DocumentCrawler(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
 
         std::vector<std::string> visitedDocuments = crawler.getDocumentPaths();
 
@@ -24,7 +24,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
     SECTION("register a new document") {
         std::set<docmeta::DocumentMeta> expectedMeta = { docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
-        Crawler crawler = Crawler();
+        DocumentCrawler crawler = DocumentCrawler();
         crawler.registerDocument(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
 
         REQUIRE( expectedMeta == crawler.documents );
@@ -33,7 +33,7 @@ TEST_CASE("Crawler can", "[crawler][store]") {
     SECTION("identify and update an already registered document") {
         std::set<docmeta::DocumentMeta> expectedMeta = { docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
-        Crawler crawler = Crawler();
+        DocumentCrawler crawler = DocumentCrawler();
         crawler.registerDocument(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
         CHECK(expectedMeta == crawler.documents);
 

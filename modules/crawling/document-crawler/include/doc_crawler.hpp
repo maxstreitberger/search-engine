@@ -13,11 +13,11 @@
 #include "../../../../include/doc_meta.hpp"
 #include "../../../../include/helpers.hpp"
 
-struct Crawler {
-    Crawler() {};
-    Crawler(std::string path) : origin_path{path} {};
-    Crawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository) : doc_store{document_store}, repository{repository} {};
-    Crawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository, std::string path) : doc_store{document_store}, repository{repository}, origin_path{path} {}
+struct DocumentCrawler {
+    DocumentCrawler() {};
+    DocumentCrawler(std::string path) : origin_path{path} {};
+    DocumentCrawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository) : doc_store{document_store}, repository{repository} {};
+    DocumentCrawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository, std::string path) : doc_store{document_store}, repository{repository}, origin_path{path} {}
     
     void start();
     std::vector<std::string> getDocumentPaths();

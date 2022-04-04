@@ -1,10 +1,10 @@
 #ifndef DOCUMENT_CRAWLER_CPP
 #define DOCUMENT_CRAWLER_CPP
 
-#include "crawler.hpp"
+#include "doc_crawler.hpp"
 #include "doc_store.hpp"
 
-void Crawler::start() {
+void DocumentCrawler::start() {
     LOG(INFO) << "Start document crawler";
     std::vector<std::string> foundDocuments = getDocumentPaths();
     for (auto& document_path: foundDocuments) {
@@ -15,7 +15,7 @@ void Crawler::start() {
     store.processDocuments();
 }
 
-std::vector<std::string> Crawler::getDocumentPaths() {
+std::vector<std::string> DocumentCrawler::getDocumentPaths() {
     LOG(INFO) << "Get document paths";
     std::vector<std::string> foundDocuments;
     std::queue<std::string> directories;
@@ -38,7 +38,7 @@ std::vector<std::string> Crawler::getDocumentPaths() {
     return foundDocuments;
 }
 
-void Crawler::registerDocument(std::string path) {
+void DocumentCrawler::registerDocument(std::string path) {
     int new_id = documents.size() + 1;
     std::string text = helpers::loadFile(path);
     docmeta::DocumentMeta document = docmeta::DocumentMeta(new_id, text, path);

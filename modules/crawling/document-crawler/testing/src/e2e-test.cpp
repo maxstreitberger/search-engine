@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "crawler.hpp"
+#include "doc_crawler.hpp"
 
 TEST_CASE("Document crawler end-to-end test.", "[crawler, e2e]") {
     std::set<docmeta::DocumentMeta> expected_store = {
@@ -17,7 +17,7 @@ TEST_CASE("Document crawler end-to-end test.", "[crawler, e2e]") {
     std::set<docmeta::DocumentMeta> document_store;
     std::vector<docmeta::DocumentMeta> repository;
 
-    Crawler crawler = Crawler(&document_store, &repository, DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
+    DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
     crawler.start();
 
     REQUIRE( document_store == expected_store );

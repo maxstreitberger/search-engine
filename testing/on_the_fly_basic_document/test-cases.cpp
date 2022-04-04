@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "engine.hpp"
 #include "helpers.hpp"
-#include "crawler.hpp"
+#include "doc_crawler.hpp"
 
 TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e]") {
     SECTION("No document returned.") {
@@ -12,7 +12,7 @@ TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        Crawler crawler = Crawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
         Ranker ranker = Ranker(&document_store, &index);
 
@@ -31,7 +31,7 @@ TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        Crawler crawler = Crawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
         Ranker ranker = Ranker(&document_store, &index);
 
@@ -56,7 +56,7 @@ TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        Crawler crawler = Crawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
         Ranker ranker = Ranker(&document_store, &index);
 

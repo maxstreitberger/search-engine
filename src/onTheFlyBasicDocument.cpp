@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include "indexer.hpp"
-#include "crawler.hpp"
+#include "doc_crawler.hpp"
 #include "ranker.hpp"
 #include "engine.hpp"
 
@@ -56,7 +56,7 @@ int main(int argc, const char** argv) {
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-    Crawler crawler = Crawler(&document_store, &repository, SEARCHENGINE_ROOT_DIR "/dummy-text");
+    DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_ROOT_DIR "/dummy-text");
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&document_store, &index);
 
