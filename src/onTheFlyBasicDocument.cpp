@@ -21,6 +21,7 @@
 #include "indexer.hpp"
 #include "crawler.hpp"
 #include "ranker.hpp"
+#include "engine.hpp"
 
 #include <nlohmann/json.hpp>
 #include <lyra/lyra.hpp>
@@ -56,13 +57,10 @@ int main(int argc, const char** argv) {
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
     Crawler crawler = Crawler(&document_store, &repository, SEARCHENGINE_ROOT_DIR "/dummy-text");
-    crawler.start();
-
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    indexer.generateIndex();
-    
-    Ranker ranking = Ranker(&document_store, &index);
-    std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor(searchTerm);
+    Ranker ranker = Ranker(&document_store, &index);
+
+    std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
 
     if (foundDocuments.empty()) {
         LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";

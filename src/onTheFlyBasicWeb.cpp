@@ -21,6 +21,7 @@
 #include "crawler.hpp"
 #include "indexer.hpp"
 #include "ranker.hpp"
+#include "engine.hpp"
 
 #include <glog/logging.h>
 #include <lyra/lyra.hpp>
@@ -56,13 +57,10 @@ int main(int argc, char *argv[]) {
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
     WebCrawler crawler = WebCrawler(&page_store, &repository, "https://zelebrate.xyz");
-    crawler.start();
-
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    indexer.generateIndex();
+    Ranker ranker = Ranker(&page_store, &index);
 
-    Ranker ranking = Ranker(&page_store, &index);
-    std::vector<docmeta::DocumentMeta> foundDocuments = ranking.searchFor(searchTerm);
+    std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
 
     if (foundDocuments.empty()) {
         LOG(INFO) << "No page(s) containing '" << searchTerm << "' found.";
