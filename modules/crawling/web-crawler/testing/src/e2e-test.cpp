@@ -1,12 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
 #include "crawler.hpp"
+#include "../../../../../include/helpers.hpp"
 
 TEST_CASE("Web crawler end-to-end test.", "[crawler, e2e]") {
-    std::ifstream indexFile(WEB_CRAWLER_TESTING_ROOT_DIR "/expected-files/expected-index.txt");
-    std::string indexText((std::istreambuf_iterator<char>(indexFile)), (std::istreambuf_iterator<char>()));
+    std::string indexPath = WEB_CRAWLER_TESTING_ROOT_DIR "/expected-files/expected-index.txt";
+    std::string indexText = helpers::loadFile(indexPath);
 
-    std::ifstream searchEngineFile(WEB_CRAWLER_TESTING_ROOT_DIR "/expected-files/expected-search-engine.txt");
-    std::string searchEngineText((std::istreambuf_iterator<char>(searchEngineFile)), (std::istreambuf_iterator<char>()));
+    std::string searchEnginePath = WEB_CRAWLER_TESTING_ROOT_DIR "/expected-files/expected-search-engine.txt";
+    std::string searchEngineText = helpers::loadFile(searchEnginePath);
 
     std::set<docmeta::DocumentMeta> expected_store = {
         docmeta::DocumentMeta(1, indexText, "https://zelebrate.xyz"),

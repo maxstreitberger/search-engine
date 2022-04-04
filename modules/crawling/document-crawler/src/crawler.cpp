@@ -38,16 +38,10 @@ std::vector<std::string> Crawler::getDocumentPaths() {
     return foundDocuments;
 }
 
-std::string Crawler::getDocumentContents(const std::string path) {
-    std::ifstream ifs(path);
-    std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-    return content;
-}
-
-void Crawler::registerDocument(const std::filesystem::path path) {
+void Crawler::registerDocument(std::string path) {
     int new_id = documents.size() + 1;
-    std::string text = getDocumentContents(path);
-    docmeta::DocumentMeta document = docmeta::DocumentMeta(new_id, text, path.string());
+    std::string text = helpers::loadFile(path);
+    docmeta::DocumentMeta document = docmeta::DocumentMeta(new_id, text, path);
     LOG(INFO) << "Document to register: " << document;
 
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(documents.begin(), documents.end(), [&document](const docmeta::DocumentMeta doc) { 

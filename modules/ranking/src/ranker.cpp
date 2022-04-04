@@ -12,8 +12,8 @@ std::vector<docmeta::DocumentMeta> Ranker::searchFor(std::string query) {
 }
 
 std::string Ranker::transformQuery(std::string query) {
-    stringhelper::trim(query);
-    stringhelper::toLower(query);
+    helpers::trim(query);
+    helpers::toLower(query);
     LOG(INFO) << "Finished query transformation: '" << query << "'";
     return query;
 }

@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 #include "crawler.hpp"
+#include "../../../../../include/helpers.hpp"
 
 TEST_CASE("Web Crawler can", "[web-crawler]") {
     SECTION("retrieve HTML page from given URL.") {
@@ -10,8 +11,8 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
     }
 
     SECTION("extract URLs from HTML and add them to a queue.") {
-        std::ifstream exampleFile(WEB_CRAWLER_TESTING_ROOT_DIR "/test-html-pages/index.html");
-        std::string htmlDoc((std::istreambuf_iterator<char>(exampleFile)), (std::istreambuf_iterator<char>()));
+        std::string path = WEB_CRAWLER_TESTING_ROOT_DIR "/test-html-pages/index.html";
+        std::string htmlDoc = helpers::loadFile(path);
         std::queue<std::string> expectedURLs;
         expectedURLs.push("https://github.com/maxstreitberger/search-engine");
         expectedURLs.push("http://www.example.com/searchengine.html");

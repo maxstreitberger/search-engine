@@ -21,16 +21,6 @@ TEST_CASE("Crawler can", "[crawler][store]") {
         REQUIRE( expectedDocuments == visitedDocuments );
     }
 
-    SECTION("retrieve the contents of a given document") {
-        std::string expectedContents = "Hello, World!";
-
-        Crawler crawler = Crawler();
-
-        std::string visitedContents = crawler.getDocumentContents(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
-
-        REQUIRE( expectedContents == visitedContents );
-    }
-
     SECTION("register a new document") {
         std::set<docmeta::DocumentMeta> expectedMeta = { docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
 
