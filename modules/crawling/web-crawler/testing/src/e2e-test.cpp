@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "crawler.hpp"
+#include "web_crawler.hpp"
 #include "../../../../../include/helpers.hpp"
 
 TEST_CASE("Web crawler end-to-end test.", "[crawler, e2e]") {

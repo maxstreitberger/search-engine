@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "engine.hpp"
 #include "helpers.hpp"
-#include "crawler.hpp"
+#include "web_crawler.hpp"
 
 TEST_CASE("On-The-Fly Basic Web Search", "[on-the-fly, basic, web, e2e]") {
     SECTION("No document returned.") {

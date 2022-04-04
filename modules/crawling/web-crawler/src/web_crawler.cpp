@@ -1,7 +1,7 @@
 #ifndef WEB_CRAWLER_CPP
 #define WEB_CRAWLER_CPP
 
-#include "crawler.hpp"
+#include "web_crawler.hpp"
 #include "doc_store.hpp"
 
 void WebCrawler::start() {
