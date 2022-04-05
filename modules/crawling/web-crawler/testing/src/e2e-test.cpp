@@ -19,12 +19,14 @@ TEST_CASE("Web crawler end-to-end test.", "[crawler, e2e]") {
         docmeta::DocumentMeta(2, searchEngineText, "https://zelebrate.xyz/searchengine.html"),
     };
 
-    std::set<docmeta::DocumentMeta> document_store;
+    std::set<docmeta::DocumentMeta> crawler_found_pages;
+    std::set<docmeta::DocumentMeta> pages_in_store;
     std::vector<docmeta::DocumentMeta> repository;
 
-    WebCrawler crawler = WebCrawler(&document_store, &repository, "https://zelebrate.xyz");
+    DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);                                   // <---- Injecting Doc_Store
+    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, "https://zelebrate.xyz");
     crawler.start();
 
-    REQUIRE( document_store == expected_store );
+    REQUIRE( pages_in_store == expected_store );
     REQUIRE( repository == expected_repository );
 }

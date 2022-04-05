@@ -13,12 +13,13 @@
 
 #include "gumbo/gumbo.h"
 #include "../../../../include/doc_meta.hpp"
+#include "../../document-store/include/doc_store.hpp"
 
 struct WebCrawler {
     WebCrawler() {};
     WebCrawler(std::string path) : origin_path{path} { extractBaseURL(&origin_path); };
-    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo) : doc_store{store}, repository{repo} {};
-    WebCrawler(std::set<docmeta::DocumentMeta>* store, std::vector<docmeta::DocumentMeta>* repo, std::string path) : doc_store{store}, repository{repo}, origin_path{path} { extractBaseURL(&origin_path); };
+    WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages) : pages{crawler_found_pages} {};
+    WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path) : store{store}, pages{crawler_found_pages}, origin_path{path} { extractBaseURL(&origin_path); };
     
     void start();
     std::string getHTML(std::string url);
@@ -34,9 +35,8 @@ struct WebCrawler {
     std::string base_url;
     std::string protocol;
 
-    std::set<docmeta::DocumentMeta> pages;
-    std::set<docmeta::DocumentMeta>* doc_store;
-    std::vector<docmeta::DocumentMeta>* repository;
+    DocStore store;
+    std::set<docmeta::DocumentMeta>* pages;
 };
 
 #endif

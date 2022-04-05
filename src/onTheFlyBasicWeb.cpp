@@ -49,28 +49,30 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    std::set<docmeta::DocumentMeta> page_store;
+    std::set<docmeta::DocumentMeta> crawler_found_pages;
+    std::set<docmeta::DocumentMeta> pages_in_store;
     std::vector<docmeta::DocumentMeta> repository;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-    WebCrawler crawler = WebCrawler(&page_store, &repository, "https://zelebrate.xyz");
+    DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);
+    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, "https://zelebrate.xyz");
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    Ranker ranker = Ranker(&page_store, &index);
+    Ranker ranker = Ranker(&pages_in_store, &index);
 
-    std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
+    std::vector<docmeta::DocumentMeta> foundPages = engine::runSearch(crawler, indexer, ranker, searchTerm);
 
-    if (foundDocuments.empty()) {
+    if (foundPages.empty()) {
         LOG(INFO) << "No page(s) containing '" << searchTerm << "' found.";
         std::cout << "No page(s) containing '" << searchTerm << "' found." << std::endl;
     } else {
-        LOG(INFO) << "Found " << foundDocuments.size() << " pages(s)";
-        std::cout << "Found " << foundDocuments.size() << " pages(s):" << std::endl;
+        LOG(INFO) << "Found " << foundPages.size() << " pages(s)";
+        std::cout << "Found " << foundPages.size() << " pages(s):" << std::endl;
 
-        for (auto& doc: foundDocuments) {
-            std::cout << doc << std::endl;
+        for (auto& page: foundPages) {
+            std::cout << page << std::endl;
         }
     }
 

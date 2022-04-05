@@ -14,13 +14,16 @@ void WebCrawler::start() {
 
         while (!urls.empty()) {
             LOG(INFO) << "Crawl url: " << urls.front();
+            if (!checkIfURL(&urls.front())) {
+                LOG(ERROR) << urls.front() << " is not a valid URL";
+                continue;
+            }
             std::string htmlDoc = getHTML(urls.front());
             getURLs(htmlDoc, &urls);
             registerPage(urls.front(), htmlDoc);
             urls.pop();
         }
-
-        DocStore store = DocStore(&pages, doc_store, repository);
+        
         store.processDocuments();
     }
 }
@@ -28,10 +31,10 @@ void WebCrawler::start() {
 bool WebCrawler::checkIfURL(const std::string* url) {
     std::regex url_regex("https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&//=]*)");
     if (std::regex_match(*url, url_regex)) {
-        LOG(INFO) << "Valid URL entered";
+        LOG(INFO) << "Valid URL entered: " << *url;
         return true;
     } else {
-        LOG(ERROR) << "Not a valid URL entered";
+        LOG(ERROR) << "Not a valid URL entered: " << *url;
         return false;
     }   
 }
@@ -133,25 +136,25 @@ std::string WebCrawler::cleanText(GumboNode* node) {
 }
 
 void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
-    int new_id = pages.size() + 1;
+    int new_id = pages->size() + 1;
     
     std::string content = removeTags(htmlDoc);
     docmeta::DocumentMeta page = docmeta::DocumentMeta(new_id, content, url);
     LOG(INFO) << "Page to register: " << page;
 
-    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages.begin(), pages.end(), [&page](const docmeta::DocumentMeta pg) {
+    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages->begin(), pages->end(), [&page](const docmeta::DocumentMeta pg) {
         LOG(INFO) << "Page with path = " << page.path << " was already crawled"; 
         return pg.path == page.path;
     });
 
-    if (it != pages.end()) {
+    if (it != pages->end()) {
         if ((it->content) != (page.content)) {
             page.id = it->id;
-            pages.erase(it);
+            pages->erase(it);
         }
     }
 
-    pages.insert(page);
+    pages->insert(page);
     LOG(INFO) << "Successfully registered page: " << page;
 }
 

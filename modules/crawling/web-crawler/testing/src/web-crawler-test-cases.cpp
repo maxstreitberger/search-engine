@@ -53,11 +53,12 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
             docmeta::DocumentMeta(1, " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
         };
 
-        WebCrawler crawler = WebCrawler();
+        std::set<docmeta::DocumentMeta> foundPages;
+        WebCrawler crawler = WebCrawler(&foundPages);
         crawler.registerPage("https://zelebrate.xyz", html_doc);
 
 
-        REQUIRE(crawler.pages == expectedPages);
+        REQUIRE(foundPages == expectedPages);
     }
 
     SECTION("identify and update an already registered page.") {
@@ -71,12 +72,13 @@ TEST_CASE("Web Crawler can", "[web-crawler]") {
             docmeta::DocumentMeta(1, " Hello World Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.", "https://zelebrate.xyz") 
         };
 
-        WebCrawler crawler = WebCrawler();
+        std::set<docmeta::DocumentMeta> foundPages;
+        WebCrawler crawler = WebCrawler(&foundPages);
         crawler.registerPage("https://zelebrate.xyz", html_doc);
-        CHECK(crawler.pages == expectedPages_BeforeUpdating);
+        CHECK(foundPages == expectedPages_BeforeUpdating);
 
         crawler.registerPage("https://zelebrate.xyz", html_doc_updated);
-        CHECK(crawler.pages == expectedPages_AfterUpdating);
+        CHECK(foundPages == expectedPages_AfterUpdating);
     }
 
     SECTION("recognize 'https://zelebrate.xyz' as valid URL") {
