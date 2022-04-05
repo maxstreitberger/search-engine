@@ -7,6 +7,8 @@
 #include <queue>
 #include <set>
 #include <regex>
+#include <thread>
+#include <chrono>
 
 #include <glog/logging.h>
 #include <curl/curl.h>
@@ -19,7 +21,7 @@ struct WebCrawler {
     WebCrawler() {};
     WebCrawler(std::string path) : origin_path{path} { extractBaseURL(&origin_path); };
     WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages) : pages{crawler_found_pages} {};
-    WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path) : store{store}, pages{crawler_found_pages}, origin_path{path} { extractBaseURL(&origin_path); };
+    WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path, int depth_limit = 10) : store{store}, pages{crawler_found_pages}, origin_path{path}, depth_limit{depth_limit} { extractBaseURL(&origin_path); };
     
     void start();
     std::string getHTML(std::string url);
@@ -30,6 +32,7 @@ struct WebCrawler {
     std::string cleanText(GumboNode* node);
     void registerPage(std::string url, std::string htmlDoc);
     bool checkIfURL(const std::string* url);
+    bool checkIfURLWasAlreadyVisited(const std::string* url);
 
     std::string origin_path;
     std::string base_url;
@@ -37,6 +40,8 @@ struct WebCrawler {
 
     DocStore store;
     std::set<docmeta::DocumentMeta>* pages;
+    int depth_limit;
+    std::vector<std::string> already_visited_pages;
 };
 
 #endif

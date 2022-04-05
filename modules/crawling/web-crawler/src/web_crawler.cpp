@@ -11,17 +11,22 @@ void WebCrawler::start() {
     if (isValidURL) {
         std::queue<std::string> urls;
         urls.push(origin_path);
-
-        while (!urls.empty()) {
+        int counter_visited_pages = 0;
+        while (!urls.empty() && (counter_visited_pages != depth_limit)) {
             LOG(INFO) << "Crawl url: " << urls.front();
+
             if (!checkIfURL(&urls.front())) {
-                LOG(ERROR) << urls.front() << " is not a valid URL";
+                urls.pop();
                 continue;
             }
+
             std::string htmlDoc = getHTML(urls.front());
             getURLs(htmlDoc, &urls);
             registerPage(urls.front(), htmlDoc);
+            counter_visited_pages += 1;
+            already_visited_pages.push_back(urls.front());
             urls.pop();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
         
         store.processDocuments();
@@ -34,7 +39,7 @@ bool WebCrawler::checkIfURL(const std::string* url) {
         LOG(INFO) << "Valid URL entered: " << *url;
         return true;
     } else {
-        LOG(ERROR) << "Not a valid URL entered: " << *url;
+        LOG(ERROR) << "Not a valid URL entered: '" << *url << "'";
         return false;
     }   
 }
@@ -69,19 +74,30 @@ void WebCrawler::search_for_links(GumboNode* node, std::queue<std::string>* urls
 
     GumboAttribute* href;
     if (node->v.element.tag == GUMBO_TAG_A && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))) {
-        if (href->value[0] == '/' && href->value[1] == '/') {
-            std::string url = href->value;
-            urls->push(protocol + url.erase(0, 2));
-        } else if (href->value[0] == '/') {
-            urls->push(base_url + href->value);
-        } else if (href->value[0] != '#') {
-            urls->push(href->value);
+        std::string value = href->value;
+        LOG(INFO) << "Found url: " << value;
+        if (value[0] == '/' && value[1] == '/') {
+            std::string url = protocol + value.erase(0, 2);
+            LOG(INFO) << "Add url: " << url;
+            if (checkIfURLWasAlreadyVisited(&url) == false) urls->push(url);
+        } else if (value[0] == '/') {
+            std::string url = base_url + value;
+            LOG(INFO) << "Add url: " << url;
+            if (checkIfURLWasAlreadyVisited(&url) == false) urls->push(url);
         }
     }
 
     GumboVector* children = &node->v.element.children;
     for (unsigned int i = 0; i < children->length; ++i) {
         search_for_links(static_cast<GumboNode*>(children->data[i]), urls);
+    }
+}
+
+bool WebCrawler::checkIfURLWasAlreadyVisited(const std::string* url) {
+    if (std::find(already_visited_pages.begin(), already_visited_pages.end(), *url) != already_visited_pages.end()) {
+        return true;
+    } else {
+        return false;
     }
 }
 

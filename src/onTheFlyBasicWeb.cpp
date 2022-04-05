@@ -31,11 +31,17 @@ int main(int argc, char *argv[]) {
     google::InitGoogleLogging(argv[0]);
     LOG(INFO) << "Start onTheFlyBasicWeb search engine";
 
+    std::string url;
     std::string searchTerm;
+    int searchDepth;
     bool show_help = false;
 
-    auto cli = lyra::help(show_help) | lyra::opt(searchTerm, "searchTerm")
-                                    ["-s"]["--search"]("Get documents that include the search term.");
+    auto cli = lyra::help(show_help) | lyra::opt(url, "url")
+                                        ["-u"]["--url"]("Base url where the crawler should start crawling.")
+                                     | lyra::opt(searchTerm, "searchTerm")
+                                        ["-s"]["--search"]("Get documents that include the search term.")
+                                     | lyra::opt(searchDepth, "searchDepth")
+                                        ["-d"]["--depth"]("How deep should the crawler crawl?");
     
     auto result = cli.parse({ argc, argv });
     if (!result) {
@@ -58,7 +64,7 @@ int main(int argc, char *argv[]) {
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
     DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);
-    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, "https://zelebrate.xyz");
+    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, url, searchDepth);
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&pages_in_store, &index);
 
