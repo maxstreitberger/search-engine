@@ -13,12 +13,12 @@ void DocStore::processDocuments() {
     repository->insert( repository->end(), changesAndAddition.second.begin(), changesAndAddition.second.end() );
 }
 
-std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> DocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta> docs) {
+std::pair<std::vector<docmeta::DocumentMeta>, std::vector<docmeta::DocumentMeta>> DocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, std::set<docmeta::DocumentMeta>* docs) {
     LOG(INFO) << "Check for changes in documents";
     std::vector<docmeta::DocumentMeta> newDocs;
     std::vector<docmeta::DocumentMeta> updatedDocs;
 
-    for (auto& crawler_doc: docs) {
+    for (auto& crawler_doc: *docs) {
         std::set<docmeta::DocumentMeta>::iterator it = std::find_if(currentStore->begin(), currentStore->end(), [&crawler_doc](const docmeta::DocumentMeta doc) {
             LOG(INFO) << "Document with path = " << doc.path << " was already crawled"; 
             return doc.path == crawler_doc.path;

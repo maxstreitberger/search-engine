@@ -5,16 +5,18 @@
 
 TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e]") {
     SECTION("No document returned.") {
-        std::set<docmeta::DocumentMeta> document_store;
+        std::set<docmeta::DocumentMeta> crawler_found_documents;
+        std::set<docmeta::DocumentMeta> documents_in_store;
         std::vector<docmeta::DocumentMeta> repository;
         std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
         
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);
+        DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-        Ranker ranker = Ranker(&document_store, &index);
+        Ranker ranker = Ranker(&documents_in_store, &index);
 
         std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, "test");
         REQUIRE( foundDocuments.empty() );
@@ -24,16 +26,18 @@ TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e
         std::string doc1_path = SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents/doc1.txt";
         std::string expected_text = helpers::loadFile(doc1_path);
 
-        std::set<docmeta::DocumentMeta> document_store;
+        std::set<docmeta::DocumentMeta> crawler_found_documents;
+        std::set<docmeta::DocumentMeta> documents_in_store;
         std::vector<docmeta::DocumentMeta> repository;
         std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
         
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);
+        DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-        Ranker ranker = Ranker(&document_store, &index);
+        Ranker ranker = Ranker(&documents_in_store, &index);
 
         std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, "quis");
         REQUIRE( !foundDocuments.empty() );
@@ -49,16 +53,18 @@ TEST_CASE("On-The-Fly Basic Document Search", "[on-the-fly, basic, document, e2e
         std::string doc2_text = helpers::loadFile(doc2_path);
         std::string doc3_text = helpers::loadFile(doc3_path);
 
-        std::set<docmeta::DocumentMeta> document_store;
+        std::set<docmeta::DocumentMeta> crawler_found_documents;
+        std::set<docmeta::DocumentMeta> documents_in_store;
         std::vector<docmeta::DocumentMeta> repository;
         std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
         
         std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
         std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-        DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
+        DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);
+        DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, SEARCHENGINE_TESTING_DIR "/on_the_fly_basic_document/resources/test-documents");
         Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-        Ranker ranker = Ranker(&document_store, &index);
+        Ranker ranker = Ranker(&documents_in_store, &index);
 
         std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, "lorem");
         REQUIRE( !foundDocuments.empty() );

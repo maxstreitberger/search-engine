@@ -14,12 +14,17 @@ TEST_CASE("Document crawler end-to-end test.", "[crawler, e2e]") {
         docmeta::DocumentMeta(3, "Fusce dictum dolor sapien. Donec ullamcorper iaculis ultrices. Donec condimentum dui ipsum, vel mollis eros congue at. Aenean sed accumsan odio, eget maximus neque. Vivamus faucibus lectus odio, a hendrerit augue posuere a. Nam commodo sagittis lacinia. Cras vitae orci at enim aliquet congue. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis egestas felis dapibus sapien pulvinar, in imperdiet dui pellentesque. Aliquam sed turpis in libero condimentum suscipit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi et sapien sit amet ante consequat tristique. Fusce varius enim quis est bibendum fermentum.", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/test-folder/demo3.txt")
     };
 
-    std::set<docmeta::DocumentMeta> document_store;
+    std::set<docmeta::DocumentMeta> crawler_found_documents;
+    std::set<docmeta::DocumentMeta> documents_in_store;
     std::vector<docmeta::DocumentMeta> repository;
+    
+    std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
+    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-    DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
+    DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);                                   // <---- Injecting Doc_Store
+    DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
     crawler.start();
 
-    REQUIRE( document_store == expected_store );
+    REQUIRE( documents_in_store == expected_store );
     REQUIRE( repository == expected_repository );
 }

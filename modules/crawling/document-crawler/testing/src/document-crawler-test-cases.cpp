@@ -23,19 +23,19 @@ TEST_CASE("DocumentCrawler can", "[crawler][store]") {
 
     SECTION("register a new document") {
         std::set<docmeta::DocumentMeta> expectedMeta = { docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
-
-        DocumentCrawler crawler = DocumentCrawler();
+        std::set<docmeta::DocumentMeta> returnedDocs;
+        DocumentCrawler crawler = DocumentCrawler(&returnedDocs);
         crawler.registerDocument(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
 
-        REQUIRE( expectedMeta == crawler.documents );
+        REQUIRE( returnedDocs == expectedMeta );
     }
 
     SECTION("identify and update an already registered document") {
         std::set<docmeta::DocumentMeta> expectedMeta = { docmeta::DocumentMeta(1, "Hello, World!", DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt") };
-
-        DocumentCrawler crawler = DocumentCrawler();
+        std::set<docmeta::DocumentMeta> returnedDocs;
+        DocumentCrawler crawler = DocumentCrawler(&returnedDocs);
         crawler.registerDocument(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
-        CHECK(expectedMeta == crawler.documents);
+        REQUIRE( returnedDocs == expectedMeta );
 
         std::ofstream file(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
         file << "What's up?";
@@ -43,7 +43,7 @@ TEST_CASE("DocumentCrawler can", "[crawler][store]") {
 
         crawler.registerDocument(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
 
-        CHECK( expectedMeta != crawler.documents );
-        REQUIRE (crawler.documents.begin()->content == "What's up?" );
+        REQUIRE( returnedDocs != expectedMeta );
+        REQUIRE (returnedDocs.begin()->content == "What's up?" );
     }
 }

@@ -12,22 +12,21 @@
 
 #include "../../../../include/doc_meta.hpp"
 #include "../../../../include/helpers.hpp"
+#include "../../document-store/include/doc_store.hpp"
 
 struct DocumentCrawler {
     DocumentCrawler() {};
     DocumentCrawler(std::string path) : origin_path{path} {};
-    DocumentCrawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository) : doc_store{document_store}, repository{repository} {};
-    DocumentCrawler(std::set<docmeta::DocumentMeta>* document_store, std::vector<docmeta::DocumentMeta>* repository, std::string path) : doc_store{document_store}, repository{repository}, origin_path{path} {}
+    DocumentCrawler(std::set<docmeta::DocumentMeta>* crawler_found_documents) : documents{crawler_found_documents} {};
+    DocumentCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_documents, std::string path) : store{store}, documents{crawler_found_documents}, origin_path{path} {};
     
     void start();
     std::vector<std::string> getDocumentPaths();
     void registerDocument(std::string path);
     
+    DocStore store;
     std::string origin_path;
-    std::set<docmeta::DocumentMeta> documents;
-
-    std::set<docmeta::DocumentMeta>* doc_store;
-    std::vector<docmeta::DocumentMeta>* repository;
+    std::set<docmeta::DocumentMeta>* documents;
 };
 
 

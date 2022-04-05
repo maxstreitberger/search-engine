@@ -20,7 +20,7 @@ void WebCrawler::start() {
             urls.pop();
         }
 
-        DocStore store = DocStore(pages, doc_store, repository);
+        DocStore store = DocStore(&pages, doc_store, repository);
         store.processDocuments();
     }
 }

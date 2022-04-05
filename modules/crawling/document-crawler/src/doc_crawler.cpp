@@ -11,7 +11,6 @@ void DocumentCrawler::start() {
         registerDocument(document_path);
     }
 
-    DocStore store = DocStore(documents, doc_store, repository);
     store.processDocuments();
 }
 
@@ -39,24 +38,24 @@ std::vector<std::string> DocumentCrawler::getDocumentPaths() {
 }
 
 void DocumentCrawler::registerDocument(std::string path) {
-    int new_id = documents.size() + 1;
+    int new_id = documents->size() + 1;
     std::string text = helpers::loadFile(path);
     docmeta::DocumentMeta document = docmeta::DocumentMeta(new_id, text, path);
     LOG(INFO) << "Document to register: " << document;
 
-    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(documents.begin(), documents.end(), [&document](const docmeta::DocumentMeta doc) { 
+    std::set<docmeta::DocumentMeta>::iterator it = std::find_if(documents->begin(), documents->end(), [&document](const docmeta::DocumentMeta doc) { 
         LOG(INFO) << "Document with path = " << document.path << " was already crawled"; 
         return doc.path == document.path;
     });
 
-    if (it != documents.end()) {
+    if (it != documents->end()) {
         if ((it->content) != (document.content)) {
             document.id = it->id;
-            documents.erase(it);
+            documents->erase(it);
         }
     }
 
-    documents.insert(document);
+    documents->insert(document);
     LOG(INFO) << "Successfully registered document: " << document;
 }
 

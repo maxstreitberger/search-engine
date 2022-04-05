@@ -20,6 +20,7 @@
 #include <iostream>
 #include "indexer.hpp"
 #include "doc_crawler.hpp"
+#include "doc_store.hpp"
 #include "ranker.hpp"
 #include "engine.hpp"
 
@@ -49,16 +50,18 @@ int main(int argc, const char** argv) {
         return 0;
     }
 
-    std::set<docmeta::DocumentMeta> document_store;
-    std::vector<docmeta::DocumentMeta> repository;
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
-    
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
-    DocumentCrawler crawler = DocumentCrawler(&document_store, &repository, SEARCHENGINE_ROOT_DIR "/dummy-text");
+    std::set<docmeta::DocumentMeta> crawler_found_documents;
+    std::set<docmeta::DocumentMeta> documents_in_store;
+    std::vector<docmeta::DocumentMeta> repository;
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
+
+    DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);
+    DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, SEARCHENGINE_ROOT_DIR "/dummy-text");
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    Ranker ranker = Ranker(&document_store, &index);
+    Ranker ranker = Ranker(&documents_in_store, &index);
 
     std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
 

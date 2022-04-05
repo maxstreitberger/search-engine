@@ -2,7 +2,7 @@ project (document-crawler)
 
 add_library(${PROJECT_NAME} src/doc_crawler.cpp)
 
-target_include_directories( ${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
 )
 

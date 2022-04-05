@@ -21,7 +21,7 @@ TEST_CASE("Document Store end-to-end test.", "[store, e2e]") {
         std::set<docmeta::DocumentMeta> document_store;
         std::vector<docmeta::DocumentMeta> repository;
 
-        DocStore store = DocStore(crawler_docs, &document_store, &repository);
+        DocStore store = DocStore(&crawler_docs, &document_store, &repository);
         store.processDocuments();
 
         REQUIRE( document_store == expected_store);
@@ -46,7 +46,7 @@ TEST_CASE("Document Store end-to-end test.", "[store, e2e]") {
         };
         std::vector<docmeta::DocumentMeta> repository;
 
-        DocStore store = DocStore(crawler_docs, &document_store, &repository);
+        DocStore store = DocStore(&crawler_docs, &document_store, &repository);
         store.processDocuments();
 
         REQUIRE( document_store == expected_store);
@@ -67,7 +67,7 @@ TEST_CASE("Document Store end-to-end test.", "[store, e2e]") {
         };
         std::vector<docmeta::DocumentMeta> repository;
 
-        DocStore store = DocStore(crawler_docs, &document_store, &repository);
+        DocStore store = DocStore(&crawler_docs, &document_store, &repository);
         store.processDocuments();
 
         REQUIRE( document_store == expected_store);
