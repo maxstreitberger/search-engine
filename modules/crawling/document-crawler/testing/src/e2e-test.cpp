@@ -17,9 +17,6 @@ TEST_CASE("Document crawler end-to-end test.", "[crawler, e2e]") {
     std::set<docmeta::DocumentMeta> crawler_found_documents;
     std::set<docmeta::DocumentMeta> documents_in_store;
     std::vector<docmeta::DocumentMeta> repository;
-    
-    std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
-    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
 
     DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);                                   // <---- Injecting Doc_Store
     DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents");
