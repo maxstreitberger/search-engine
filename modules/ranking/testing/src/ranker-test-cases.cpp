@@ -41,7 +41,7 @@ TEST_CASE("Ranker can", "[ranker]") {
         REQUIRE( returnedInfo == expectedInfo );
     }
 
-    SECTION("can collect document ids.") {
+    SECTION("collect document ids.") {
         std::vector<tokenmeta::TokenMeta> tokenMeta = { 
             tokenmeta::TokenMeta(1, 1, { 1 }), 
             tokenmeta::TokenMeta(2, 1, { 1 }) 
@@ -54,7 +54,7 @@ TEST_CASE("Ranker can", "[ranker]") {
         REQUIRE( doc_ptrs == expectedResult );
     }
 
-    SECTION("can return documents.") {
+    SECTION("return documents.") {
         std::vector<docmeta::DocumentMeta> expectedDocuments = {
             docmeta::DocumentMeta(2, "Around the World in Eighty Days. Eighty miles", RANKING_TESTING_ROOT_DIR "/testing-documents/demo2.txt"),
         };
@@ -62,6 +62,19 @@ TEST_CASE("Ranker can", "[ranker]") {
         std::vector<const docmeta::DocumentMeta*> ptrs = { &store[1] };
 
         Ranker ranker = Ranker();
+        std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(ptrs);
+
+        REQUIRE( returnedDocuments == expectedDocuments );
+    }
+
+    SECTION("return the specified amount of documents. (test if one document got returned)") {
+        std::vector<docmeta::DocumentMeta> expectedDocuments = {
+            docmeta::DocumentMeta(1, "Hello, World! How are you world?", RANKING_TESTING_ROOT_DIR "/testing-documents/demo.txt"),
+        };
+
+        std::vector<const docmeta::DocumentMeta*> ptrs = { &store[0], &store[1] };
+
+        Ranker ranker = Ranker(1);
         std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(ptrs);
 
         REQUIRE( returnedDocuments == expectedDocuments );

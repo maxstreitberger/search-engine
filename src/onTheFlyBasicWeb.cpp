@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
     std::string url;
     std::string searchTerm;
     int searchDepth;
+    int maxReturnDocumentCount;
     bool show_help = false;
 
     auto cli = lyra::help(show_help) | lyra::opt(url, "url")
@@ -41,7 +42,9 @@ int main(int argc, char *argv[]) {
                                      | lyra::opt(searchTerm, "searchTerm")
                                         ["-s"]["--search"]("Get documents that include the search term.")
                                      | lyra::opt(searchDepth, "searchDepth")
-                                        ["-d"]["--depth"]("How deep should the crawler crawl?");
+                                        ["-d"]["--depth"]("How deep should the crawler crawl?")
+                                    | lyra::opt(maxReturnDocumentCount, "maxReturnDocumentCount")
+                                        ["-m"]["--max"]("What is the maximum number of documents to be returned?");
     
     auto result = cli.parse({ argc, argv });
     if (!result) {
@@ -66,7 +69,7 @@ int main(int argc, char *argv[]) {
     DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);
     WebCrawler crawler = WebCrawler(store, &crawler_found_pages, url, searchDepth);
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    Ranker ranker = Ranker(&pages_in_store, &index);
+    Ranker ranker = Ranker(&pages_in_store, &index, maxReturnDocumentCount);
 
     std::vector<docmeta::DocumentMeta> foundPages = engine::runSearch(crawler, indexer, ranker, searchTerm);
 

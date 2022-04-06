@@ -14,8 +14,8 @@
 #include "../../../include/helpers.hpp"
 
 struct Ranker {
-    Ranker() {};
-    Ranker(std::set<docmeta::DocumentMeta>* document_store, std::map<std::string, std::set<tokenmeta::TokenMeta>>* index) : doc_store{document_store}, index{index} {};
+    Ranker(int max_return_document_count = 0) : max_return_document_count{max_return_document_count} {};
+    Ranker(std::set<docmeta::DocumentMeta>* document_store, std::map<std::string, std::set<tokenmeta::TokenMeta>>* index, int max_return_document_count = 0) : doc_store{document_store}, index{index}, max_return_document_count{max_return_document_count} {};
     
     std::vector<docmeta::DocumentMeta> searchFor(std::string query);
     std::string transformQuery(std::string query);
@@ -25,6 +25,7 @@ struct Ranker {
 
     std::set<docmeta::DocumentMeta>* doc_store;
     std::map<std::string, std::set<tokenmeta::TokenMeta>>* index;
+    int max_return_document_count;
 };
 
 #endif

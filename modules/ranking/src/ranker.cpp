@@ -50,10 +50,25 @@ std::vector<const docmeta::DocumentMeta*> Ranker::filterDocPtrs(std::vector<toke
 std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::vector<const docmeta::DocumentMeta*> doc_ptrs) {
     LOG(INFO) << "Collect documents";
     std::vector<docmeta::DocumentMeta> documents;
+    std::vector<const docmeta::DocumentMeta*>::iterator doc_it = doc_ptrs.begin();
 
-    for (const docmeta::DocumentMeta* ptr: doc_ptrs) {
-        docmeta::DocumentMeta doc = *(ptr);
-        documents.push_back(doc);
+    for (auto& doc: doc_ptrs) {
+        std::cout << *doc << std::endl;
+    }
+
+    if ((max_return_document_count == 0) || (max_return_document_count >= doc_ptrs.size())){
+        while (doc_it != doc_ptrs.end()) {
+            docmeta::DocumentMeta doc = **doc_it;
+            documents.push_back(doc);
+            doc_it++;
+        }
+    } else {
+        while (max_return_document_count > 0) {
+            docmeta::DocumentMeta doc = **doc_it;
+            documents.push_back(doc);
+            doc_it++;
+            max_return_document_count -= 1;
+        }
     }
 
     return documents;
