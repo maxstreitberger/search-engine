@@ -21,10 +21,10 @@ void WebCrawler::start() {
             }
 
             std::string htmlDoc = getHTML(urls.front());
+            already_visited_pages.push_back(urls.front());
             getURLs(htmlDoc, &urls);
             registerPage(urls.front(), htmlDoc);
             counter_visited_pages += 1;
-            already_visited_pages.push_back(urls.front());
             urls.pop();
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
@@ -93,10 +93,20 @@ void WebCrawler::search_for_links(GumboNode* node, std::queue<std::string>* urls
     }
 }
 
-bool WebCrawler::checkIfURLWasAlreadyVisited(const std::string* url) {
+bool WebCrawler::checkIfURLWasAlreadyVisited(std::string* url) {
+    int url_size = url->size();
+    
+    if ((*url)[url_size - 1] == '/') {
+        (*url).pop_back();
+    }
+
     if (std::find(already_visited_pages.begin(), already_visited_pages.end(), *url) != already_visited_pages.end()) {
+        LOG(INFO) << *url << " already visited";
+        std::cout << *url << " already visited" << std::endl;
         return true;
     } else {
+        LOG(INFO) << *url << " not visited yet";
+        std::cout << *url << " not visited yet" << std::endl;
         return false;
     }
 }

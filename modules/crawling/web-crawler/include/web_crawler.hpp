@@ -18,9 +18,9 @@
 #include "../../document-store/include/doc_store.hpp"
 
 struct WebCrawler {
-    WebCrawler() {};
-    WebCrawler(std::string path) : origin_path{path} { extractBaseURL(&origin_path); };
-    WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages) : pages{crawler_found_pages} {};
+    WebCrawler(int depth_limit = 10) : depth_limit{depth_limit} {};
+    WebCrawler(std::string path, int depth_limit = 10) : origin_path{path}, depth_limit{depth_limit} { extractBaseURL(&origin_path); };
+    WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages, int depth_limit = 10) : pages{crawler_found_pages}, depth_limit{depth_limit} {};
     WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path, int depth_limit = 10) : store{store}, pages{crawler_found_pages}, origin_path{path}, depth_limit{depth_limit} { extractBaseURL(&origin_path); };
     
     void start();
@@ -32,7 +32,7 @@ struct WebCrawler {
     std::string cleanText(GumboNode* node);
     void registerPage(std::string url, std::string htmlDoc);
     bool checkIfURL(const std::string* url);
-    bool checkIfURLWasAlreadyVisited(const std::string* url);
+    bool checkIfURLWasAlreadyVisited(std::string* url);
 
     std::string origin_path;
     std::string base_url;
