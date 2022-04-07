@@ -52,10 +52,6 @@ std::vector<docmeta::DocumentMeta> Ranker::collectDocuments(std::vector<const do
     std::vector<docmeta::DocumentMeta> documents;
     std::vector<const docmeta::DocumentMeta*>::iterator doc_it = doc_ptrs.begin();
 
-    for (auto& doc: doc_ptrs) {
-        std::cout << *doc << std::endl;
-    }
-
     if ((max_return_document_count == 0) || (max_return_document_count >= doc_ptrs.size())){
         while (doc_it != doc_ptrs.end()) {
             docmeta::DocumentMeta doc = **doc_it;
