@@ -1,8 +1,7 @@
-#define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 #include "doc_crawler.hpp"
 
-TEST_CASE("DocumentCrawler can", "[crawler][store]") {    
+TEST_CASE("DocumentCrawler can", "[crawler][store]") {
     std::ofstream file(DOCUMENT_CRAWLER_TESTING_ROOT_DIR "/testing-documents/demo.txt");
     file << "Hello, World!";
     file.close();

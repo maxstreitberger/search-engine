@@ -28,9 +28,9 @@
 #include <lyra/lyra.hpp>
 
 int main(int argc, const char** argv) {
-    FLAGS_log_dir = "/tmp";
+    FLAGS_log_dir = SEARCHENGINE_ROOT_DIR "/bin/logs";
     google::InitGoogleLogging(argv[0]);
-    LOG(INFO) << "Start onTheFlyBasicDocument search engine";
+    DLOG(INFO) << "Start onTheFlyBasicDocument search engine";
 
     std::string searchTerm;
     bool show_help = false;
