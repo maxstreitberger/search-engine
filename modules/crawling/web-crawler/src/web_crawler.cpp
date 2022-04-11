@@ -26,7 +26,7 @@ void WebCrawler::start() {
             registerPage(urls.front(), htmlDoc);
             counter_visited_pages += 1;
             urls.pop();
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
         }
         
         store.processDocuments();
@@ -102,11 +102,9 @@ bool WebCrawler::checkIfURLWasAlreadyVisited(std::string* url) {
 
     if (std::find(already_visited_pages.begin(), already_visited_pages.end(), *url) != already_visited_pages.end()) {
         LOG(INFO) << *url << " already visited";
-        std::cout << *url << " already visited" << std::endl;
         return true;
     } else {
         LOG(INFO) << *url << " not visited yet";
-        std::cout << *url << " not visited yet" << std::endl;
         return false;
     }
 }

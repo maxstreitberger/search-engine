@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include "web_crawler.hpp"
 #include "../../../include/helpers.hpp"
 
@@ -29,4 +30,12 @@ TEST_CASE("Web crawler end-to-end test.", "[crawler, e2e]") {
 
     REQUIRE( pages_in_store == expected_store );
     REQUIRE( repository == expected_repository );
+
+    pages_in_store = {};
+    repository = {};
+    crawler_found_pages = {};
+    crawler.already_visited_pages = {};
+    BENCHMARK("Web crawler end-to-end test.") {
+        return crawler.start();
+    };
 }
