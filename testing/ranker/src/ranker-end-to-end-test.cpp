@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include "ranker.hpp"
 
 TEST_CASE("Ranker returns correct documents", "[ranker]") {
@@ -46,4 +47,8 @@ TEST_CASE("Ranker returns correct documents", "[ranker]") {
     CHECK( returnedDocs1 == expectedDocs1 );
     CHECK( returnedDocs2 == expectedDocs2 );
     CHECK( returnedDocs3 == expectedDocs3 );
+
+    BENCHMARK("Ranker returns correct documents.") {
+        return ranker.searchFor("lorem");
+    };
 }
