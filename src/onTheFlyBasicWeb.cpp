@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
-    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
+    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
     DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);
     WebCrawler crawler = WebCrawler(store, &crawler_found_pages, url, searchDepth);

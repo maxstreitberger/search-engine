@@ -51,7 +51,7 @@ int main(int argc, const char** argv) {
     }
 
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
-    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.json";
+    std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
     std::set<docmeta::DocumentMeta> crawler_found_documents;
     std::set<docmeta::DocumentMeta> documents_in_store;

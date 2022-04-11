@@ -10,5 +10,3 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC glog::glog
     PUBLIC nlohmann_json::nlohmann_json
 )
-
-add_subdirectory(testing)

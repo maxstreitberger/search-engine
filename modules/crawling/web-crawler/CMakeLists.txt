@@ -14,5 +14,3 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE ${CURL_LIBRARIES}
     PRIVATE doc_store
 )
-
-add_subdirectory(testing)

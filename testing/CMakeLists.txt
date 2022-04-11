@@ -1,3 +1,8 @@
 add_subdirectory(on_the_fly_basic_document)
 add_subdirectory(on_the_fly_basic_web)
 add_subdirectory(helper)
+add_subdirectory(document-crawler)
+add_subdirectory(web-crawler)
+add_subdirectory(document-store)
+add_subdirectory(indexer)
+add_subdirectory(ranker)

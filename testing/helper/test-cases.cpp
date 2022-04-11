@@ -30,7 +30,7 @@ TEST_CASE("Can make a text to lowercase", "[on-the-fly, basic, web, e2e]") {
 }
 
 TEST_CASE("Can load text", "[on-the-fly, basic, web, e2e]") {
-    std::string filePath = SEARCHENGINE_TESTING_DIR "/helper/test-file.txt";
+    std::string filePath = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt";
     std::string returnedText = helpers::loadFile(filePath);
-    REQUIRE( returnedText == "Hello, World!" );
+    REQUIRE( returnedText == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis interdum malesuada nisl, in posuere ligula aliquam et. Vivamus dapibus sapien a maximus suscipit. Maecenas id viverra mauris. Phasellus et lorem quis massa pretium elementum. Donec feugiat diam ut lorem pellentesque, eget eleifend elit iaculis. Mauris vitae libero pulvinar, egestas erat." );
 }

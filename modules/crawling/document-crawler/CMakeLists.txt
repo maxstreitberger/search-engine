@@ -11,5 +11,3 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC glog::glog
     PRIVATE doc_store
 )
-
-add_subdirectory(testing)
