@@ -43,6 +43,7 @@ find_package(lyra CONFIG REQUIRED)
 # SUB-DIRECTORIES
 add_subdirectory(testing)
 add_subdirectory(modules)
+add_subdirectory(benchmarking)
 
 
 #---------------------------------------------------------------------------------------------------------

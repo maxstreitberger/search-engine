@@ -1,0 +1,2 @@
+add_subdirectory(on_the_fly_basic_document)
+add_subdirectory(on_the_fly_basic_web)
