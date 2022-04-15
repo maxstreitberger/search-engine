@@ -19,20 +19,19 @@ void PreComputedIndexer::generateIndex() {
     stopwords = loadList(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
 
     while (1) {
-        docmeta::DocumentMeta doc;
+        const docmeta::DocumentMeta* doc;
         repository_pipeline->wait_and_pop(doc);
         process(doc);
-        LOG(WARNING) << *index;
     }
 }
 
-void PreComputedIndexer::process(docmeta::DocumentMeta doc) {
-    LOG(INFO) << "Process document with id: " << doc.id;
-    std::vector<std::string> tokens = splitTextIntoList(doc.content);
+void PreComputedIndexer::process(const docmeta::DocumentMeta* doc) {
+    LOG(INFO) << "Process document with id: " << doc->id;
+    std::vector<std::string> tokens = splitTextIntoList(doc->content);
     std::vector<std::string> withoutSpecialChars = removeSpecialChars(tokens, specialchars);
     std::vector<std::string> finalTokens = removeStopwords(withoutSpecialChars, stopwords);
 
-    std::map<std::string, std::set<tokenmeta::TokenMeta>> doc_index = createIndexForDocument(&doc, finalTokens);
+    std::map<std::string, std::set<tokenmeta::TokenMeta>> doc_index = createIndexForDocument(doc, finalTokens);
     updateIndex(index, doc_index);
 }
 
@@ -107,7 +106,7 @@ std::vector<std::string> PreComputedIndexer::removeStopwords(std::vector<std::st
     return newTokens;
 }
 
-std::map<std::string, std::set<tokenmeta::TokenMeta>> PreComputedIndexer::createIndexForDocument(docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
+std::map<std::string, std::set<tokenmeta::TokenMeta>> PreComputedIndexer::createIndexForDocument(const docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
     LOG(INFO) << "Create index";
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 

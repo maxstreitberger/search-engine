@@ -3,12 +3,20 @@
 
 #include "pre_computed_doc_store.hpp"
 
+std::ostream & operator <<(std::ostream &os, const std::set<docmeta::DocumentMeta> &m) {
+    for (const auto &p : m) {
+        os << p << std::endl;
+    }
+    return os;
+}
+
 void PreComputedDocStore::receiveDocuments() {
     LOG(INFO) << "Receive documents from crawler";
     while(1) {
         docmeta::DocumentMeta doc;
         crawler_store_pipeline->wait_and_pop(doc);
         process(doc);
+        LOG(WARNING) << *doc_store;
     }
 }
 
@@ -18,14 +26,16 @@ void PreComputedDocStore::process(docmeta::DocumentMeta doc) {
     DocumentStatus isNewDocument = checkForChanges(doc_store, &doc);
     switch (isNewDocument) {
     case NEW:
-        add(doc_store, repository_pipeline, &doc);
+        addToStore(doc_store, &doc);
+        pushToRepository(doc_store, repository_pipeline, doc);
         break;
     case UPDATED:
-        update(doc_store, repository_pipeline, &doc);
+        updateStore(doc_store, &doc);
+        pushToRepository(doc_store, repository_pipeline, doc);
         break;
     default:
         break;
-    }
+    } 
 }
 
 DocumentStatus PreComputedDocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {
@@ -49,17 +59,15 @@ DocumentStatus PreComputedDocStore::checkForChanges(std::set<docmeta::DocumentMe
     }
 }
 
-void PreComputedDocStore::add(std::set<docmeta::DocumentMeta>* currentStore, ThreadQueue<docmeta::DocumentMeta>* repository_pipeline, docmeta::DocumentMeta* doc) {
+void PreComputedDocStore::addToStore(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {
     doc->id = currentStore->size() + 1;
     currentStore->insert(*doc);
-    repository_pipeline->push(*doc);
 }
 
-void PreComputedDocStore::update(std::set<docmeta::DocumentMeta>* currentStore, ThreadQueue<docmeta::DocumentMeta>* repository_pipeline, docmeta::DocumentMeta* doc) {
+void PreComputedDocStore::updateStore(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {
     LOG(INFO) << "Update doc (id= " << doc->id << ") to " << doc->content;
     
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(currentStore->begin(), currentStore->end(), [&doc](const docmeta::DocumentMeta doc_in_store) {
-        LOG(INFO) << "Document with path = " << doc->path << " was already crawled"; 
         return doc_in_store.path == doc->path;
     });
 
@@ -67,7 +75,11 @@ void PreComputedDocStore::update(std::set<docmeta::DocumentMeta>* currentStore, 
     doc->id = old_id;
     currentStore->erase(it);
     currentStore->insert(*doc);
-    repository_pipeline->push(*doc);
 }
 
+void PreComputedDocStore::pushToRepository(std::set<docmeta::DocumentMeta>* currentStore, ThreadQueue<const docmeta::DocumentMeta*>* repository_pipeline, docmeta::DocumentMeta doc) {
+    std::set<docmeta::DocumentMeta>::iterator it = currentStore->find(doc);
+    const docmeta::DocumentMeta* document = &(*it);
+    repository_pipeline->push(document);
+}
 #endif
