@@ -39,7 +39,7 @@ std::vector<std::string> PreComputedDocumentCrawler::getDocumentPaths() {
 void PreComputedDocumentCrawler::registerDocument(std::string path) {
     std::string text = helpers::loadFile(path);
     docmeta::DocumentMeta document = docmeta::DocumentMeta(-1, text, path);
-    crawler_pipeline->push(document);
+    crawler_store_pipeline->push(document);
     LOG(INFO) << "Successfully registered document: " << document;
 }
 

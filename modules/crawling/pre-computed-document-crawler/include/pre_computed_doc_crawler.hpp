@@ -19,13 +19,13 @@ struct PreComputedDocumentCrawler {
     PreComputedDocumentCrawler() {};
     PreComputedDocumentCrawler(std::string path) : origin_path{path} {};
     PreComputedDocumentCrawler(std::set<docmeta::DocumentMeta>* crawler_found_documents) : documents{crawler_found_documents} {};
-    PreComputedDocumentCrawler(ThreadQueue<docmeta::DocumentMeta>* pipeline, std::string path) : crawler_pipeline{pipeline}, origin_path{path} {};
+    PreComputedDocumentCrawler(ThreadQueue<docmeta::DocumentMeta>* pipeline, std::string path) : crawler_store_pipeline{pipeline}, origin_path{path} {};
     
     void start();
     std::vector<std::string> getDocumentPaths();
     void registerDocument(std::string path);
 
-    ThreadQueue<docmeta::DocumentMeta>* crawler_pipeline;
+    ThreadQueue<docmeta::DocumentMeta>* crawler_store_pipeline;
 
     std::string origin_path;
     std::set<docmeta::DocumentMeta>* documents;

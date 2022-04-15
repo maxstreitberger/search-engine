@@ -103,14 +103,14 @@ target_include_directories(preComputedBasicDocument
 target_link_directories(preComputedBasicDocument
     PRIVATE modules/crawling/pre-computed-document-crawler
     PRIVATE modules/crawling/pre-computed-document-store
-    PRIVATE modules/indexing
+    PRIVATE modules/pre-computed-indexer
     PRIVATE modules/ranking
 )
 
 target_link_libraries(preComputedBasicDocument
     PRIVATE pre-computed-document-crawler
     PRIVATE pre_computed_doc_store
-    PRIVATE indexing
+    PRIVATE pre-computed-indexer
     PRIVATE ranking
     PRIVATE glog::glog
     PRIVATE bfg::lyra

@@ -7,7 +7,7 @@ void PreComputedDocStore::receiveDocuments() {
     LOG(INFO) << "Receive documents from crawler";
     while(1) {
         docmeta::DocumentMeta doc;
-        crawler_pipeline->wait_and_pop(doc);
+        crawler_store_pipeline->wait_and_pop(doc);
         process(doc);
     }
 }
@@ -18,10 +18,10 @@ void PreComputedDocStore::process(docmeta::DocumentMeta doc) {
     DocumentStatus isNewDocument = checkForChanges(doc_store, &doc);
     switch (isNewDocument) {
     case NEW:
-        add(doc_store, repository, &doc);
+        add(doc_store, repository_pipeline, &doc);
         break;
     case UPDATED:
-        update(doc_store, repository, &doc);
+        update(doc_store, repository_pipeline, &doc);
         break;
     default:
         break;
@@ -49,13 +49,13 @@ DocumentStatus PreComputedDocStore::checkForChanges(std::set<docmeta::DocumentMe
     }
 }
 
-void PreComputedDocStore::add(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta>* repository, docmeta::DocumentMeta* doc) {
+void PreComputedDocStore::add(std::set<docmeta::DocumentMeta>* currentStore, ThreadQueue<docmeta::DocumentMeta>* repository_pipeline, docmeta::DocumentMeta* doc) {
     doc->id = currentStore->size() + 1;
     currentStore->insert(*doc);
-    repository->push_back(*doc);
+    repository_pipeline->push(*doc);
 }
 
-void PreComputedDocStore::update(std::set<docmeta::DocumentMeta>* currentStore, std::vector<docmeta::DocumentMeta>* repository, docmeta::DocumentMeta* doc) {
+void PreComputedDocStore::update(std::set<docmeta::DocumentMeta>* currentStore, ThreadQueue<docmeta::DocumentMeta>* repository_pipeline, docmeta::DocumentMeta* doc) {
     LOG(INFO) << "Update doc (id= " << doc->id << ") to " << doc->content;
     
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(currentStore->begin(), currentStore->end(), [&doc](const docmeta::DocumentMeta doc_in_store) {
@@ -67,7 +67,7 @@ void PreComputedDocStore::update(std::set<docmeta::DocumentMeta>* currentStore, 
     doc->id = old_id;
     currentStore->erase(it);
     currentStore->insert(*doc);
-    repository->push_back(*doc);
+    repository_pipeline->push(*doc);
 }
 
 #endif
