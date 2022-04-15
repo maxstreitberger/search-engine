@@ -41,7 +41,7 @@ int main(int argc, const char** argv) {
     PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&crawler_pipeline, SEARCHENGINE_ROOT_DIR "/dummy-text");
 
     std::thread crawler_thread (&PreComputedDocumentCrawler::start, crawler);
-    std::thread store_thread (&PreComputedDocStore::processDocuments, store);
+    std::thread store_thread (&PreComputedDocStore::receiveDocuments, store);
 
     crawler_thread.join();              
     store_thread.join(); 
