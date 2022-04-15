@@ -92,3 +92,26 @@ target_link_libraries(onTheFlyBasicWeb
     PRIVATE glog::glog
     PRIVATE bfg::lyra
 )
+
+# PRE-COMPUTED -- BASIC RANKING -- DOCUMENT CRAWLER
+add_executable(preComputedBasicDocument src/preComputedBasicDocument.cpp)
+
+target_include_directories(preComputedBasicDocument
+    PRIVATE ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_directories(preComputedBasicDocument
+    PRIVATE modules/crawling/pre-computed-document-crawler
+    PRIVATE modules/crawling/pre-computed-document-store
+    PRIVATE modules/indexing
+    PRIVATE modules/ranking
+)
+
+target_link_libraries(preComputedBasicDocument
+    PRIVATE pre-computed-document-crawler
+    PRIVATE pre_computed_doc_store
+    PRIVATE indexing
+    PRIVATE ranking
+    PRIVATE glog::glog
+    PRIVATE bfg::lyra
+)
