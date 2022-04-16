@@ -12,11 +12,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 
-# FLAGS NECESSARY FOR GUMBO
-set(GCC_COVERAGE_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
-set(GCC_COVERAGE_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+set(GCC_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
+set(GCC_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COMPILE_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_LINK_FLAGS}")
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/logs)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
@@ -34,10 +33,10 @@ add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
 
 #---------------------------------------------------------------------------------------------------------
 # PACKAGES
-find_package(nlohmann_json CONFIG REQUIRED)
+find_package(CURL REQUIRED)
 find_package(glog CONFIG REQUIRED)
 find_package(lyra CONFIG REQUIRED)
-
+find_package(Catch2 CONFIG REQUIRED)
 
 #---------------------------------------------------------------------------------------------------------
 # SUB-DIRECTORIES
@@ -56,19 +55,11 @@ target_include_directories(onTheFlyBasicDocument
     PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_directories(onTheFlyBasicDocument
-    PRIVATE modules/crawling/document-crawler
-    PRIVATE modules/crawling/document-store
-    PRIVATE modules/indexing
-    PRIVATE modules/ranking
-)
-
 target_link_libraries(onTheFlyBasicDocument
     PRIVATE document-crawler
-    PRIVATE doc_store
     PRIVATE indexing
     PRIVATE ranking
-    PRIVATE nlohmann_json::nlohmann_json
+    PRIVATE glog::glog
     PRIVATE bfg::lyra
 )
 
@@ -77,12 +68,6 @@ add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
 
 target_include_directories(onTheFlyBasicWeb
     PRIVATE ${PROJECT_SOURCE_DIR}/include
-)
-
-target_link_directories(onTheFlyBasicWeb
-    PRIVATE modules/crawling/web-crawler
-    PRIVATE modules/indexing
-    PRIVATE modules/ranking
 )
 
 target_link_libraries(onTheFlyBasicWeb

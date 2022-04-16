@@ -34,16 +34,6 @@ namespace tokenmeta {
         std::vector<int> positions;
         int num_appearances;
     };
-
-    inline void to_json(nlohmann::json& j, const TokenMeta& token) {
-        j = nlohmann::json{ {"doc_id", token.document_id}, {"num_appearances", token.num_appearances}, {"positions", token.positions} };
-    }
-
-    inline void from_json(const nlohmann::json& j, TokenMeta& token) {
-        j.at("doc_id").get_to(token.document_id);
-        j.at("num_appearances").get_to(token.num_appearances);
-        j.at("positions").get_to(token.positions);
-    }
 }
 
 #endif

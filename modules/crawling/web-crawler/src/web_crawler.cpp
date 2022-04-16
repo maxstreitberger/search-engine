@@ -2,7 +2,6 @@
 #define WEB_CRAWLER_CPP
 
 #include "web_crawler.hpp"
-#include "doc_store.hpp"
 
 void WebCrawler::start() {
     LOG(INFO) << "Start web crawler";

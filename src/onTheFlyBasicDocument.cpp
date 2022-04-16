@@ -24,7 +24,7 @@
 #include "ranker.hpp"
 #include "engine.hpp"
 
-#include <nlohmann/json.hpp>
+#include <glog/logging.h>
 #include <lyra/lyra.hpp>
 
 int main(int argc, const char** argv) {

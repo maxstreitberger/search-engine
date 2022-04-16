@@ -2,7 +2,6 @@
 #define DOCUMENT_CRAWLER_CPP
 
 #include "doc_crawler.hpp"
-#include "doc_store.hpp"
 
 void DocumentCrawler::start() {
     LOG(INFO) << "Start document crawler";

@@ -14,8 +14,8 @@
 #include <curl/curl.h>
 
 #include "gumbo/gumbo.h"
-#include "../../../../include/doc_meta.hpp"
-#include "../../document-store/include/doc_store.hpp"
+#include "doc_meta.hpp"
+#include "doc_store.hpp"
 
 struct WebCrawler {
     WebCrawler(int depth_limit = 10) : depth_limit{depth_limit} {};

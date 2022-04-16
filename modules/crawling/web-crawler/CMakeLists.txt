@@ -1,16 +1,14 @@
-project (web-crawler)
-
-set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
-find_package(CURL REQUIRED)
+project(web-crawler)
 
 add_library(${PROJECT_NAME} src/web_crawler.cpp)
 
-target_include_directories( ${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
-    PRIVATE ${CURL_INCLUDE_DIR}
+    PUBLIC ${CURL_INCLUDE_DIR}
+    PUBLIC ${CMAKE_SOURCE_DIR}/include
 )
 target_link_libraries(${PROJECT_NAME} 
-    PUBLIC glog::glog
-    PRIVATE ${CURL_LIBRARIES}
-    PRIVATE doc_store
+    PRIVATE glog::glog
+    PUBLIC ${CURL_LIBRARIES}
+    PUBLIC doc_store
 )

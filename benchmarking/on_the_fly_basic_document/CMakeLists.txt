@@ -11,4 +11,5 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE document-crawler 
     PRIVATE indexing
     PRIVATE ranking
+    PRIVATE glog::glog
 )

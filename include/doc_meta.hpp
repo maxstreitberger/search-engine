@@ -4,7 +4,6 @@
 #include <string>
 #include <filesystem>
 #include <iostream>
-#include <nlohmann/json.hpp>
 
 namespace docmeta {
     struct DocumentMeta {
@@ -30,16 +29,6 @@ namespace docmeta {
         std::string path;
 
     };
-
-    inline void to_json(nlohmann::json& j, const DocumentMeta& doc) {
-        j = nlohmann::json{ {"id", doc.id}, {"content", doc.content}, {"path", doc.path} };
-    }
-
-    inline void from_json(const nlohmann::json& j, DocumentMeta& doc) {
-        j.at("id").get_to(doc.id);
-        j.at("content").get_to(doc.content);
-        j.at("path").get_to(doc.path);
-    }
 }
 
 #endif

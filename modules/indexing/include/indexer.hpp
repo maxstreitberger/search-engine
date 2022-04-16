@@ -10,11 +10,10 @@
 #include <set>
 
 #include <glog/logging.h>
-#include <nlohmann/json.hpp>
 
-#include "../../../include/doc_meta.hpp"
-#include "../../../include/token_meta.hpp"
-#include "../../../include/helpers.hpp"
+#include "doc_meta.hpp"
+#include "token_meta.hpp"
+#include "helpers.hpp"
 
 struct Indexer {
     Indexer() {}

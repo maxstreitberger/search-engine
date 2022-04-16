@@ -5,13 +5,13 @@
 #include <set>
 #include <unordered_set>
 #include <fstream>
+#include <map>
 
 #include <glog/logging.h>
-#include <nlohmann/json.hpp>
 
-#include "../../../include/doc_meta.hpp"
-#include "../../../include/token_meta.hpp"
-#include "../../../include/helpers.hpp"
+#include "doc_meta.hpp"
+#include "token_meta.hpp"
+#include "helpers.hpp"
 
 struct Ranker {
     Ranker(int max_return_document_count = 0) : max_return_document_count{max_return_document_count} {};
