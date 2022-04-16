@@ -11,3 +11,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE glog::glog
     PUBLIC doc_store
 )
+
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)

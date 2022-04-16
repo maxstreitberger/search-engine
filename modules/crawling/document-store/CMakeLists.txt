@@ -10,3 +10,6 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE glog::glog
 )
+
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)

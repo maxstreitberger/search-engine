@@ -50,6 +50,8 @@ add_subdirectory(benchmarking)
 
 # ON-THE-FLY -- BASIC RANKING -- DOCUMENT CRAWLER
 add_executable(onTheFlyBasicDocument src/onTheFlyBasicDocument.cpp)
+set_property(TARGET onTheFlyBasicDocument PROPERTY VERSION "1.0.0")
+configure_file(onTheFlyBasicDocument.h.in onTheFlyBasicDocument.h)
 
 target_include_directories(onTheFlyBasicDocument
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -63,8 +65,13 @@ target_link_libraries(onTheFlyBasicDocument
     PRIVATE bfg::lyra
 )
 
+install(TARGETS onTheFlyBasicDocument DESTINATION bin)
+install(FILES ${PROJECT_BINARY_DIR}/onTheFlyBasicDocument.h DESTINATION include)
+
 # ON-THE-FLY -- BASIC RANKING -- WEB CRAWLER
 add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
+set_property(TARGET onTheFlyBasicWeb PROPERTY VERSION "1.0.0")
+configure_file(onTheFlyBasicWeb.h.in onTheFlyBasicWeb.h)
 
 target_include_directories(onTheFlyBasicWeb
     PRIVATE ${PROJECT_SOURCE_DIR}/include
@@ -77,3 +84,6 @@ target_link_libraries(onTheFlyBasicWeb
     PRIVATE glog::glog
     PRIVATE bfg::lyra
 )
+
+install(TARGETS onTheFlyBasicWeb DESTINATION bin)
+install(FILES ${PROJECT_BINARY_DIR}/onTheFlyBasicWeb.h DESTINATION include)

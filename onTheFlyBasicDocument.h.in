@@ -1,0 +1,2 @@
+#define onTheFlyBasicDocument_VERSION_MAJOR @onTheFlyBasicDocument_VERSION_MAJOR@
+#define onTheFlyBasicDocument_VERSION_MINOR @onTheFlyBasicDocument_VERSION_MINOR@
