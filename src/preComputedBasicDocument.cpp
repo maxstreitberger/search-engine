@@ -21,6 +21,7 @@
 #include <thread>
 #include <set>
 #include <queue>
+#include <atomic>
 
 #include "thread_queue.hpp"
 #include "doc_meta.hpp"
@@ -37,15 +38,19 @@ int main(int argc, const char** argv) {
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
+    std::atomic<bool> keepThreadRunning(true);
+
     ThreadQueue<docmeta::DocumentMeta> crawler_store_pipeline;
     ThreadQueue<const docmeta::DocumentMeta*> repository_pipeline;
 
     std::set<docmeta::DocumentMeta> document_store;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
-    PreComputedDocStore store = PreComputedDocStore(&crawler_store_pipeline, &repository_pipeline, &document_store);
-    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&crawler_store_pipeline, SEARCHENGINE_ROOT_DIR "/dummy-text");
-    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &index);
+    std::cout << "Main: "<< keepThreadRunning.load() << std::endl;
+
+    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &keepThreadRunning, &index);
+    PreComputedDocStore store = PreComputedDocStore(&crawler_store_pipeline, &repository_pipeline, &keepThreadRunning, &document_store);
+    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&crawler_store_pipeline, &keepThreadRunning, SEARCHENGINE_ROOT_DIR "/dummy-text");
     Ranker ranker = Ranker(&document_store, &index);
 
     std::thread crawler_thread (&PreComputedDocumentCrawler::start, crawler);
@@ -57,20 +62,30 @@ int main(int argc, const char** argv) {
         std::cout << "Search for: ";
         std::cin >> searchTerm;
 
-        std::vector<docmeta::DocumentMeta> foundDocuments = ranker.searchFor(searchTerm);
+        if (searchTerm != "exit()") {
+            std::vector<docmeta::DocumentMeta> foundDocuments = ranker.searchFor(searchTerm);
 
-        if (foundDocuments.empty()) {
-            LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";
-            std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;
+            if (foundDocuments.empty()) {
+                LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";
+                std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;
+            } else {
+                LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
+                std::cout << "Found " << foundDocuments.size() << " document(s):" << std::endl;
+
+                for (auto& doc: foundDocuments) {
+                    std::cout << doc << std::endl;
+                }
+            }   
         } else {
-            LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
-            std::cout << "Found " << foundDocuments.size() << " document(s):" << std::endl;
-
-            for (auto& doc: foundDocuments) {
-                std::cout << doc << std::endl;
-            }
-        }   
+            keepThreadRunning.store(false);
+            LOG(WARNING) << "Stop search engine";
+            break;
+        }
     }
+
+    crawler_thread.join();
+    store_thread.join();
+    indexer_thread.join();
 
     return 0;
 }

@@ -5,12 +5,13 @@
 
 void PreComputedDocumentCrawler::start() {
     LOG(INFO) << "Start document crawler";
-    while(1) {
+    while (keepRunning->load()) {
         std::vector<std::string> foundDocuments = getDocumentPaths();
         for (auto& document_path: foundDocuments) {
             registerDocument(document_path);
         }
     }
+    LOG(WARNING) << "Document crawler stopped";
 }
 
 std::vector<std::string> PreComputedDocumentCrawler::getDocumentPaths() {

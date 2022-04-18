@@ -12,12 +12,13 @@ std::ostream & operator <<(std::ostream &os, const std::set<docmeta::DocumentMet
 
 void PreComputedDocStore::receiveDocuments() {
     LOG(INFO) << "Receive documents from crawler";
-    while(1) {
+    while (keepRunning->load()) {
         docmeta::DocumentMeta doc;
         crawler_store_pipeline->wait_and_pop(doc);
         process(doc);
         LOG(WARNING) << *doc_store;
     }
+    LOG(WARNING) << "Document store stopped";
 }
 
 void PreComputedDocStore::process(docmeta::DocumentMeta doc) {
