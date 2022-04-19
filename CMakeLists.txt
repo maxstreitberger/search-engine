@@ -12,12 +12,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 
-set(GCC_COMPILE_FLAGS "-I/usr/local/include --coverage -g -O0")
-set(GCC_LINK_FLAGS    "-L/usr/local/lib -lgumbo")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COMPILE_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_LINK_FLAGS}")
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("Debug mode")
+    set(CMAKE_CXX_FLAGS "-std=c++0x -Wall")
+    set(CMAKE_CXX_FLAGS "-I/usr/local/include --coverage -g -O0 -Wall")
+else()
+    message("Release mode")
+    set(CMAKE_CXX_FLAGS "-I/usr/local/include -O2")
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/logs)
+set(CMAKE_EXE_LINKER_FLAGS "-L/usr/local/lib -lgumbo")
+
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
 
 #---------------------------------------------------------------------------------------------------------
@@ -87,3 +92,7 @@ target_link_libraries(onTheFlyBasicWeb
 
 install(TARGETS onTheFlyBasicWeb DESTINATION bin)
 install(FILES ${PROJECT_BINARY_DIR}/onTheFlyBasicWeb.h DESTINATION include)
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+include(CPack)
