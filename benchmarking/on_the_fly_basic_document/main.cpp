@@ -64,7 +64,7 @@ void otf_basic_doc_multiple_docs_returned(nonius::chronometer meter) {
 }
 
 int main(int argc, char* argv[]) {
-    FLAGS_log_dir = SEARCHENGINE_ROOT_DIR "/bin/logs";
+    FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
 
     nonius::configuration cfg;
