@@ -24,39 +24,26 @@
 #include "engine.hpp"
 
 #include <glog/logging.h>
-#include <lyra/lyra.hpp>
+#include "CLI11.hpp"
 
 int main(int argc, char *argv[]) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
     LOG(INFO) << "Start onTheFlyBasicWeb search engine";
 
-    std::string url;
+    CLI::App app{"On-The-Fly web search engine"};
+
     std::string searchTerm;
+    std::string url;
     int searchDepth;
     int maxReturnDocumentCount;
-    bool show_help = false;
 
-    auto cli = lyra::help(show_help) | lyra::opt(url, "url")
-                                        ["-u"]["--url"]("Base url where the crawler should start crawling.")
-                                     | lyra::opt(searchTerm, "searchTerm")
-                                        ["-s"]["--search"]("Get documents that include the search term.")
-                                     | lyra::opt(searchDepth, "searchDepth")
-                                        ["-d"]["--depth"]("How deep should the crawler crawl?")
-                                    | lyra::opt(maxReturnDocumentCount, "maxReturnDocumentCount")
-                                        ["-m"]["--max"]("What is the maximum number of documents to be returned?");
-    
-    auto result = cli.parse({ argc, argv });
-    if (!result) {
-        LOG(ERROR) << "Error in command line: " << result.errorMessage();
-        std::cerr << cli << "\n";
-        return 1;
-    }
+    app.add_option("-s,--search", searchTerm, "This allows you to specify what the search engine should search for. Without it you don't get any items back.");
+    app.add_option("-u,--url", url, "Use this option to specify where the search engine should search.");
+    app.add_option("-d,--depth", searchDepth, "This option allows you to limit how deep the search engine should search.");
+    app.add_option("-m,--max", maxReturnDocumentCount, "If this option is set to zero, you will get all items that the search engine has found. Otherwise, the search engine will only return x amount of items.");
 
-    if (show_help) {
-        std::cout << cli << "\n";
-        return 0;
-    }
+    CLI11_PARSE(app, argc, argv);
 
     std::set<docmeta::DocumentMeta> crawler_found_pages;
     std::set<docmeta::DocumentMeta> pages_in_store;

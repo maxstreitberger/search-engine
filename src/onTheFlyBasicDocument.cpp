@@ -25,30 +25,20 @@
 #include "engine.hpp"
 
 #include <glog/logging.h>
-#include <lyra/lyra.hpp>
+#include "CLI11.hpp"
 
 int main(int argc, const char** argv) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
     DLOG(INFO) << "Start onTheFlyBasicDocument search engine";
+    
+    CLI::App app{"On-The-Fly document search engine"};
 
     std::string searchTerm;
-    bool show_help = false;
 
-    auto cli = lyra::help(show_help) | lyra::opt(searchTerm, "searchTerm")
-                                    ["-s"]["--search"]("Get documents that include the search term.");
-    
-    auto result = cli.parse({ argc, argv });
-    if (!result) {
-        LOG(ERROR) << "Error in command line: " << result.errorMessage();
-        std::cerr << cli << "\n";
-        return 1;
-    }
+    app.add_option("-s,--search", searchTerm, "This allows you to specify what the search engine should search for. Without it you don't get any items back.");
 
-    if (show_help) {
-        std::cout << cli << "\n";
-        return 0;
-    }
+    CLI11_PARSE(app, argc, argv);
 
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";

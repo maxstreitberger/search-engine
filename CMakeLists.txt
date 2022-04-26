@@ -40,7 +40,6 @@ add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
 # PACKAGES
 find_package(CURL REQUIRED)
 find_package(glog CONFIG REQUIRED)
-find_package(lyra CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
 
 #---------------------------------------------------------------------------------------------------------
@@ -67,7 +66,6 @@ target_link_libraries(onTheFlyBasicDocument
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE glog::glog
-    PRIVATE bfg::lyra
 )
 
 install(TARGETS onTheFlyBasicDocument DESTINATION bin)
@@ -87,7 +85,6 @@ target_link_libraries(onTheFlyBasicWeb
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE glog::glog
-    PRIVATE bfg::lyra
 )
 
 install(TARGETS onTheFlyBasicWeb DESTINATION bin)
