@@ -35,8 +35,12 @@ int main(int argc, const char** argv) {
     CLI::App app{"On-The-Fly document search engine"};
 
     std::string searchTerm;
+    std::string path;
+    int maxReturnDocumentCount;
 
     app.add_option("-s,--search", searchTerm, "This allows you to specify what the search engine should search for. Without it you don't get any items back.");
+    app.add_option("-p,--path", path, "Use this option to specify where the search engine should search. You need to specify the absolute path to the directory. ");
+    app.add_option("-m,--max", maxReturnDocumentCount, "If this option is set to zero, you will get all items that the search engine has found. Otherwise, the search engine will only return x amount of items.");
 
     CLI11_PARSE(app, argc, argv);
 
@@ -49,9 +53,9 @@ int main(int argc, const char** argv) {
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     DocStore store = DocStore(&crawler_found_documents, &documents_in_store, &repository);
-    DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, SEARCHENGINE_ROOT_DIR "/dummy-text");
+    DocumentCrawler crawler = DocumentCrawler(store, &crawler_found_documents, path);
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
-    Ranker ranker = Ranker(&documents_in_store, &index);
+    Ranker ranker = Ranker(&documents_in_store, &index, maxReturnDocumentCount);
 
     std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
 
