@@ -1,4 +1,4 @@
-project(indexing_tests)
+project(indexer_tests)
 
 add_executable(${PROJECT_NAME} main.cpp src/indexer-test-cases.cpp src/indexer-end-to-end-test.cpp)
 target_link_libraries(${PROJECT_NAME} 
