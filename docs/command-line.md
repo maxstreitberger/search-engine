@@ -53,7 +53,7 @@ This option allows you to limit how deep the search engine should search. For ex
 -m , —-max <number>
 ```
 
-If this option is set to a non zero number, the search engine will only return x amount of items. However, if zero is given, you will get all items that the search engine has found.
+If this option is set to zero, you will get all items that the search engine has found. Otherwise, the search engine will only return x amount of items.
 
 <a id="show-help"></a>
 ## Help
