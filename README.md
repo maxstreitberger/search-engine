@@ -10,7 +10,7 @@ This documentation comprises these parts:
 
 * [Library](docs/library.md#top) - how to add the library to your project
 * [Executable](docs/executable.md#top) - how to run the search engine
-* [Reference section](docs/reference.md#top) - all the details
+* [Reference section](docs/README.md#top) - all the details
 
 
 Copyright © 2022 Maximilian Streitberger maximilian.streitberger@code.berlin @maxstreitberger
