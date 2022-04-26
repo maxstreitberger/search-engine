@@ -91,5 +91,8 @@ install(TARGETS OnTheFlyWebSearch DESTINATION bin)
 install(FILES ${PROJECT_BINARY_DIR}/OnTheFlyWebSearch.h DESTINATION include)
 
 include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_NAME "Seeker")
+set(CPACK_PACKAGE_VENDOR "Maximilian Streitberger")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modular search engine")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 include(CPack)
