@@ -1,13 +1,16 @@
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
+#ifndef ON_THE_FLY_WEB_SEARCH_BENCHMARKING_MAIN_CPP
+#define ON_THE_FLY_WEB_SEARCH_BENCHMARKING_MAIN_CPP
+
+#include "nonius.hpp"
 #include "engine.hpp"
 #include "helpers.hpp"
 #include "web_crawler.hpp"
+#include <glog/logging.h>
 
 std::string specialCharsPath = SEARCHENGINE_TESTING_DIR "/resources/special.txt";
 std::string stopwordsPath = SEARCHENGINE_TESTING_DIR "/resources/stopwords.txt";
 
-TEST_CASE("On-The-Fly Basic Web Search: No document returned.", "[on-the-fly][basic][web][e2e]") {
+void otf_web_nothing_returned(nonius::chronometer meter) {
     std::set<docmeta::DocumentMeta> crawler_found_pages;
     std::set<docmeta::DocumentMeta> pages_in_store;
     std::vector<docmeta::DocumentMeta> repository;
@@ -18,19 +21,10 @@ TEST_CASE("On-The-Fly Basic Web Search: No document returned.", "[on-the-fly][ba
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&pages_in_store, &index);
 
-    std::vector<docmeta::DocumentMeta> foundPages = engine::runSearch(crawler, indexer, ranker, "hello");
-    REQUIRE( foundPages.empty() );
-
-    crawler_found_pages = {};
-    pages_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Basic Web Search: No document returned.") {
-        return engine::runSearch(crawler, indexer, ranker, "hello");
-    };
+    meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "hello"); });
 }
 
-TEST_CASE("On-The-Fly Basic Web Search: A single document is returned.", "[on-the-fly][basic][web][e2e]") {
+void otf_web_single_doc_returned(nonius::chronometer meter) {
     std::string search_engine_path = SEARCHENGINE_TESTING_DIR "/resources/test-pages/search-engine.txt";
     std::string expected_text = helpers::loadFile(search_engine_path);
 
@@ -44,20 +38,10 @@ TEST_CASE("On-The-Fly Basic Web Search: A single document is returned.", "[on-th
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&pages_in_store, &index);
 
-    std::vector<docmeta::DocumentMeta> foundPages = engine::runSearch(crawler, indexer, ranker, "fully");
-    REQUIRE( !foundPages.empty() );
-    REQUIRE( foundPages[0].content == expected_text );
-
-    crawler_found_pages = {};
-    pages_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Basic Web Search: A single document is returned.") {
-        return engine::runSearch(crawler, indexer, ranker, "fully");
-    };
+    meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "fully"); });
 }
 
-TEST_CASE("On-The-Fly Basic Web Search: Multiple documents are found and are sorted in decreasing order of search term appearance.", "[on-the-fly][basic][web][e2e]") {
+void otf_web_multiple_docs_returned(nonius::chronometer meter) {
     std::string index_path = SEARCHENGINE_TESTING_DIR "/resources/test-pages/index.txt";
     std::string index_text = helpers::loadFile(index_path);
     
@@ -74,16 +58,25 @@ TEST_CASE("On-The-Fly Basic Web Search: Multiple documents are found and are sor
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&pages_in_store, &index);
 
-    std::vector<docmeta::DocumentMeta> foundPages = engine::runSearch(crawler, indexer, ranker, "engine");
-    REQUIRE( !foundPages.empty() );
-    REQUIRE( foundPages[0].content == search_engine_text );
-    REQUIRE( foundPages[1].content == index_text );
-
-    crawler_found_pages = {};
-    pages_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Basic Web Search: Multiple documents are found and are sorted in decreasing order of search term appearance.") {
-        return engine::runSearch(crawler, indexer, ranker, "engine");
-    };
+    meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "engine"); });
 }
+
+int main(int argc, char* argv[]) {
+    FLAGS_log_dir = "/tmp";
+    google::InitGoogleLogging(argv[0]);
+
+    nonius::configuration cfg;
+    // cfg.output_file = "OnTheFlyWebSearch_benchmarking.csv";
+    nonius::benchmark benchmarks[] = {
+        nonius::benchmark("On-The-Fly Web Search: No document returned.", otf_web_nothing_returned),
+        nonius::benchmark("On-The-Fly Web Search: A single document is returned.", otf_web_single_doc_returned),
+        nonius::benchmark("On-The-Fly Web Search: Multiple documents are found and are sorted in decreasing order of search term appearance.", otf_web_multiple_docs_returned)
+    };
+
+    nonius::go(cfg, std::begin(benchmarks), std::end(benchmarks), nonius::standard_reporter());
+    // nonius::go(cfg, std::begin(benchmarks), std::end(benchmarks), nonius::csv_reporter());
+
+    return 0;
+}
+
+#endif

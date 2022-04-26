@@ -1,0 +1,2 @@
+#define OnTheFlyWebSearch_VERSION_MAJOR @OnTheFlyWebSearch_VERSION_MAJOR@
+#define OnTheFlyWebSearch_VERSION_MINOR @OnTheFlyWebSearch_VERSION_MINOR@

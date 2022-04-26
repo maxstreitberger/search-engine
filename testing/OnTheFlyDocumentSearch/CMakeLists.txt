@@ -1,4 +1,4 @@
-project(on_the_fly_basic_document_tests)
+project(OnTheFlyDocumentSearch_tests)
 
 add_executable(${PROJECT_NAME} main.cpp test-cases.cpp)
 target_include_directories(${PROJECT_NAME}

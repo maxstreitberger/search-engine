@@ -7,7 +7,7 @@
 std::string specialCharsPath = SEARCHENGINE_TESTING_DIR "/resources/special.txt";
 std::string stopwordsPath = SEARCHENGINE_TESTING_DIR "/resources/stopwords.txt";
 
-TEST_CASE("On-The-Fly Basic Document Search: No document returned.", "[on-the-fly][basic][document][e2e]") {
+TEST_CASE("On-The-Fly Document Search: No document returned.", "[on-the-fly][document][e2e]") {
     std::set<docmeta::DocumentMeta> crawler_found_documents;
     std::set<docmeta::DocumentMeta> documents_in_store;
     std::vector<docmeta::DocumentMeta> repository;
@@ -25,12 +25,12 @@ TEST_CASE("On-The-Fly Basic Document Search: No document returned.", "[on-the-fl
     documents_in_store = {};
     repository = {};
     index = {};
-    BENCHMARK("On-The-Fly Basic Document Search: No document returned.") {
+    BENCHMARK("On-The-Fly Document Search: No document returned.") {
         return engine::runSearch(crawler, indexer, ranker, "test");
     };
 }
 
-TEST_CASE("On-The-Fly Basic Document Search: A single document is returned.", "[on-the-fly][basic][document][e2e]") {
+TEST_CASE("On-The-Fly Document Search: A single document is returned.", "[on-the-fly][document][e2e]") {
     std::string doc1_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt";
     std::string expected_text = helpers::loadFile(doc1_path);
 
@@ -52,12 +52,12 @@ TEST_CASE("On-The-Fly Basic Document Search: A single document is returned.", "[
     documents_in_store = {};
     repository = {};
     index = {};
-    BENCHMARK("On-The-Fly Basic Document Search: A single document is returned.") {
+    BENCHMARK("On-The-Fly Document Search: A single document is returned.") {
         return engine::runSearch(crawler, indexer, ranker, "quis");
     };
 }
 
-TEST_CASE("On-The-Fly Basic Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.", "[on-the-fly][basic][document][e2e]") {
+TEST_CASE("On-The-Fly Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.", "[on-the-fly][document][e2e]") {
     std::string doc1_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt";
     std::string doc2_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc2.txt";
     std::string doc3_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/folder1/doc3.txt";
@@ -86,7 +86,7 @@ TEST_CASE("On-The-Fly Basic Document Search: Multiple documents are found and ar
     documents_in_store = {};
     repository = {};
     index = {};
-    BENCHMARK("On-The-Fly Basic Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.") {
+    BENCHMARK("On-The-Fly Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.") {
         return engine::runSearch(crawler, indexer, ranker, "lorem");
     };
 }

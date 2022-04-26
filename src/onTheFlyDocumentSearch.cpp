@@ -14,8 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ON_THE_FLY_BASIC_DOCUMENT_CPP
-#define ON_THE_FLY_BASIC_DOCUMENT_CPP
+#ifndef ON_THE_FLY_DOCUMENT_SEARCH_CPP
+#define ON_THE_FLY_DOCUMENT_SEARCH_CPP
 
 #include <iostream>
 #include "indexer.hpp"
@@ -30,7 +30,7 @@
 int main(int argc, const char** argv) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
-    DLOG(INFO) << "Start onTheFlyBasicDocument search engine";
+    DLOG(INFO) << "Start on-the-fly document search engine";
     
     CLI::App app{"On-The-Fly document search engine"};
 

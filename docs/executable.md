@@ -1,7 +1,7 @@
 <a id="top"></a>
 # Executable
 
-There are two executables available: **onTheFlyWeb** and **onTheFlyDocument**. Both are used in the same way; the only difference is where the search engine searches. The `Web` ending indicates that the search engine searches through a web page, whereas the `Document` ending shows that the search engine searches through a particular folder.
+There are two executables available: **onTheFlyWeb** and **OnTheFlyDocumentSearch**. Both are used in the same way; the only difference is where the search engine searches. The `Web` ending indicates that the search engine searches through a web page, whereas the `Document` ending shows that the search engine searches through a particular folder.
 
 ## Installation
 

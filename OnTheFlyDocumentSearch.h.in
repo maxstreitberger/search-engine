@@ -1,0 +1,2 @@
+#define OnTheFlyDocumentSearch_VERSION_MAJOR @OnTheFlyDocumentSearch_VERSION_MAJOR@
+#define OnTheFlyDocumentSearch_VERSION_MINOR @OnTheFlyDocumentSearch_VERSION_MINOR@

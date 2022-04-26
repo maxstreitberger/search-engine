@@ -52,43 +52,43 @@ add_subdirectory(benchmarking)
 #---------------------------------------------------------------------------------------------------------
 # EXECUTABLES
 
-# ON-THE-FLY -- BASIC RANKING -- DOCUMENT CRAWLER
-add_executable(onTheFlyBasicDocument src/onTheFlyBasicDocument.cpp)
-set_property(TARGET onTheFlyBasicDocument PROPERTY VERSION "1.0.0")
-configure_file(onTheFlyBasicDocument.h.in onTheFlyBasicDocument.h)
+# ON-THE-FLY -- DOCUMENT CRAWLER
+add_executable(OnTheFlyDocumentSearch src/onTheFlyDocumentSearch.cpp)
+set_property(TARGET OnTheFlyDocumentSearch PROPERTY VERSION "1.0.0")
+configure_file(OnTheFlyDocumentSearch.h.in OnTheFlyDocumentSearch.h)
 
-target_include_directories(onTheFlyBasicDocument
+target_include_directories(OnTheFlyDocumentSearch
     PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(onTheFlyBasicDocument
+target_link_libraries(OnTheFlyDocumentSearch
     PRIVATE document-crawler
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE glog::glog
 )
 
-install(TARGETS onTheFlyBasicDocument DESTINATION bin)
-install(FILES ${PROJECT_BINARY_DIR}/onTheFlyBasicDocument.h DESTINATION include)
+install(TARGETS OnTheFlyDocumentSearch DESTINATION bin)
+install(FILES ${PROJECT_BINARY_DIR}/OnTheFlyDocumentSearch.h DESTINATION include)
 
-# ON-THE-FLY -- BASIC RANKING -- WEB CRAWLER
-add_executable(onTheFlyBasicWeb src/onTheFlyBasicWeb.cpp)
-set_property(TARGET onTheFlyBasicWeb PROPERTY VERSION "1.0.0")
-configure_file(onTheFlyBasicWeb.h.in onTheFlyBasicWeb.h)
+# ON-THE-FLY -- WEB CRAWLER
+add_executable(OnTheFlyWebSearch src/onTheFlyWebSearch.cpp)
+set_property(TARGET OnTheFlyWebSearch PROPERTY VERSION "1.0.0")
+configure_file(OnTheFlyWebSearch.h.in OnTheFlyWebSearch.h)
 
-target_include_directories(onTheFlyBasicWeb
+target_include_directories(OnTheFlyWebSearch
     PRIVATE ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(onTheFlyBasicWeb
+target_link_libraries(OnTheFlyWebSearch
     PRIVATE web-crawler 
     PRIVATE indexing
     PRIVATE ranking
     PRIVATE glog::glog
 )
 
-install(TARGETS onTheFlyBasicWeb DESTINATION bin)
-install(FILES ${PROJECT_BINARY_DIR}/onTheFlyBasicWeb.h DESTINATION include)
+install(TARGETS OnTheFlyWebSearch DESTINATION bin)
+install(FILES ${PROJECT_BINARY_DIR}/OnTheFlyWebSearch.h DESTINATION include)
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")

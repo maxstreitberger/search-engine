@@ -14,8 +14,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ON_THE_FLY_BASIC_WEB_CPP
-#define ON_THE_FLY_BASIC_WEB_CPP
+#ifndef ON_THE_FLY_WEB_SEARCH_CPP
+#define ON_THE_FLY_WEB_SEARCH_CPP
 
 #include <iostream>
 #include "web_crawler.hpp"
@@ -29,7 +29,7 @@
 int main(int argc, char *argv[]) {
     FLAGS_log_dir = "/tmp";
     google::InitGoogleLogging(argv[0]);
-    LOG(INFO) << "Start onTheFlyBasicWeb search engine";
+    LOG(INFO) << "Start OnTheFlyWebSearch search engine";
 
     CLI::App app{"On-The-Fly web search engine"};
 

@@ -1,4 +1,4 @@
-project(on_the_fly_basic_document_benchmarking)
+project(OnTheFlyDocumentSearch_benchmarking)
 
 add_executable(${PROJECT_NAME} main.cpp)
 

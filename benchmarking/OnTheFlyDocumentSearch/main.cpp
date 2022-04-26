@@ -1,5 +1,5 @@
-#ifndef ON_THE_FLY_BASIC_DOCUMENT_BENCHMARKING_MAIN_CPP
-#define ON_THE_FLY_BASIC_DOCUMENT_BENCHMARKING_MAIN_CPP
+#ifndef ON_THE_FLY_DOCUMENT_SEARCH_BENCHMARKING_MAIN_CPP
+#define ON_THE_FLY_DOCUMENT_SEARCH_BENCHMARKING_MAIN_CPP
 
 #include "nonius.hpp"
 #include "engine.hpp"
@@ -10,7 +10,7 @@
 std::string specialCharsPath = SEARCHENGINE_TESTING_DIR "/resources/special.txt";
 std::string stopwordsPath = SEARCHENGINE_TESTING_DIR "/resources/stopwords.txt";
 
-void otf_basic_doc_nothing_returned(nonius::chronometer meter) {
+void otf_doc_nothing_returned(nonius::chronometer meter) {
     std::set<docmeta::DocumentMeta> crawler_found_documents;
     std::set<docmeta::DocumentMeta> documents_in_store;
     std::vector<docmeta::DocumentMeta> repository;
@@ -24,7 +24,7 @@ void otf_basic_doc_nothing_returned(nonius::chronometer meter) {
     meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "test"); });
 }
 
-void otf_basic_doc_single_doc_returned(nonius::chronometer meter) {
+void otf_doc_single_doc_returned(nonius::chronometer meter) {
     std::string doc1_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt";
     std::string expected_text = helpers::loadFile(doc1_path);
 
@@ -41,7 +41,7 @@ void otf_basic_doc_single_doc_returned(nonius::chronometer meter) {
     meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "quis"); });
 }
 
-void otf_basic_doc_multiple_docs_returned(nonius::chronometer meter) {
+void otf_doc_multiple_docs_returned(nonius::chronometer meter) {
     std::string doc1_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt";
     std::string doc2_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc2.txt";
     std::string doc3_path = SEARCHENGINE_TESTING_DIR "/resources/test-documents/folder1/doc3.txt";
@@ -68,11 +68,11 @@ int main(int argc, char* argv[]) {
     google::InitGoogleLogging(argv[0]);
 
     nonius::configuration cfg;
-    // cfg.output_file = "on_the_fly_basic_document_benchmarks.csv";
+    // cfg.output_file = "OnTheFlyDocumentSearch_benchmarking.csv";
     nonius::benchmark benchmarks[] = {
-        nonius::benchmark("On-The-Fly Basic Document Search: No document returned.", otf_basic_doc_nothing_returned),
-        nonius::benchmark("On-The-Fly Basic Document Search: A single document is returned.", otf_basic_doc_single_doc_returned),
-        nonius::benchmark("On-The-Fly Basic Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.", otf_basic_doc_multiple_docs_returned)
+        nonius::benchmark("On-The-Fly Document Search: No document returned.", otf_doc_nothing_returned),
+        nonius::benchmark("On-The-Fly Document Search: A single document is returned.", otf_doc_single_doc_returned),
+        nonius::benchmark("On-The-Fly Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.", otf_doc_multiple_docs_returned)
     };
 
     nonius::go(cfg, std::begin(benchmarks), std::end(benchmarks), nonius::standard_reporter());
