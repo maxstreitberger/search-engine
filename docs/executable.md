@@ -11,7 +11,7 @@ There are two executables available: **onTheFlyWeb** and **OnTheFlyDocumentSearc
 ## Usage
 
 ```
-$ ./onTheFlyWeb -p [url] -s [search_term] -m [max_items] -d [search_depth]
+$ ./onTheFlyWeb -p [url] -s [search_term] -m [max_items]
 ```
 
 > Learn more about the available command line options [here](command-line.md#top).

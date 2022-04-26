@@ -5,7 +5,6 @@
 
 [Specify search term](#specify-search-term)<br>
 [Set search path](#set-search-path)<br>
-[Limit search depth](#limit-search-depth)<br>
 [Limit number of returned items](#limit-number-of-returned-items)<br>
 [Show help](#show-help)<br>
 
@@ -13,7 +12,6 @@ Seeker supports the following command line options. Click one of the following l
 
 [`-s, —-search`](#specify-search-term)<br>
 [`-p , —-path`](#set-search-path)<br>
-[`-d , —-depth`](#limit-search-depth)<br>
 [`-m , —-max`](#limit-number-of-returned-items)<br>
 [`-h , —-help, -?`](#show-help)<br>
 
@@ -36,15 +34,6 @@ This allows you to specify what the search engine should search for. Without it 
 ```
 
 Use this option to specify where the search engine should search. If you are using the document crawler you need to specify the absolute path to the directory. 
-
-<a id="limit-search-depth"></a>
-## Limit search depth 
-
-```
--d , —-depth <number>
-```
-
-This option allows you to limit how deep the search engine should search. For example, if you have a directory with 10 sub-directories in it, you can only crawl the first 5 directories.
 
 <a id="limit-number-of-returned-items"></a>
 ## Limit number of returned items

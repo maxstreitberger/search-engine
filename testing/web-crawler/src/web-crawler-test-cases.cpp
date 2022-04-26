@@ -138,22 +138,3 @@ TEST_CASE("Web Crawler can recognize 'https://www.zelebrate.xyz' as an valid URL
     bool isValidURL = crawler.checkIfURL(&url);
     REQUIRE(isValidURL);
 }
-
-TEST_CASE("Web Crawler can crawl to a specified depth (in this test: only crawl the first page).", "[web-crawler]") {
-    std::string indexPath = SEARCHENGINE_TESTING_DIR "/resources/test-pages/index.txt";
-    std::string indexText = helpers::loadFile(indexPath);
-
-    std::set<docmeta::DocumentMeta> expected_store = {
-        docmeta::DocumentMeta(1, indexText, "https://zelebrate.xyz"),
-    };
-
-    std::set<docmeta::DocumentMeta> crawler_found_pages;
-    std::set<docmeta::DocumentMeta> pages_in_store;
-    std::vector<docmeta::DocumentMeta> repository;
-
-    DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);                                   // <---- Injecting Doc_Store
-    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, "https://zelebrate.xyz", 1);
-    crawler.start();
-
-    REQUIRE( pages_in_store == expected_store );
-}

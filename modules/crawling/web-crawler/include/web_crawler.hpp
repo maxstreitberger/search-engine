@@ -18,10 +18,10 @@
 #include "doc_store.hpp"
 
 struct WebCrawler {
-    WebCrawler(int depth_limit = 10) : depth_limit{depth_limit} {};
-    WebCrawler(std::string path, int depth_limit = 10) : origin_path{path}, depth_limit{depth_limit} { extractBaseURL(&origin_path); };
-    WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages, int depth_limit = 10) : pages{crawler_found_pages}, depth_limit{depth_limit} {};
-    WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path, int depth_limit = 10) : store{store}, pages{crawler_found_pages}, origin_path{path}, depth_limit{depth_limit} { extractBaseURL(&origin_path); };
+    WebCrawler() {};
+    WebCrawler(std::string path) : origin_path{path} { extractBaseURL(&origin_path); };
+    WebCrawler(std::set<docmeta::DocumentMeta>* crawler_found_pages) : pages{crawler_found_pages} {};
+    WebCrawler(DocStore store, std::set<docmeta::DocumentMeta>* crawler_found_pages, std::string path) : store{store}, pages{crawler_found_pages}, origin_path{path} { extractBaseURL(&origin_path); };
     
     void start();
     std::string getHTML(std::string url);
@@ -40,7 +40,6 @@ struct WebCrawler {
 
     DocStore store;
     std::set<docmeta::DocumentMeta>* pages;
-    int depth_limit;
     std::vector<std::string> already_visited_pages;
 };
 

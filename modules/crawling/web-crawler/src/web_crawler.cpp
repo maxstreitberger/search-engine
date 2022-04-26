@@ -10,8 +10,7 @@ void WebCrawler::start() {
     if (isValidURL) {
         std::queue<std::string> urls;
         urls.push(origin_path);
-        int counter_visited_pages = 0;
-        while (!urls.empty() && (counter_visited_pages != depth_limit)) {
+        while (!urls.empty()) {
             LOG(INFO) << "Crawl url: " << urls.front();
 
             if (!checkIfURL(&urls.front())) {
@@ -23,7 +22,6 @@ void WebCrawler::start() {
             already_visited_pages.push_back(urls.front());
             getURLs(htmlDoc, &urls);
             registerPage(urls.front(), htmlDoc);
-            counter_visited_pages += 1;
             urls.pop();
             std::this_thread::sleep_for(std::chrono::milliseconds(250));
         }

@@ -34,13 +34,11 @@ int main(int argc, char *argv[]) {
     CLI::App app{"On-The-Fly web search engine"};
 
     std::string searchTerm;
-    std::string url;
-    int searchDepth;
+    std::string path;
     int maxReturnDocumentCount;
 
     app.add_option("-s,--search", searchTerm, "This allows you to specify what the search engine should search for. Without it you don't get any items back.");
-    app.add_option("-u,--url", url, "Use this option to specify where the search engine should search.");
-    app.add_option("-d,--depth", searchDepth, "This option allows you to limit how deep the search engine should search.");
+    app.add_option("-p,--path", path, "Use this option to specify where the search engine should search.");
     app.add_option("-m,--max", maxReturnDocumentCount, "If this option is set to zero, you will get all items that the search engine has found. Otherwise, the search engine will only return x amount of items.");
 
     CLI11_PARSE(app, argc, argv);
@@ -54,7 +52,7 @@ int main(int argc, char *argv[]) {
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
     DocStore store = DocStore(&crawler_found_pages, &pages_in_store, &repository);
-    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, url, searchDepth);
+    WebCrawler crawler = WebCrawler(store, &crawler_found_pages, path);
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&pages_in_store, &index, maxReturnDocumentCount);
 
