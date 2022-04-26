@@ -1,10 +1,13 @@
 <a id="top"></a>
 # Components
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/27073329/165269221-42a8d92d-58d7-4dd9-b3af-7116ceaba706.png" width="750">
+</p>
 
 <a id="components-crawler"></a>
 ## Crawler
 
-|         |               |
+|     Type    |               |
 | ------------- | ------------- |
 | **Web**       | The web crawler retrieves the HTML document from a given origin path and extracts all URLs that link to a different page and not to a section on the page.  |
 | **Document**  | The document crawler collects text documents from a specified directory. The crawler goes through every sub-directory and registers a found document.  |
