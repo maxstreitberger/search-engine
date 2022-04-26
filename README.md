@@ -5,11 +5,6 @@ Seeker is a modular search engine sandbox built in C++, which allows you to crea
 
 Additionally, the repository contains two executable, which can be run from the terminal and don’t need to be included in a project.
 
-**Limitations:**
-
-- Only two executables available
-- Only on-The-Fly possible at the moment ⇒ Single thread, everything runs after one another
-
 ## How to use it
 This documentation comprises these parts:
 
