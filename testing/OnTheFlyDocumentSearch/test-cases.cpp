@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "engine.hpp"
 #include "helpers.hpp"
 #include "doc_crawler.hpp"
@@ -20,14 +19,6 @@ TEST_CASE("On-The-Fly Document Search: No document returned.", "[on-the-fly][doc
 
     std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, "test");
     REQUIRE( foundDocuments.empty() );
-
-    crawler_found_documents = {};
-    documents_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Document Search: No document returned.") {
-        return engine::runSearch(crawler, indexer, ranker, "test");
-    };
 }
 
 TEST_CASE("On-The-Fly Document Search: A single document is returned.", "[on-the-fly][document][e2e]") {
@@ -47,14 +38,6 @@ TEST_CASE("On-The-Fly Document Search: A single document is returned.", "[on-the
     std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, "quis");
     REQUIRE( !foundDocuments.empty() );
     REQUIRE( foundDocuments[0].content == expected_text );
-
-    crawler_found_documents = {};
-    documents_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Document Search: A single document is returned.") {
-        return engine::runSearch(crawler, indexer, ranker, "quis");
-    };
 }
 
 TEST_CASE("On-The-Fly Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.", "[on-the-fly][document][e2e]") {
@@ -81,12 +64,4 @@ TEST_CASE("On-The-Fly Document Search: Multiple documents are found and are sort
     REQUIRE( foundDocuments[0].content == doc1_text );
     REQUIRE( foundDocuments[1].content == doc3_text );
     REQUIRE( foundDocuments[2].content == doc2_text );
-
-    crawler_found_documents = {};
-    documents_in_store = {};
-    repository = {};
-    index = {};
-    BENCHMARK("On-The-Fly Document Search: Multiple documents are found and are sorted in decreasing order of search term ('lorem') appearance.") {
-        return engine::runSearch(crawler, indexer, ranker, "lorem");
-    };
 }

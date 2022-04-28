@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "doc_crawler.hpp"
 
 TEST_CASE("Document crawler end-to-end test.", "[crawler][e2e]") {
@@ -21,8 +20,4 @@ TEST_CASE("Document crawler end-to-end test.", "[crawler][e2e]") {
 
     REQUIRE( documents_in_store == expected_store );
     REQUIRE( repository == expected_repository );
-
-    BENCHMARK("Document crawler end-to-end test.") {
-        return crawler.start();
-    };
 }

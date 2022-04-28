@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "indexer.hpp"
 
 TEST_CASE("Indexer end-to-end test.", "[indexer, e2e]") {
@@ -42,9 +41,4 @@ TEST_CASE("Indexer end-to-end test.", "[indexer, e2e]") {
     CHECK( index["vitae"] == expectedIndex["vitae"] );
     CHECK( index["world"] == expectedIndex["world"] );
     CHECK( index["you"] == expectedIndex["you"] );
-
-    index = {};
-    BENCHMARK("Indexer end-to-end test.") {
-        return indexer.generateIndex();
-    };
 }

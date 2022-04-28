@@ -1,0 +1,2 @@
+#define Seeker_VERSION_MAJOR @Seeker_VERSION_MAJOR@
+#define Seeker_VERSION_MINOR @Seeker_VERSION_MINOR@

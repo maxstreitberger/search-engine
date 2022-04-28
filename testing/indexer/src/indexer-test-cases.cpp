@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "indexer.hpp"
 
 TEST_CASE("Indexer can load stopwords.", "[indexer]") {
@@ -11,10 +10,6 @@ TEST_CASE("Indexer can load stopwords.", "[indexer]") {
     CHECK( resultingList.find(someExpectedStopwords[0]) != resultingList.end() );
     CHECK( resultingList.find(someExpectedStopwords[1]) != resultingList.end() );
     CHECK( resultingList.find(someExpectedStopwords[2]) != resultingList.end() );
-
-    BENCHMARK("Indexer can load stopwords.") {
-        return indexer.loadList(indexer.stopword_path);
-    };
 }
 
 TEST_CASE("Indexer can load special characters.", "[indexer]") {
@@ -26,10 +21,6 @@ TEST_CASE("Indexer can load special characters.", "[indexer]") {
     CHECK( resultingList.find(someExpectedChars[0]) != resultingList.end() );
     CHECK( resultingList.find(someExpectedChars[1]) != resultingList.end() );
     CHECK( resultingList.find(someExpectedChars[2]) != resultingList.end() );
-
-    BENCHMARK("Indexer can load special characters.") {
-        return indexer.loadList(indexer.special_chars_path);
-    };
 }
 
 TEST_CASE("Indexer can split text into list by whitespace.", "[indexer]") {
@@ -40,10 +31,6 @@ TEST_CASE("Indexer can split text into list by whitespace.", "[indexer]") {
     std::vector<std::string> returnedList = indexer.splitTextIntoList(text);
 
     REQUIRE( expectedList == returnedList );
-
-    BENCHMARK("Indexer can split text into list by whitespace.") {
-        return indexer.splitTextIntoList(text);
-    };
 }
 
 TEST_CASE("Indexer can remove stopwords.", "[indexer]") {
@@ -55,10 +42,6 @@ TEST_CASE("Indexer can remove stopwords.", "[indexer]") {
     std::vector<std::string> resultTokens = indexer.removeStopwords(tokens, stopwords);
 
     REQUIRE( expectedTokens == resultTokens );
-
-    BENCHMARK("Indexer can remove stopwords.") {
-        return indexer.removeStopwords(tokens, stopwords);
-    };
 }
 
 TEST_CASE("Indexer can remove special characters.", "[indexer]") {
@@ -70,10 +53,6 @@ TEST_CASE("Indexer can remove special characters.", "[indexer]") {
     std::vector<std::string> resultTokens = indexer.removeSpecialChars(tokens, specialChars);
 
     REQUIRE( expectedTokens == resultTokens );
-
-    BENCHMARK("Indexer can remove special characters.") {
-        return indexer.removeSpecialChars(tokens, specialChars);
-    };
 }
 
 TEST_CASE("Indexer can create index for one document.", "[indexer]") {
@@ -91,8 +70,4 @@ TEST_CASE("Indexer can create index for one document.", "[indexer]") {
     CHECK( returnedIndex["hello"] ==  hello);
     CHECK( returnedIndex["world"] == world );
     CHECK( returnedIndex["you"] == you );
-
-    BENCHMARK("Indexer can create index for one document.") {
-        return indexer.createIndexForDocument(&document, tokens);
-    };
 }

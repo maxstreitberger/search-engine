@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "web_crawler.hpp"
-#include "../../../include/helpers.hpp"
+#include "helpers.hpp"
 
 TEST_CASE("Web Crawler can retrieve HTML page from given URL.", "[web-crawler]") {
     WebCrawler crawler = WebCrawler();
@@ -28,11 +27,6 @@ TEST_CASE("Web Crawler can extract URLs from HTML and add them to a queue.", "[w
 
         REQUIRE(retrieved == expected);            
     }
-
-    retrievedURLs = {};
-    BENCHMARK("Web Crawler can extract URLs from HTML and add them to a queue.") {
-        return crawler.getURLs(htmlDoc, &retrievedURLs);
-    };
 }
 
 TEST_CASE("Web Crawler can extract the base URL from the given path.", "[web-crawler]") {
@@ -47,10 +41,6 @@ TEST_CASE("Web Crawler can remove all HTML tags.", "[web-crawler]") {
     std::string retrunedText = crawler.removeTags(html_doc);
 
     REQUIRE(retrunedText == " Test Page This is a test page filled with common HTML elements to be used to provide visual feedback whilst building CSS systems and frameworks.");
-
-    BENCHMARK("Web Crawler can remove all HTML tags.") {
-        return crawler.removeTags(html_doc);
-    };
 }
 
 TEST_CASE("Web Crawler can register a page.", "[web-crawler]") {
@@ -64,11 +54,6 @@ TEST_CASE("Web Crawler can register a page.", "[web-crawler]") {
     crawler.registerPage("https://zelebrate.xyz", html_doc);
 
     REQUIRE(foundPages == expectedPages);
-
-    foundPages = {};
-    BENCHMARK("Web Crawler can register a page.") {
-        return crawler.registerPage("https://zelebrate.xyz", html_doc);
-    };
 }
 
 TEST_CASE("Web Crawler can identify and update an already registered page.", "[web-crawler]") {
@@ -89,12 +74,6 @@ TEST_CASE("Web Crawler can identify and update an already registered page.", "[w
 
     crawler.registerPage("https://zelebrate.xyz", html_doc_updated);
     CHECK(foundPages == expectedPages_AfterUpdating);
-
-    foundPages = {};
-    BENCHMARK("Web Crawler can register a page.") {
-        crawler.registerPage("https://zelebrate.xyz", html_doc);
-        return crawler.registerPage("https://zelebrate.xyz", html_doc_updated);
-    };
 }
 
 TEST_CASE("Web Crawler can recognize 'https://zelebrate.xyz' as a valid URL", "[web-crawler]") {

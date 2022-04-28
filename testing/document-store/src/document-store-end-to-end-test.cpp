@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "doc_store.hpp"
 
 TEST_CASE("Document Store end-to-end test: Unique documents.", "[store][e2e]") {
@@ -26,12 +25,6 @@ TEST_CASE("Document Store end-to-end test: Unique documents.", "[store][e2e]") {
 
     REQUIRE( document_store == expected_store);
     REQUIRE( repository == expected_repository);
-
-    document_store = {};
-    repository = {};
-    BENCHMARK("Document Store end-to-end test: Unique documents.") {
-        return store.processDocuments();
-    };
 }
 
 TEST_CASE("Document Store end-to-end test: Updated document.", "[store][e2e]") {
@@ -57,12 +50,6 @@ TEST_CASE("Document Store end-to-end test: Updated document.", "[store][e2e]") {
 
     REQUIRE( document_store == expected_store);
     REQUIRE( repository == expected_repository);
-
-    document_store = {};
-    repository = {};
-    BENCHMARK("Document Store end-to-end test: Updated document.") {
-        return store.processDocuments();
-    };
 }
 
 TEST_CASE("Document Store end-to-end test: Nothing to change.", "[store][e2e]") {
@@ -84,10 +71,5 @@ TEST_CASE("Document Store end-to-end test: Nothing to change.", "[store][e2e]") 
 
     REQUIRE( document_store == expected_store);
     REQUIRE( repository.empty() );
-
-    repository = {};
-    BENCHMARK("Document Store end-to-end test: Nothing to change.") {
-        return store.processDocuments();
-    };
 }
 

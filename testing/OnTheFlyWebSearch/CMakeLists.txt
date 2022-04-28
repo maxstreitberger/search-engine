@@ -6,9 +6,9 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE web-crawler 
-    PRIVATE indexing
-    PRIVATE ranking
+    PRIVATE WebCrawler
+    PRIVATE Indexer
+    PRIVATE Ranker
     PRIVATE Catch2::Catch2WithMain
     PRIVATE glog::glog
 )

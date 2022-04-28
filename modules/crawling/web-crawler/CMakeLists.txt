@@ -1,17 +1,16 @@
-project(web-crawler)
+project(WebCrawler)
 
-add_library(${PROJECT_NAME} src/web_crawler.cpp)
+add_library(${PROJECT_NAME} STATIC include/web_crawler.hpp src/web_crawler.cpp)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
 
 target_include_directories(${PROJECT_NAME}
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
-    PUBLIC ${CURL_INCLUDE_DIR}
-    PUBLIC ${CMAKE_SOURCE_DIR}/include
-)
-target_link_libraries(${PROJECT_NAME} 
-    PRIVATE glog::glog
-    PUBLIC ${CURL_LIBRARIES}
-    PUBLIC doc_store
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    PUBLIC $<INSTALL_INTERFACE:include/>
 )
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include DESTINATION include)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE glog::glog
+    PUBLIC ${CURL_LIBRARIES}
+    PUBLIC DocumentStore
+)

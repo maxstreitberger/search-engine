@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "doc_crawler.hpp"
 
 TEST_CASE("DocumentCrawler can", "[crawler][store]") {
@@ -19,10 +18,6 @@ TEST_CASE("DocumentCrawler can", "[crawler][store]") {
         std::vector<std::string> visitedDocuments = crawler.getDocumentPaths();
 
         REQUIRE( expectedDocuments == visitedDocuments );
-
-        BENCHMARK("retrieve all documents paths in a given folder.") {
-            return crawler.getDocumentPaths();
-        };
     }
 
     SECTION("register a new document") {
@@ -32,11 +27,6 @@ TEST_CASE("DocumentCrawler can", "[crawler][store]") {
         crawler.registerDocument(SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt");
 
         REQUIRE( returnedDocs == expectedMeta );
-
-        returnedDocs = {};
-        BENCHMARK("register a new document.") {
-            return crawler.registerDocument(SEARCHENGINE_TESTING_DIR "/resources/test-documents/doc1.txt");
-        };
     }
 
     SECTION("identify and update an already registered document") {

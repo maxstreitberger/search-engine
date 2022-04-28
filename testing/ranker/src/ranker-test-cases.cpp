@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/benchmark/catch_benchmark.hpp>
 #include "ranker.hpp"
 
 std::vector<docmeta::DocumentMeta> store = { 
@@ -15,10 +14,6 @@ TEST_CASE("Ranker can transfrom search query (remove whitespace and to lowercase
     std::string returnedQuery = ranker.transformQuery(searchQuery);
 
     REQUIRE( returnedQuery == expectedQuery );
-
-    BENCHMARK("Ranker can transfrom search query (remove whitespace and to lowercase).") {
-        return ranker.transformQuery(searchQuery);
-    };
 }
 
 TEST_CASE("Ranker can retrieve token meta information.", "[ranker]") {
@@ -42,10 +37,6 @@ TEST_CASE("Ranker can retrieve token meta information.", "[ranker]") {
     std::vector<tokenmeta::TokenMeta> returnedInfo = ranker.retrieveMetaInformations(&index, query);
 
     REQUIRE( returnedInfo == expectedInfo );
-
-    BENCHMARK("Ranker can retrieve token meta information.") {
-        return ranker.retrieveMetaInformations(&index, query);
-    };
 }
 
 TEST_CASE("Ranker can collect document ids.", "[ranker]") {
@@ -59,10 +50,6 @@ TEST_CASE("Ranker can collect document ids.", "[ranker]") {
     std::vector<const docmeta::DocumentMeta*> doc_ptrs = ranker.filterDocPtrs(tokenMeta);
 
     REQUIRE( doc_ptrs == expectedResult );
-
-    BENCHMARK("Ranker can collect document ids.") {
-        return ranker.filterDocPtrs(tokenMeta);
-    };
 }
 
 TEST_CASE("Ranker can return documents.", "[ranker]") {
@@ -76,10 +63,6 @@ TEST_CASE("Ranker can return documents.", "[ranker]") {
     std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(ptrs);
 
     REQUIRE( returnedDocuments == expectedDocuments );
-
-    BENCHMARK("Ranker can return documents.") {
-        return ranker.collectDocuments(ptrs);
-    };
 }
 
 TEST_CASE("Ranker can return the specified amount of documents. (test if one document got returned)", "[ranker]") {
@@ -93,8 +76,4 @@ TEST_CASE("Ranker can return the specified amount of documents. (test if one doc
     std::vector<docmeta::DocumentMeta> returnedDocuments = ranker.collectDocuments(ptrs);
 
     REQUIRE( returnedDocuments == expectedDocuments );
-
-    BENCHMARK("Ranker can return the specified amount of documents. (test if one document got returned)") {
-        return ranker.collectDocuments(ptrs);
-    };
 }
