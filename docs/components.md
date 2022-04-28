@@ -26,7 +26,3 @@ The indexer splits every document into individual tokens. Next, every token is c
 ## Ranker
 
 Currently, the ranker is very basic because it only searches for a direct match for the query in the index. Before the search, the ranker removes all possible whitespace around the query and transforms it to lower case. Next, it searches for a perfect match in the index. If a match is found, it collects all the documents in which the found token appears. Before returning the documents to the user, the ranker sorts the documents by the number of appearances of the token.
-
-
-
-# ADD IMAGE

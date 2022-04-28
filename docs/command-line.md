@@ -18,7 +18,7 @@ Seeker supports the following command line options. Click one of the following l
 <br>
 
 <a id="specify-search-term"></a>
-## Specify search term
+## Specify search term (requiered)
 
 ```
 -s, —-search <search term>
@@ -27,7 +27,7 @@ Seeker supports the following command line options. Click one of the following l
 This allows you to specify what the search engine should search for. Without it you don't get any items back.
 
 <a id="set-search-path"></a>
-## Set search path
+## Set search path (requiered)
 
 ```
 -p , —-path <url/absolut path>
