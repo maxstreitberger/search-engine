@@ -19,7 +19,7 @@
 struct PreComputedIndexer {
     PreComputedIndexer() {}
     PreComputedIndexer(std::string specialCharsPath, std::string stopwordPath) : special_chars_path{specialCharsPath}, stopword_path{stopwordPath} {}
-    PreComputedIndexer(std::string specialCharsPath, std::string stopwordPath, ThreadQueue<const docmeta::DocumentMeta*>* pipeline, std::atomic<bool>* keepThreadRunning, std::map<std::string, std::set<tokenmeta::TokenMeta>>* index) : special_chars_path{specialCharsPath}, stopword_path{stopwordPath}, repository_pipeline{pipeline}, index{index} {}
+    PreComputedIndexer(std::string specialCharsPath, std::string stopwordPath, ThreadQueue<const docmeta::DocumentMeta*>* pipeline, std::map<std::string, std::set<tokenmeta::TokenMeta>>* index) : special_chars_path{specialCharsPath}, stopword_path{stopwordPath}, repository_pipeline{pipeline}, index{index} {}
 
     void generateIndex();
     void process(const docmeta::DocumentMeta* doc);
@@ -38,7 +38,6 @@ struct PreComputedIndexer {
 
     ThreadQueue<const docmeta::DocumentMeta*>* repository_pipeline;
     std::map<std::string, std::set<tokenmeta::TokenMeta>>* index;
-    std::atomic<bool>* keepRunning;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef THREAD_QUEUE_HPP
 #define THREAD_QUEUE_HPP
 
+#include <iostream>
 #include <queue>
 #include <memory>
 #include <mutex>
@@ -23,17 +24,17 @@ struct ThreadQueue {
     
     void wait_and_pop(T& value) {
         std::unique_lock<std::mutex> lk(mut);
-        data_cond.wait(lk,[this]{ return !data_queue.empty(); });
-        value=data_queue.front();
-        data_queue.pop();
-    }
-    
-    std::shared_ptr<T> wait_and_pop() {
-        std::unique_lock<std::mutex> lk(mut);
-        data_cond.wait(lk,[this]{ return !data_queue.empty(); });
-        std::shared_ptr<T> res(std::make_shared<T>(data_queue.front()));
-        data_queue.pop();
-        return res;
+        data_cond.wait(lk,[this]{ 
+            if (flag) {
+                return !data_queue.empty(); 
+            } else {
+                return true;
+            }
+        });
+        if (flag) {
+            value=data_queue.front();
+            data_queue.pop();
+        }
     }
 
     bool try_pop(T& value) {
@@ -59,9 +60,16 @@ struct ThreadQueue {
         return data_queue.empty();
     }
 
+    void stop_queue() {
+        std::lock_guard<std::mutex> lk(mut);
+        flag = false;
+        data_cond.notify_all();
+    }
+
     private:
         mutable std::mutex mut;
         std::queue<T> data_queue;
+        bool flag = true;
         std::condition_variable data_cond;
 };
 

@@ -20,10 +20,9 @@
 #include <iostream>
 #include <thread>
 #include <set>
-#include <queue>
-#include <atomic>
 
 #include "thread_queue.hpp"
+#include "queue_handler.hpp"
 #include "doc_meta.hpp"
 #include "pre_computed_doc_crawler.hpp"
 #include "pre_computed_doc_store.hpp"
@@ -38,19 +37,18 @@ int main(int argc, const char** argv) {
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
-    std::atomic<bool> keepThreadRunning(true);
-
     ThreadQueue<docmeta::DocumentMeta> crawler_store_pipeline;
     ThreadQueue<const docmeta::DocumentMeta*> repository_pipeline;
+
+    QueueHandler queue_handler;
+    std::atomic<bool> keepThreadRunning(true);
 
     std::set<docmeta::DocumentMeta> document_store;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
-    std::cout << "Main: "<< keepThreadRunning.load() << std::endl;
-
-    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &keepThreadRunning, &index);
-    PreComputedDocStore store = PreComputedDocStore(&crawler_store_pipeline, &repository_pipeline, &keepThreadRunning, &document_store);
-    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&crawler_store_pipeline, &keepThreadRunning, SEARCHENGINE_ROOT_DIR "/dummy-text");
+    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &queue_handler.repository_pipeline, &index);
+    PreComputedDocStore store = PreComputedDocStore(&queue_handler.crawler_store_pipeline, &queue_handler.repository_pipeline, &document_store);
+    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&queue_handler.crawler_store_pipeline, &keepThreadRunning, SEARCHENGINE_ROOT_DIR "/dummy-text");
     Ranker ranker = Ranker(&document_store, &index);
 
     std::thread crawler_thread (&PreComputedDocumentCrawler::start, crawler);
@@ -78,6 +76,7 @@ int main(int argc, const char** argv) {
             }   
         } else {
             keepThreadRunning.store(false);
+            queue_handler.exit_queues();
             LOG(WARNING) << "Stop search engine";
             break;
         }

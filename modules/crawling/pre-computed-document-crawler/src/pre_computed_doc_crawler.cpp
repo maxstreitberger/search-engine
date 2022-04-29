@@ -12,6 +12,7 @@ void PreComputedDocumentCrawler::start() {
         }
     }
     LOG(WARNING) << "Document crawler stopped";
+    std::cout << "Crawler exits" << std::endl;
 }
 
 std::vector<std::string> PreComputedDocumentCrawler::getDocumentPaths() {

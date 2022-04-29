@@ -17,11 +17,16 @@ void PreComputedIndexer::generateIndex() {
     LOG(INFO) << "Start indexing";
     specialchars = loadList(special_chars_path);
     stopwords = loadList(SEARCHENGINE_ROOT_DIR "/modules/indexing/documents/stopwords.txt");
-    while (keepRunning->load()) {
-        const docmeta::DocumentMeta* doc;
+    while (true) {
+        const docmeta::DocumentMeta* doc = nullptr;
         repository_pipeline->wait_and_pop(doc);
-        process(doc);
+        if (doc != nullptr) {
+            process(doc);
+        } else {
+            break;
+        }
     }
+    std::cout << "Indexer exits" << std::endl;
     LOG(WARNING) << "Indexer stopped";
 }
 
