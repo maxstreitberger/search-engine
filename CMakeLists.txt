@@ -33,7 +33,6 @@ add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
 # PACKAGES
 find_package(CURL REQUIRED)
 find_package(glog CONFIG REQUIRED)
-find_package(Catch2 CONFIG REQUIRED)
 
 
 #---------------------------------------------------------------------------------------------------------
@@ -44,8 +43,8 @@ add_subdirectory(modules)
 #---------------------------------------------------------------------------------------------------------
 # DEVELOPMENT
 if (SEEKER_DEVELOPMENT_BUILD)
-    message("Testing 🧪")
     set(CMAKE_CXX_FLAGS ${SEEKER_DEVELOPMENT_COMPILER_FLAGS})
+    find_package(Catch2 CONFIG REQUIRED)
     include(CTest)
     macro(create_test name)
         add_test(NAME ${name} COMMAND $<TARGET_FILE:${name}>)
