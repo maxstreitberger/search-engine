@@ -5,17 +5,23 @@ configure_file(cmake/SeekerConfig.h.in cmake/SeekerConfig.h)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
+
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-linux/share")
+endif()
+
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Dawin")
+    set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
+endif()
 
 option(SEEKER_INSTALL_DOCS "Install documentation alongside library" ON)
 option(SEEKER_DEVELOPMENT_BUILD "Build tests and benchmarks, enable warnings" OFF)
 option(SEEKER_WARNINGS_AS_ERRORS "Enables the -WError compiler flag" OFF)
 
-set(SEEKER_NORMAL_COMPILER_FLAGS "-I/usr/local/include -O2 -w")
-set(SEEKER_DEVELOPMENT_COMPILER_FLAGS "-I/usr/local/include --coverage -g -O0 -Wall -pedantic-errors -Wextra -Wconversion -Wsign-conversion")
+set(SEEKER_NORMAL_COMPILER_FLAGS "-O2 -w")
+set(SEEKER_DEVELOPMENT_COMPILER_FLAGS "--coverage -g -O0 -Wall -pedantic-errors -Wextra -Wconversion -Wsign-conversion")
 
-set(CMAKE_CXX_FLAGS ${SEEKER_NORMAL_COMPILER_FLAGS})
-set(CMAKE_EXE_LINKER_FLAGS "-L/usr/local/lib -lgumbo")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${SEEKER_NORMAL_COMPILER_FLAGS})
 
 
 #---------------------------------------------------------------------------------------------------------
@@ -33,6 +39,7 @@ add_definitions(-DRANKING_ROOT_DIR=\"${CMAKE_SOURCE_DIR}/modules/ranking\")
 # PACKAGES
 find_package(CURL REQUIRED)
 find_package(glog CONFIG REQUIRED)
+find_package(unofficial-gumbo CONFIG REQUIRED)
 
 
 #---------------------------------------------------------------------------------------------------------

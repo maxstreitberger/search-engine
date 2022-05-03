@@ -4,6 +4,7 @@
 #include <iostream>
 #include <set>
 #include <glog/logging.h>
+#include <algorithm>
 
 #include "doc_meta.hpp"
 
