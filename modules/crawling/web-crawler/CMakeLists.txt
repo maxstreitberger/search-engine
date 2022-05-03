@@ -11,7 +11,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE glog::glog
-    PUBLIC unofficial::gumbo::gumbo
+    PRIVATE unofficial::gumbo::gumbo
     PUBLIC ${CURL_LIBRARIES}
     PUBLIC DocumentStore
 )

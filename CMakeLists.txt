@@ -10,7 +10,7 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-linux/share")
 endif()
 
-if (CMAKE_HOST_SYSTEM_NAME MATCHES "Dawin")
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin")
     set(CMAKE_PREFIX_PATH "~/vcpkg/installed/x64-osx/share")
 endif()
 

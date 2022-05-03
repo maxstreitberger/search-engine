@@ -12,8 +12,8 @@
 
 #include <glog/logging.h>
 #include <curl/curl.h>
-
 #include <gumbo.h>
+
 #include "doc_meta.hpp"
 #include "doc_store.hpp"
 
