@@ -5,11 +5,10 @@ Besides using the executables you also have the possibility to integrate the sea
 
 <a id="library-requirements"></a>
 ## Requirements
-
 - [gumbo](https://github.com/google/gumbo-parser)
 - [glog](https://github.com/google/glog)
-- [libcurl](https://curl.se/libcurl/)
-> **NOTE:** &nbsp; _gumbo_ and _libcurl_ are only required for web searching.
+- [libcurl4-openssl-dev](https://everything.curl.dev/get)
+> **NOTE:** &nbsp; It is recommended to use a package manager (for example, [vcpkg](https://vcpkg.io/en/index.html))
 
 <a id="library-installation"></a>
 ## Installation
