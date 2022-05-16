@@ -1,3 +1,5 @@
 add_subdirectory(document-store)
 add_subdirectory(document-crawler)
 add_subdirectory(web-crawler)
+add_subdirectory(pre-computed-document-crawler)
+add_subdirectory(pre-computed-document-store)
