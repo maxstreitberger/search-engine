@@ -18,7 +18,6 @@ struct QueueHandler {
         crawler_store_pipeline.stop_queue();
         repository_pipeline.stop_queue();
     }
-
     
     ThreadQueue<docmeta::DocumentMeta> crawler_store_pipeline;
     ThreadQueue<const docmeta::DocumentMeta*> repository_pipeline;

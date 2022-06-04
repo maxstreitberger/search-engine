@@ -24,14 +24,9 @@
 #include "ranker.hpp"
 #include "engine.hpp"
 
-#include <glog/logging.h>
 #include "CLI11.hpp"
 
 int main(int argc, const char** argv) {
-    FLAGS_log_dir = "/tmp";
-    google::InitGoogleLogging(argv[0]);
-    DLOG(INFO) << "Start on-the-fly document search engine";
-    
     CLI::App app{"On-The-Fly document search engine"};
 
     std::string searchTerm;
@@ -60,10 +55,8 @@ int main(int argc, const char** argv) {
     std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, indexer, ranker, searchTerm);
 
     if (foundDocuments.empty()) {
-        LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";
         std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;
     } else {
-        LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
         std::cout << "Found " << foundDocuments.size() << " document(s):" << std::endl;
 
         for (auto& doc: foundDocuments) {

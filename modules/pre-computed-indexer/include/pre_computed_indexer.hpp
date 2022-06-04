@@ -8,8 +8,7 @@
 #include <iostream>
 #include <map>
 #include <set>
-
-#include <glog/logging.h>
+#include <cstring>
 
 #include "../../../include/doc_meta.hpp"
 #include "../../../include/token_meta.hpp"

@@ -7,8 +7,6 @@
 #include <queue>
 #include <set>
 
-#include <glog/logging.h>
-
 #include "doc_meta.hpp"
 #include "helpers.hpp"
 #include "doc_store.hpp"

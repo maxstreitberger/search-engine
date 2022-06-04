@@ -10,7 +10,6 @@
 #include <thread>
 #include <chrono>
 
-#include <glog/logging.h>
 #include <curl/curl.h>
 
 #include "gumbo/gumbo.h"

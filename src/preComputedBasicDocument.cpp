@@ -28,34 +28,34 @@
 #include "pre_computed_doc_store.hpp"
 #include "pre_computed_indexer.hpp"
 #include "ranker.hpp"
+#include "thread_manager.hpp"
+
+#include "CLI11.hpp"
 
 int main(int argc, const char** argv) {
-    FLAGS_log_dir = SEARCHENGINE_ROOT_DIR "/bin/logs";
-    google::InitGoogleLogging(argv[0]);
-    DLOG(INFO) << "Start preComputedBasicDocument search engine";
+    CLI::App app{"Pre-Computed document search engine"};
+
+    std::string searchTerm;
+    std::string path;
+
+    app.add_option("-p,--path", path, "Use this option to specify where the search engine should search. You need to specify the absolute path to the directory. ");
+
+    CLI11_PARSE(app, argc, argv);
 
     std::string specialCharsPath = INDEXING_ROOT_DIR "/documents/special.txt";
     std::string stopwordsPath = INDEXING_ROOT_DIR "/documents/stopwords.txt";
 
-    ThreadQueue<docmeta::DocumentMeta> crawler_store_pipeline;
-    ThreadQueue<const docmeta::DocumentMeta*> repository_pipeline;
-
-    QueueHandler queue_handler;
-    std::atomic<bool> keepThreadRunning(true);
-
+    ThreadManager tmanager;
     std::set<docmeta::DocumentMeta> document_store;
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
-    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &queue_handler.repository_pipeline, &index);
-    PreComputedDocStore store = PreComputedDocStore(&queue_handler.crawler_store_pipeline, &queue_handler.repository_pipeline, &document_store);
-    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&queue_handler.crawler_store_pipeline, &keepThreadRunning, SEARCHENGINE_ROOT_DIR "/dummy-text");
+    PreComputedIndexer indexer = PreComputedIndexer(specialCharsPath, stopwordsPath, &tmanager.qhandler.repository_pipeline, &index);
+    PreComputedDocStore store = PreComputedDocStore(&tmanager.qhandler.crawler_store_pipeline, &tmanager.qhandler.repository_pipeline, &document_store);
+    PreComputedDocumentCrawler crawler = PreComputedDocumentCrawler(&tmanager.qhandler.crawler_store_pipeline, &tmanager.rflag, path);
     Ranker ranker = Ranker(&document_store, &index);
 
-    std::thread crawler_thread (&PreComputedDocumentCrawler::start, crawler);
-    std::thread store_thread (&PreComputedDocStore::receiveDocuments, store);
-    std::thread indexer_thread (&PreComputedIndexer::generateIndex, indexer);
+    tmanager.setAndStart(crawler, store, indexer);
 
-    std::string searchTerm;
     while (1) {
         std::cout << "Search for: ";
         std::cin >> searchTerm;
@@ -64,10 +64,8 @@ int main(int argc, const char** argv) {
             std::vector<docmeta::DocumentMeta> foundDocuments = ranker.searchFor(searchTerm);
 
             if (foundDocuments.empty()) {
-                LOG(INFO) << "No document(s) containing '" << searchTerm << "' found.";
                 std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;
             } else {
-                LOG(INFO) << "Found " << foundDocuments.size() << " document(s)";
                 std::cout << "Found " << foundDocuments.size() << " document(s):" << std::endl;
 
                 for (auto& doc: foundDocuments) {
@@ -75,16 +73,10 @@ int main(int argc, const char** argv) {
                 }
             }   
         } else {
-            keepThreadRunning.store(false);
-            queue_handler.exit_queues();
-            LOG(WARNING) << "Stop search engine";
+            tmanager.stopThreads();
             break;
         }
     }
-
-    crawler_thread.join();
-    store_thread.join();
-    indexer_thread.join();
 
     return 0;
 }

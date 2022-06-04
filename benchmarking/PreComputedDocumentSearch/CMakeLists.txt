@@ -1,4 +1,4 @@
-project(OnTheFlyWebSearch_benchmarking)
+project(PreComputedDocumentSearch_benchmarking)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
@@ -8,8 +8,8 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE WebCrawler 
-    PRIVATE Indexer
+    PRIVATE PreComputedDocumentCrawler
+    PRIVATE PreComputedDocumentStore 
+    PRIVATE PreComputedIndexer
     PRIVATE Ranker
-    PRIVATE glog::glog
 )

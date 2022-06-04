@@ -7,9 +7,8 @@
 #include <queue>
 #include <set>
 #include <thread>
-
-#include <glog/logging.h>
-#include <nlohmann/json.hpp>
+#include <memory>
+#include <atomic>
 
 #include "../../../../include/doc_meta.hpp"
 #include "../../../../include/helpers.hpp"

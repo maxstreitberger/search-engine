@@ -7,8 +7,8 @@
 #include "web_crawler.hpp"
 #include <glog/logging.h>
 
-std::string specialCharsPath = SEARCHENGINE_TESTING_DIR "/resources/special.txt";
-std::string stopwordsPath = SEARCHENGINE_TESTING_DIR "/resources/stopwords.txt";
+std::string specialCharsPath = SEARCHENGINE_BENCHMARKING_DIR "/resources/special.txt";
+std::string stopwordsPath = SEARCHENGINE_BENCHMARKING_DIR "/resources/stopwords.txt";
 
 void otf_web_nothing_returned(nonius::chronometer meter) {
     std::set<docmeta::DocumentMeta> crawler_found_pages;

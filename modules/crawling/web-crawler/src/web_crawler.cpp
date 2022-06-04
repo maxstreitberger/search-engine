@@ -4,15 +4,12 @@
 #include "web_crawler.hpp"
 
 void WebCrawler::start() {
-    LOG(INFO) << "Start web crawler";
     bool isValidURL = checkIfURL(&origin_path);
 
     if (isValidURL) {
         std::queue<std::string> urls;
         urls.push(origin_path);
         while (!urls.empty()) {
-            LOG(INFO) << "Crawl url: " << urls.front();
-
             if (!checkIfURL(&urls.front())) {
                 urls.pop();
                 continue;
@@ -33,10 +30,8 @@ void WebCrawler::start() {
 bool WebCrawler::checkIfURL(const std::string* url) {
     std::regex url_regex("https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&//=]*)");
     if (std::regex_match(*url, url_regex)) {
-        LOG(INFO) << "Valid URL entered: " << *url;
         return true;
     } else {
-        LOG(ERROR) << "Not a valid URL entered: '" << *url << "'";
         return false;
     }   
 }
@@ -47,7 +42,6 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
 }
 
 std::string WebCrawler::getHTML(std::string url) {
-    LOG(INFO) << "Get HTML page";
     CURL * curl;
     CURLcode res;
     std::string buffer;
@@ -72,14 +66,11 @@ void WebCrawler::search_for_links(GumboNode* node, std::queue<std::string>* urls
     GumboAttribute* href;
     if (node->v.element.tag == GUMBO_TAG_A && (href = gumbo_get_attribute(&node->v.element.attributes, "href"))) {
         std::string value = href->value;
-        LOG(INFO) << "Found url: " << value;
         if (value[0] == '/' && value[1] == '/') {
             std::string url = protocol + value.erase(0, 2);
-            LOG(INFO) << "Add url: " << url;
             if (checkIfURLWasAlreadyVisited(&url) == false) urls->push(url);
         } else if (value[0] == '/') {
             std::string url = base_url + value;
-            LOG(INFO) << "Add url: " << url;
             if (checkIfURLWasAlreadyVisited(&url) == false) urls->push(url);
         }
     }
@@ -98,10 +89,8 @@ bool WebCrawler::checkIfURLWasAlreadyVisited(std::string* url) {
     }
 
     if (std::find(already_visited_pages.begin(), already_visited_pages.end(), *url) != already_visited_pages.end()) {
-        LOG(INFO) << *url << " already visited";
         return true;
     } else {
-        LOG(INFO) << *url << " not visited yet";
         return false;
     }
 }
@@ -121,7 +110,6 @@ void WebCrawler::extractBaseURL(std::string* url) {
 }
 
 void WebCrawler::getURLs(std::string htmlDoc, std::queue<std::string>* urls) {
-    LOG(INFO) << "Get URLs";
     GumboOutput* output = gumbo_parse(htmlDoc.c_str());
     
     search_for_links(output->root, urls);
@@ -130,7 +118,6 @@ void WebCrawler::getURLs(std::string htmlDoc, std::queue<std::string>* urls) {
 }
 
 std::string WebCrawler::removeTags(std::string htmlDoc) {
-    LOG(INFO) << "Remove HTML tags";
     GumboOutput* output = gumbo_parse(htmlDoc.c_str());
     std::string text = cleanText(output->root);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
@@ -161,10 +148,8 @@ void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
     
     std::string content = removeTags(htmlDoc);
     docmeta::DocumentMeta page = docmeta::DocumentMeta(new_id, content, url);
-    LOG(INFO) << "Page to register: " << page;
 
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(pages->begin(), pages->end(), [&page](const docmeta::DocumentMeta pg) {
-        LOG(INFO) << "Page with path = " << page.path << " was already crawled"; 
         return pg.path == page.path;
     });
 
@@ -176,7 +161,6 @@ void WebCrawler::registerPage(std::string url, std::string htmlDoc) {
     }
 
     pages->insert(page);
-    LOG(INFO) << "Successfully registered page: " << page;
 }
 
 #endif

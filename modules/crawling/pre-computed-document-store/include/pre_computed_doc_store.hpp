@@ -3,10 +3,9 @@
 
 #include <iostream>
 #include <set>
-#include <glog/logging.h>
-#include <nlohmann/json.hpp>
 #include <queue>
 #include <vector>
+#include <algorithm>
 
 #include "../../../../include/doc_meta.hpp"
 #include "../../../../include/thread_queue.hpp"

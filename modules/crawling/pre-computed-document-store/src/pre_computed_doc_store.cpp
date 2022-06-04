@@ -11,23 +11,18 @@ std::ostream & operator <<(std::ostream &os, const std::set<docmeta::DocumentMet
 }
 
 void PreComputedDocStore::receiveDocuments() {
-    LOG(INFO) << "Receive documents from crawler";
     while (true) {
         docmeta::DocumentMeta doc;
         crawler_store_pipeline->wait_and_pop(doc);
         if (!doc.content.empty()) {
             process(doc);
-            LOG(WARNING) << *doc_store;
         } else {
             break;
         }
     }
-    std::cout << "Document store exits" << std::endl;
-    LOG(WARNING) << "Document store stopped";
 }
 
 void PreComputedDocStore::process(docmeta::DocumentMeta doc) {
-    LOG(INFO) << "Process document";
     
     DocumentStatus isNewDocument = checkForChanges(doc_store, &doc);
     switch (isNewDocument) {
@@ -45,22 +40,17 @@ void PreComputedDocStore::process(docmeta::DocumentMeta doc) {
 }
 
 DocumentStatus PreComputedDocStore::checkForChanges(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {
-    LOG(INFO) << "Check if the document is new or updated";
-
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(currentStore->begin(), currentStore->end(), [&doc](const docmeta::DocumentMeta doc_in_store) {
         return doc_in_store.path == doc->path;
     });
 
     if (it != currentStore->end()) {
         if (it->content != doc->content) {
-            LOG(INFO) << "Update document with id=" << it->id;
             return UPDATED;
         } else {
-            LOG(INFO) << "Document is not new or updated (id=" << it->id << ")";
             return NONE;
         }
     } else {
-        LOG(INFO) << "Document is new (path=" << doc->path << ")";
         return NEW;
     }
 }
@@ -70,9 +60,7 @@ void PreComputedDocStore::addToStore(std::set<docmeta::DocumentMeta>* currentSto
     currentStore->insert(*doc);
 }
 
-void PreComputedDocStore::updateStore(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {
-    LOG(INFO) << "Update doc (id= " << doc->id << ") to " << doc->content;
-    
+void PreComputedDocStore::updateStore(std::set<docmeta::DocumentMeta>* currentStore, docmeta::DocumentMeta* doc) {    
     std::set<docmeta::DocumentMeta>::iterator it = std::find_if(currentStore->begin(), currentStore->end(), [&doc](const docmeta::DocumentMeta doc_in_store) {
         return doc_in_store.path == doc->path;
     });
