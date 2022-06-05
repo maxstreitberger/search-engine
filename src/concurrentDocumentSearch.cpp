@@ -59,7 +59,7 @@ int main(int argc, const char** argv) {
     ConcurrentThreadQueue<const docmeta::DocumentMeta*> repository_pipeline;
     repository_pipeline.flag = &store_flag;
 
-    ConcurrentDocumentCrawler crawler = ConcurrentDocumentCrawler(&crawler_store_pipeline, "/home/max/VM-Share/search-engine/dummy-text", &crawler_flag);
+    ConcurrentDocumentCrawler crawler = ConcurrentDocumentCrawler(&crawler_store_pipeline, path, &crawler_flag);
     ConcurrentDocStore store = ConcurrentDocStore(&crawler_store_pipeline, &repository_pipeline, &document_store, &store_flag);
     ConcurrentIndexer indexer = ConcurrentIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &index, &index_flag);
     Ranker ranker = Ranker(&document_store, &index);
