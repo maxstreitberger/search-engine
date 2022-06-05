@@ -106,7 +106,6 @@ std::map<std::string, std::set<tokenmeta::TokenMeta>> ConcurrentIndexer::createI
 
     int counter = 1;
     for (auto token: tokens) {
-        std::cout << token << std::endl;
         if (index.find(token) == index.end()) {
             index[token].insert(tokenmeta::TokenMeta(doc->id, counter, doc));
         } else {

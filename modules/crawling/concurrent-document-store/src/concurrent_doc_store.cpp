@@ -17,7 +17,6 @@ void ConcurrentDocStore::receiveDocuments() {
 }
 
 void ConcurrentDocStore::process(docmeta::DocumentMeta doc) {
-    std::cout << "process document" << std::endl;
     DocumentStatus isNewDocument = checkForChanges(doc_store, &doc);
     switch (isNewDocument) {
     case NEW:
