@@ -24,17 +24,17 @@ struct ThreadQueue {
     
     void wait_and_pop(T& value) {
         std::unique_lock<std::mutex> lk(mut);
-        data_cond.wait(lk,[this]{ 
-            if (flag) {
+        data_cond.wait(lk,[this] {
+            // if (flag) {
                 return !data_queue.empty(); 
-            } else {
-                return true;
-            }
+            // } else {
+                // return true;
+            // }
         });
-        if (flag) {
+        // if (flag) {
             value=data_queue.front();
             data_queue.pop();
-        }
+        // }
     }
 
     bool try_pop(T& value) {

@@ -7,19 +7,17 @@
 #include <atomic>
 #include <thread>
 #include "queue_handler.hpp"
-#include "pre_computed_doc_crawler.hpp"
-#include "pre_computed_doc_store.hpp"
-#include "pre_computed_indexer.hpp"
 
 struct ThreadManager {
     ThreadManager() {
         rflag.store(true);
     }
 
-    void setAndStart(PreComputedDocumentCrawler crawler, PreComputedDocStore store, PreComputedIndexer indexer) {
-        crawler_thread = std::thread(&PreComputedDocumentCrawler::start, crawler);
-        store_thread = std::thread(&PreComputedDocStore::receiveDocuments, store);
-        indexer_thread = std::thread(&PreComputedIndexer::generateIndex, indexer);
+    template<typename Crawler, typename Store, typename Indexer>
+    void setAndStart(Crawler crawler, Store store, Indexer indexer) {
+        crawler_thread = std::thread(&Crawler::start, crawler);
+        store_thread = std::thread(&Store::receiveDocuments, store);
+        indexer_thread = std::thread(&Indexer::generateIndex, indexer);
     }
 
     void stopThreads() {

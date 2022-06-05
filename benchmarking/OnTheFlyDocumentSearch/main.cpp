@@ -22,7 +22,7 @@ void otf_doc_multiple_docs_returned(nonius::chronometer meter) {
     Indexer indexer = Indexer(specialCharsPath, stopwordsPath, &repository, &index);
     Ranker ranker = Ranker(&documents_in_store, &index);
 
-    meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "testtest"); });
+    meter.measure([&crawler, &indexer, &ranker] { return engine::runSearch(crawler, indexer, ranker, "lorem"); });
 }
 
 int main(int argc, char* argv[]) {

@@ -1,7 +1,7 @@
-#ifndef PRE_COMPUTED_INDEXER_CPP
-#define PRE_COMPUTED_INDEXER_CPP
+#ifndef CONCURRENT_INDEXER_CPP
+#define CONCURRENT_INDEXER_CPP
 
-#include "pre_computed_indexer.hpp"
+#include "concurrent_indexer.hpp"
 
 std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::set<tokenmeta::TokenMeta>> &m) {
     for (const auto &p : m) {
@@ -13,7 +13,7 @@ std::ostream & operator <<(std::ostream &os, const std::map<std::string, std::se
     return os;
 }
 
-void PreComputedIndexer::generateIndex() {
+void ConcurrentIndexer::generateIndex() {
     specialchars = loadList(special_chars_path);
     stopwords = loadList(stopword_path);
     while (true) {
@@ -25,9 +25,10 @@ void PreComputedIndexer::generateIndex() {
             break;
         }
     }
+    index_flag->store(false);
 }
 
-void PreComputedIndexer::process(const docmeta::DocumentMeta* doc) {
+void ConcurrentIndexer::process(const docmeta::DocumentMeta* doc) {
     std::vector<std::string> tokens = splitTextIntoList(doc->content);
     std::vector<std::string> withoutSpecialChars = removeSpecialChars(tokens, specialchars);
     std::vector<std::string> finalTokens = removeStopwords(withoutSpecialChars, stopwords);
@@ -36,13 +37,13 @@ void PreComputedIndexer::process(const docmeta::DocumentMeta* doc) {
     updateIndex(index, doc_index);
 }
 
-void PreComputedIndexer::updateIndex(std::map<std::string, std::set<tokenmeta::TokenMeta>>* targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
+void ConcurrentIndexer::updateIndex(std::map<std::string, std::set<tokenmeta::TokenMeta>>* targetIndex, std::map<std::string, std::set<tokenmeta::TokenMeta>> sourceIndex) {
     for (auto const& [key, val] : sourceIndex) {
         (*targetIndex)[key].insert(val.begin(), val.end());
     }
 }
 
-std::set<std::string> PreComputedIndexer::loadList(std::string path) {
+std::set<std::string> ConcurrentIndexer::loadList(std::string path) {
     std::set<std::string> list;
 
     std::string line;
@@ -58,7 +59,7 @@ std::set<std::string> PreComputedIndexer::loadList(std::string path) {
     return list;
 }
 
-std::vector<std::string> PreComputedIndexer::splitTextIntoList(std::string text) {
+std::vector<std::string> ConcurrentIndexer::splitTextIntoList(std::string text) {
     std::istringstream tokenStream(text);
     std::string token;
     std::vector<std::string> tokens;
@@ -75,7 +76,7 @@ std::vector<std::string> PreComputedIndexer::splitTextIntoList(std::string text)
     return tokens;
 }
 
-std::vector<std::string> PreComputedIndexer::removeSpecialChars(std::vector<std::string> tokens, std::set<std::string> specialChars) {
+std::vector<std::string> ConcurrentIndexer::removeSpecialChars(std::vector<std::string> tokens, std::set<std::string> specialChars) {
     std::vector<std::string> newTokens;
     for (auto& token: tokens) {
         for (const std::string& specialchar: specialChars) {
@@ -90,7 +91,7 @@ std::vector<std::string> PreComputedIndexer::removeSpecialChars(std::vector<std:
     return newTokens;
 }
 
-std::vector<std::string> PreComputedIndexer::removeStopwords(std::vector<std::string> tokens, std::set<std::string> stopwords) {
+std::vector<std::string> ConcurrentIndexer::removeStopwords(std::vector<std::string> tokens, std::set<std::string> stopwords) {
     std::vector<std::string> newTokens;
     for (auto& token: tokens) {
         if (stopwords.find(token) == stopwords.end()) {
@@ -100,7 +101,7 @@ std::vector<std::string> PreComputedIndexer::removeStopwords(std::vector<std::st
     return newTokens;
 }
 
-std::map<std::string, std::set<tokenmeta::TokenMeta>> PreComputedIndexer::createIndexForDocument(const docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
+std::map<std::string, std::set<tokenmeta::TokenMeta>> ConcurrentIndexer::createIndexForDocument(const docmeta::DocumentMeta* doc, std::vector<std::string> tokens) {
     std::map<std::string, std::set<tokenmeta::TokenMeta>> index;
 
     int counter = 1;

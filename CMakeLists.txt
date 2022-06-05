@@ -72,3 +72,17 @@ target_link_libraries(PreComputedDocumentSearch
     PRIVATE PreComputedIndexer
     PRIVATE Ranker
 )
+
+# CONCURRENT -- DOCUMENT CRAWLER
+add_executable(ConcurrentDocumentSearch src/concurrentDocumentSearch.cpp)
+
+target_include_directories(ConcurrentDocumentSearch
+    PRIVATE ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_libraries(ConcurrentDocumentSearch
+    PRIVATE ConcurrentDocumentCrawler
+    PRIVATE ConcurrentDocumentStore
+    PRIVATE ConcurrentIndexer
+    PRIVATE Ranker
+)
