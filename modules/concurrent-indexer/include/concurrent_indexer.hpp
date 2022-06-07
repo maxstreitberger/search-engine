@@ -10,6 +10,7 @@
 #include <set>
 #include <cstring>
 #include <atomic>
+#include <optional>
 
 #include "../../../include/doc_meta.hpp"
 #include "../../../include/token_meta.hpp"

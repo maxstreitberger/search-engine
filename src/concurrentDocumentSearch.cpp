@@ -29,6 +29,8 @@
 #include "concurrent_indexer.hpp"
 #include "ranker.hpp"
 
+#include "concurrent-engine.hpp"
+
 #include "concurrent_thread_queue.hpp"
 
 #include "CLI11.hpp"
@@ -64,15 +66,15 @@ int main(int argc, const char** argv) {
     ConcurrentIndexer indexer = ConcurrentIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &index, &index_flag);
     Ranker ranker = Ranker(&document_store, &index);
 
+    // std::thread indexer_thread = std::thread(&ConcurrentIndexer::generateIndex, indexer);
+    // std::thread store_thread = std::thread(&ConcurrentDocStore::receiveDocuments, store);
+    // std::thread crawler_thread = std::thread(&ConcurrentDocumentCrawler::start, crawler);
 
-    std::thread crawler_thread = std::thread(&ConcurrentDocumentCrawler::start, crawler);
-    std::thread store_thread = std::thread(&ConcurrentDocStore::receiveDocuments, store);
-    std::thread indexer_thread = std::thread(&ConcurrentIndexer::generateIndex, indexer);
-    crawler_thread.join();
-    store_thread.join();
-    indexer_thread.join();    
+    // indexer_thread.join();
+    // store_thread.join();
+    // crawler_thread.join();
 
-    std::vector<docmeta::DocumentMeta> foundDocuments = ranker.searchFor(searchTerm);
+    std::vector<docmeta::DocumentMeta> foundDocuments = engine::runSearch(crawler, store, indexer, ranker, searchTerm);
 
     if (foundDocuments.empty()) {
         std::cout << "No document(s) containing '" << searchTerm << "' found." << std::endl;

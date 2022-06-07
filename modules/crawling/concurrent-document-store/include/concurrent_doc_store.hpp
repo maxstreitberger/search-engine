@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <atomic>
+#include <optional>
 
 #include "../../../../include/doc_meta.hpp"
 #include "../../../../include/concurrent_thread_queue.hpp"

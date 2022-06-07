@@ -7,6 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <optional>
 
 template<typename T>
 struct ConcurrentThreadQueue {
@@ -22,24 +23,50 @@ struct ConcurrentThreadQueue {
     void push(T new_value) {
         std::lock_guard<std::mutex> lk(mut);
         data_queue.push(new_value);
-        data_cond.notify_one();
+        //data_cond.notify_one();
     }
     
-    void wait_and_pop(T& value) {
+    // void wait_and_pop(T& value) {
+    //     std::unique_lock<std::mutex> lk(mut);
+    //     // if (flag->load()) {
+    //     //     data_cond.wait(lk,[this] { return !data_queue.empty(); });
+    //     //     value=data_queue.front();
+    //     //     data_queue.pop();
+    //     // } else {
+    //     //     value=data_queue.front();
+    //     //     data_queue.pop();
+    //     // }
+    //     data_cond.wait(lk,[this] {
+    //         //std::cout << waiter << " WAITING" << std::endl;
+    //         if (!data_queue.empty()) {
+    //             got_data = true;
+    //             return true;
+    //         } else {
+    //             return !flag->load();
+    //         }
+    //     });
+    //     if (got_data) {
+    //         value=data_queue.front();
+    //         data_queue.pop();
+    //         got_data = false;
+    //     }
+    // }
+    std::pair<int, std::optional<T>> pop() {
         std::unique_lock<std::mutex> lk(mut);
-        data_cond.wait(lk,[this] {
-            if (!data_queue.empty()) {
-                got_data = true;
-                return true;
-            } else {
-                return !flag->load();
-            }
-        });
-        if (got_data) {
-            value=data_queue.front();
+        if (!data_queue.empty()) {
+            T data = data_queue.front();
             data_queue.pop();
-            got_data = false;
-        }
+            lk.unlock();
+            return std::pair(1, data);                  // return new item
+        } else {
+            if (flag->load()) {
+                lk.unlock();
+                return std::pair(0, std::nullopt);      // keep waiting for new item
+            } else {
+                lk.unlock();
+                return std::pair(-1, std::nullopt);     // exit queue
+            }
+        } 
     }
 
     void stop_queue() {

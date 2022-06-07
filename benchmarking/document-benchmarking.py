@@ -13,7 +13,7 @@ folder_dir = os.getcwd()
 otf_times = {}
 pc_times = {}
 
-running_times = {"On-The-Fly": [], "Pre-Computed": [], "Documents": []}
+running_times = {"Sequential-On-The-Fly": [], "Concurrent-On-The-Fly":[], "Documents": []}
 doc_count = 1000
 
 for num_run in range(10):
@@ -31,29 +31,29 @@ for num_run in range(10):
         file = open(file_name, "w+")
         file.write(lorem.words(100))          # 100 words ~750bytes
         file.close()
-    subprocess.run([folder_dir + "/bin/benchmarking/OnTheFlyDocumentSearch/OnTheFlyDocumentSearch_benchmarking", run_dir])
 
     times = []
 
+    subprocess.run([folder_dir + "/bin/benchmarking/OnTheFlyDocumentSearch/OnTheFlyDocumentSearch_benchmarking", run_dir])
     with open(folder_dir + "/OnTheFlyDocumentSearch_benchmarking.csv", 'r') as fil:
         tmp = fil.read().split('\n')
         tmp = tmp[1:-1]
         times = [float(i) for i in tmp]
     times_mean = pd.Series(times).mean()
-    print("OTF mean: " + str(times_mean))
-    running_times["On-The-Fly"] += [times_mean]
-    # otf_times[str(num_run + 1)] = times
+    print("Sequential OTF mean: " + str(times_mean))
+    running_times["Sequential-On-The-Fly"] += [times_mean]
 
     times = []
 
-    subprocess.run([folder_dir + "/bin/benchmarking/PreComputedDocumentSearch/PreComputedDocumentSearch_benchmarking", run_dir])
-    with open(folder_dir + "/PreComputedDocumentSearch_benchmarking.csv", 'r') as fil:
+    subprocess.run([folder_dir + "/bin/benchmarking/ConcurrentOnTheFlyDocumentSearch/ConcurrentOnTheFlyDocumentSearch_benchmarking", run_dir])
+    with open(folder_dir + "/ConcurrentOnTheFlyDocumentSearch_benchmarking.csv", 'r') as fil:
         tmp = fil.read().split('\n')
         tmp = tmp[1:-1]
         times = [float(i) for i in tmp]
+
     times_mean = pd.Series(times).mean()
-    print("PC mean: " + str(times_mean))
-    running_times["Pre-Computed"] += [times_mean]
+    print("Concurrent OTF mean: " + str(times_mean))
+    running_times["Concurrent-On-The-Fly"] += [times_mean]
 
     try:
         shutil.rmtree(dirName)
@@ -62,20 +62,7 @@ for num_run in range(10):
 
     doc_count += 1000
 
-    # pc_times[str(num_run + 1)] = times
-
-# df = pd.DataFrame(otf_times)
-# fig = df.plot(kind='box', figsize=(20, 16), fontsize=20).get_figure()
-# fig.savefig("otf_" + str(num_run + 1) + ".pdf")
-
-# df = pd.DataFrame(pc_times)
-# fig = df.plot(kind='box', figsize=(20, 16), fontsize=20).get_figure()
-# fig.savefig("pc_" + str(num_run + 1) + ".pdf")
-
-
-
-
 df = pd.DataFrame(running_times)
 df.set_index("Documents", inplace=True)
-fig = df.plot.line(xticks=df.index, subplots=True, xlabel="Documents", ylabel="Running Times")[0].get_figure()
+fig = df.plot.line(xticks=df.index, xlabel="Documents", ylabel="Running Times").get_figure()
 fig.savefig("running_times.pdf")

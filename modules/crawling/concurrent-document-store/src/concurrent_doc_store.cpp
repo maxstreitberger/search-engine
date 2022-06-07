@@ -5,12 +5,14 @@
 
 void ConcurrentDocStore::receiveDocuments() {
     while (true) {
-        docmeta::DocumentMeta doc;
-        crawler_store_pipeline->wait_and_pop(doc);
-        if (!doc.content.empty()) {
-            process(doc);
-        } else {
+        std::pair<int, std::optional<docmeta::DocumentMeta>> values = crawler_store_pipeline->pop();
+        
+        if (values.first == -1) {
             break;
+        } else if (values.first == 0) {
+            continue;
+        } else {
+            process(*values.second);
         }
     }
     store_flag->store(false);

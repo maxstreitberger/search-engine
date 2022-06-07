@@ -3,6 +3,7 @@
 
 #include "nonius.hpp"
 #include "helpers.hpp"
+#include "concurrent-engine.hpp"
 #include "concurrent_doc_crawler.hpp"
 #include "concurrent_doc_store.hpp"
 #include "concurrent_indexer.hpp"
@@ -31,15 +32,7 @@ void otf_doc_multiple_docs_returned(nonius::chronometer meter) {
     ConcurrentIndexer indexer = ConcurrentIndexer(specialCharsPath, stopwordsPath, &repository_pipeline, &index, &index_flag);
     Ranker ranker = Ranker(&document_store, &index);
 
-    std::thread crawler_thread = std::thread(&ConcurrentDocumentCrawler::start, crawler);
-    std::thread store_thread = std::thread(&ConcurrentDocStore::receiveDocuments, store);
-    std::thread indexer_thread = std::thread(&ConcurrentIndexer::generateIndex, indexer);
-
-    crawler_thread.join();
-    store_thread.join();
-    indexer_thread.join();    
-
-    meter.measure([&ranker] { return ranker.searchFor("lorem"); });
+    meter.measure([&crawler, &store, &indexer, &ranker] { return engine::runSearch(crawler, store, indexer, ranker, "lorem"); });
 }
 
 int main(int argc, char* argv[]) {

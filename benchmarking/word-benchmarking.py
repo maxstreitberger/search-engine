@@ -12,7 +12,7 @@ import numpy as np
 folder_dir = os.getcwd()
 otf_times = {}
 
-running_times = {"On-The-Fly": [], "Pre-Computed": [], "Words": []}
+running_times = {"Sequential-On-The-Fly": [], "Concurrent-On-The-Fly":[], "Words": []}
 word_count = 1000
 
 for num_run in range(100):
@@ -28,30 +28,29 @@ for num_run in range(100):
         file = open(file_name, "w+")
         file.write(lorem.words(word_count))          # 100 words ~750bytes
         file.close()
-    subprocess.run([folder_dir + "/bin/benchmarking/OnTheFlyDocumentSearch/OnTheFlyDocumentSearch_benchmarking", run_dir])
 
     times = []
 
+    subprocess.run([folder_dir + "/bin/benchmarking/OnTheFlyDocumentSearch/OnTheFlyDocumentSearch_benchmarking", run_dir])
     with open(folder_dir + "/OnTheFlyDocumentSearch_benchmarking.csv", 'r') as fil:
         tmp = fil.read().split('\n')
         tmp = tmp[1:-1]
         times = [float(i) for i in tmp]
     times_mean = pd.Series(times).mean()
-    print("OTF mean: " + str(times_mean))
-    running_times["On-The-Fly"] += [times_mean]
+    print("Sequential OTF mean: " + str(times_mean))
+    running_times["Sequential-On-The-Fly"] += [times_mean]
 
     times = []
-    
-    subprocess.run([folder_dir + "/bin/benchmarking/PreComputedDocumentSearch/PreComputedDocumentSearch_benchmarking", run_dir])
-    with open(folder_dir + "/PreComputedDocumentSearch_benchmarking.csv", 'r') as fil:
+
+    subprocess.run([folder_dir + "/bin/benchmarking/ConcurrentOnTheFlyDocumentSearch/ConcurrentOnTheFlyDocumentSearch_benchmarking", run_dir])
+    with open(folder_dir + "/ConcurrentOnTheFlyDocumentSearch_benchmarking.csv", 'r') as fil:
         tmp = fil.read().split('\n')
         tmp = tmp[1:-1]
         times = [float(i) for i in tmp]
+
     times_mean = pd.Series(times).mean()
-    print("PC mean: " + str(times_mean))
-    running_times["Pre-Computed"] += [times_mean]
-
-
+    print("Concurrent OTF mean: " + str(times_mean))
+    running_times["Concurrent-On-The-Fly"] += [times_mean]
     try:
         shutil.rmtree(dirName)
     except OSError as e:
@@ -61,5 +60,5 @@ for num_run in range(100):
 
 df = pd.DataFrame(running_times)
 df.set_index("Words", inplace=True)
-fig = df.plot(kind="line", xticks=[1000, 100000], ylabel="Running Times", subplots=True)[0].get_figure()
+fig = df.plot(kind="line", xticks=[1000, 100000], ylabel="Running Times").get_figure()
 fig.savefig("words.pdf")

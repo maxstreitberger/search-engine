@@ -17,12 +17,13 @@ void ConcurrentIndexer::generateIndex() {
     specialchars = loadList(special_chars_path);
     stopwords = loadList(stopword_path);
     while (true) {
-        const docmeta::DocumentMeta* doc = nullptr;
-        repository_pipeline->wait_and_pop(doc);
-        if (doc != nullptr) {
-            process(doc);
-        } else {
+        std::pair<int, std::optional<const docmeta::DocumentMeta*>> values = repository_pipeline->pop();
+        if (values.first == -1) {
             break;
+        } else if (values.first == 0) {
+            continue;
+        } else {
+            process(*values.second);
         }
     }
     index_flag->store(false);
