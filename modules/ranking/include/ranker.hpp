@@ -6,8 +6,7 @@
 #include <unordered_set>
 #include <fstream>
 #include <map>
-
-#include <glog/logging.h>
+#include <vector>
 
 #include "doc_meta.hpp"
 #include "token_meta.hpp"

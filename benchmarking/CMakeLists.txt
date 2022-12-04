@@ -1,2 +1,3 @@
 add_subdirectory(OnTheFlyDocumentSearch)
-add_subdirectory(OnTheFlyWebSearch)
+add_subdirectory(PreComputedDocumentSearch)
+add_subdirectory(ConcurrentOnTheFlyDocumentSearch)

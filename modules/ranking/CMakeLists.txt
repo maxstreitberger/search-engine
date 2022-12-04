@@ -8,7 +8,3 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     PUBLIC $<INSTALL_INTERFACE:include/>
 )
-
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE glog::glog
-)
