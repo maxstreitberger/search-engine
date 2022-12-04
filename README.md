@@ -25,4 +25,4 @@ This documentation comprises these parts:
 * [Reference section](docs/README.md#top) - all the details
 
 
-Copyright © 2022 Maximilian Streitberger maximilian.streitberger@code.berlin @maxstreitberger
+Copyright © 2022 Maximilian Streitberger max.streitberger@gmail.com @maxstreitberger
